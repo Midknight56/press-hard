@@ -1,0 +1,115 @@
+{
+  "format": 1,
+  "form": {
+    "templateId": "sold-as-seen",
+    "title": "Item sold as seen"
+  },
+  "sealedAt": null,
+  "parties": {
+    "giver": "Nell Whitcombe",
+    "receiver": "Armand Sokol"
+  },
+  "fields": [
+    {
+      "id": "item",
+      "label": "Item",
+      "kind": "text",
+      "value": "Road bike, blue frame"
+    },
+    {
+      "id": "price",
+      "label": "Price",
+      "kind": "number",
+      "value": "240",
+      "unit": "EUR"
+    },
+    {
+      "id": "paid",
+      "label": "Paid in",
+      "kind": "choice",
+      "value": "cash",
+      "options": [
+        "cash",
+        "transfer"
+      ]
+    },
+    {
+      "id": "condition",
+      "label": "Condition",
+      "kind": "text",
+      "value": "Worn tyres, rear brake squeaks"
+    },
+    {
+      "id": "notes",
+      "label": "Notes",
+      "kind": "text",
+      "value": "Sold as seen, no returns"
+    },
+    {
+      "id": "photo-item",
+      "label": "Photo of the item",
+      "kind": "photo",
+      "value": null,
+      "photoDigest": "1e7df69610fcbcff35aac842fc2d56e2a272722e06a5e881d9bb370158baff46"
+    }
+  ],
+  "photos": [
+    {
+      "digest": "1e7df69610fcbcff35aac842fc2d56e2a272722e06a5e881d9bb370158baff46",
+      "mime": "image/jpeg",
+      "width": 16,
+      "height": 16,
+      "dataBase64": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDgP32kXHcKD+Vd54V8VFSgL0eKvCpUuQlcH++0i47hQfyr+bP3PEFHoqyX/gX/AAfzPK/27gnHdfZX+7/gH//Z"
+    }
+  ],
+  "signatures": [
+    {
+      "party": "giver",
+      "strokes": [
+        [
+          100,
+          600,
+          200,
+          300,
+          300,
+          650,
+          400,
+          300,
+          500,
+          620
+        ],
+        [
+          120,
+          780,
+          520,
+          760
+        ]
+      ]
+    },
+    {
+      "party": "receiver",
+      "strokes": [
+        [
+          150,
+          500,
+          250,
+          250,
+          350,
+          500,
+          450,
+          250
+        ],
+        [
+          600,
+          700,
+          700,
+          650,
+          800,
+          720,
+          900,
+          640
+        ]
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@
     "mcp"
   ],
   "scripts": {
-    "typecheck": "tsc --noEmit -p core/tsconfig.json",
+    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json",
     "lint": "eslint .",
     "test": "npm test --workspace core",
     "e2e": "node -e \"console.log('not built yet')\"",

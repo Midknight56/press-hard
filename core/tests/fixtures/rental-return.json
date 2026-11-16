@@ -1,0 +1,137 @@
+{
+  "format": 1,
+  "form": {
+    "templateId": "rental-return",
+    "title": "Rental return"
+  },
+  "sealedAt": null,
+  "parties": {
+    "giver": "Mara Oduya",
+    "receiver": "Tobin Larch"
+  },
+  "fields": [
+    {
+      "id": "item",
+      "label": "Item",
+      "kind": "text",
+      "value": "Cargo van, white"
+    },
+    {
+      "id": "plate",
+      "label": "Plate",
+      "kind": "text",
+      "value": "KW-4471"
+    },
+    {
+      "id": "mileage",
+      "label": "Mileage",
+      "kind": "number",
+      "value": "48210.5",
+      "unit": "km"
+    },
+    {
+      "id": "fuel",
+      "label": "Fuel level",
+      "kind": "choice",
+      "value": "half",
+      "options": [
+        "empty",
+        "quarter",
+        "half",
+        "full"
+      ]
+    },
+    {
+      "id": "damage",
+      "label": "New damage",
+      "kind": "text",
+      "value": "Small scratch on the rear left door"
+    },
+    {
+      "id": "notes",
+      "label": "Notes",
+      "kind": "text",
+      "value": "Returned with a spare tyre and one key"
+    },
+    {
+      "id": "photo-front",
+      "label": "Photo of the front",
+      "kind": "photo",
+      "value": null,
+      "photoDigest": "7a711577dd23bf33f4350f9c1f5bab9c0b8238fc580a058c4a7b719b2440b579"
+    },
+    {
+      "id": "photo-rear",
+      "label": "Photo of the rear",
+      "kind": "photo",
+      "value": null,
+      "photoDigest": "4022024ff418e05a4e56580fd23aca443caf186cc1137d92fdbe3d6aa78c2ecc"
+    }
+  ],
+  "photos": [
+    {
+      "digest": "7a711577dd23bf33f4350f9c1f5bab9c0b8238fc580a058c4a7b719b2440b579",
+      "mime": "image/jpeg",
+      "width": 16,
+      "height": 16,
+      "dataBase64": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDnNf8ACn/FG678n/LhP/6Lavn/AEnwp0+T9K+5Nf8ACn/FG678n/LhP/6Lavn/AEnwp935P0r8WybOP3NXXr+h2eJef/8ACjgdfsP/ANKP/9k="
+    },
+    {
+      "digest": "4022024ff418e05a4e56580fd23aca443caf186cc1137d92fdbe3d6aa78c2ecc",
+      "mime": "image/jpeg",
+      "width": 16,
+      "height": 16,
+      "dataBase64": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD2H/lHT/1UH/hMf+4Z9k+yf9/vM3/av9nGzvng/wCUdP8A1UH/AITH/uGfZPsn/f7zN/2r/Zxs754P+UdP/VQf+Ex/7hn2T7J/3+8zf9q/2cbO+eD/AJR0/wDVQf8AhMf+4Z9k+yf9/vM3/av9nGzvnj7X+P8A9PPaf9u+25f/AE37P5c9j5D+F/c5Pn7O/wD6Xz/+Sn//2Q=="
+    }
+  ],
+  "signatures": [
+    {
+      "party": "giver",
+      "strokes": [
+        [
+          100,
+          600,
+          200,
+          300,
+          300,
+          650,
+          400,
+          300,
+          500,
+          620
+        ],
+        [
+          120,
+          780,
+          520,
+          760
+        ]
+      ]
+    },
+    {
+      "party": "receiver",
+      "strokes": [
+        [
+          150,
+          500,
+          250,
+          250,
+          350,
+          500,
+          450,
+          250
+        ],
+        [
+          600,
+          700,
+          700,
+          650,
+          800,
+          720,
+          900,
+          640
+        ]
+      ]
+    }
+  ]
+}

@@ -13,50 +13,50 @@ This spec owns `core/`, `mcp/`, the root files and `docs/kiro-log.md`. It does n
   - Verify: `npm run verify` exits 0. Save one TypeScript file and end one turn, and write in the log whether `typecheck-on-save` and `verify-on-stop` fired, or that they did not fire or were not tried.
   - _Requirements: 3.1_
 
-- [ ] 2. Types, index and fixtures
+- [x] 2. Types, index and fixtures
   - Create `core/src/types.ts` as in the design. Create `core/src/index.ts`, the only export file, with the type exports. Each later task adds the exports of what it builds.
   - Write three unsealed fixture records (`sealedAt` null, no `seal`) under `core/tests/fixtures/`: `rental-return.json` (8 fields, of which 2 are `photo` fields, 1 is a `number` field with id `mileage`, plus 2 photos and 2 signatures), `key-handover.json` (5 fields, no photo) and `sold-as-seen.json` (6 fields, of which 1 is a `photo` field, plus 1 photo). Give each fixture both signatures. Use made up names. Make each photo a 16 by 16 px JPEG original to this repository, with `digest` set to the real SHA-256 of its bytes.
   - Verify: `npm run typecheck` passes.
   - _Requirements: 1.1_
 
-- [ ] 3. SHA-256
+- [x] 3. SHA-256
   - Write `core/tests/sha256.test.ts` first with the three known values, the block edge lengths and the comparison with Node's `crypto`. See it fail.
   - Implement `sha256.ts` with no dependency. Export it from `index.ts`.
   - Verify: `npm test -- sha256` passes.
   - _Requirements: 3.1, 3.2, 3.3_
 
-- [ ] 4. Canonical text
+- [x] 4. Canonical text
   - Write `core/tests/canonical.test.ts` first. See it fail.
   - Implement `canonical.ts`. Export it from `index.ts`.
   - Verify: `npm test -- canonical` passes.
   - _Requirements: 2.1, 2.2, 2.3_
 
-- [ ] 5. Record check
+- [x] 5. Record check
   - Write `core/tests/validate.test.ts` first: the three fixtures have no problem, and for each limit in requirement 1.3 one test at the limit and one test one over it, and one test for each refusal in requirements 1.4 and 1.5. See it fail.
   - Implement `validate.ts`. Export it from `index.ts`.
   - Verify: `npm test -- validate` passes.
   - _Requirements: 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 6. Seal and seal words
+- [x] 6. Seal and seal words
   - Write `core/tests/words.test.ts` and `core/tests/seal.test.ts` first, with the `unsealed`, `wrong_seal` and `changed` cases from the design. See them fail.
   - Write the list of 256 words in `words.ts`. Implement `sealWords`, `sealRecord` and `verifyRecord`. Export them from `index.ts`.
   - Verify: `npm test -- words seal` passes.
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 6.1, 6.2_
 
-- [ ] 7. Copy file
+- [x] 7. Copy file
   - Write `core/tests/copyfile.test.ts` first, with the `</script>` case, the `bad_record` case and the no network check from the design. See it fail.
   - Write `core/scripts/gen-check.ts` and wire it as `pretest` and `prebuild` of `core`. Implement `buildCopyFile` and `parseCopyFile`, so that the check logic exists once. Export them from `index.ts`.
   - Add a test that runs the inline check script of a built copy file inside Node with a small fake `document`, for a good file and for a file with one changed character, and reads the `stamp` text. Say in the log that the real browser check of the same thing is in task 9 of the `counter-app` spec and has not run yet.
   - Verify: `npm test -- copyfile` passes.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 8. Compare
+- [x] 8. Compare
   - Write `core/tests/diff.test.ts` first. See it fail.
   - Implement `diffRecords` with the paths from the design. Export it from `index.ts`.
   - Verify: `npm test -- diff` passes.
   - _Requirements: 6.3, 6.4_
 
-- [ ] 9. Properties
+- [x] 9. Properties
   - Write `core/tests/properties.test.ts` with the seven properties from the design, using fast-check record generators with at most 6 fields and photos of at most 64 bytes. The generators set each photo digest to the real SHA-256 of its bytes.
   - Fix every failure in the code, never in the property.
   - Verify: `npm test -- properties` passes. Write the run time in the log. 60 seconds is the target.
