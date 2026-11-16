@@ -1,0 +1,214 @@
+/* Paper, a perforated edge, carbon blue for the copy, a red form number. System fonts only. */
+:root {
+  --paper: #fffdf8;
+  --desk: #ece8df;
+  --ink: #1c1b19;
+  --rule: #8c8678;
+  --carbon-paper: #eef2fb;
+  --carbon-ink: #1f3a8a;
+  --form-red: #b3261e;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.form {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 1rem 1.75rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  /* The perforated edge: a column of small holes down the left side. */
+  background-image: radial-gradient(circle at 0.75rem 0.75rem, var(--desk) 0.18rem, transparent 0.2rem);
+  background-size: 1.5rem 1.5rem;
+  background-repeat: repeat-y;
+}
+
+.form.ink-carbon {
+  background-color: var(--carbon-paper);
+  color: var(--carbon-ink);
+}
+
+.form-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.form-number {
+  color: var(--form-red);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.line .label {
+  flex: 0 0 9rem;
+  font-size: 0.9rem;
+}
+
+.line .value {
+  flex: 1 1 8rem;
+  min-height: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.line input[type='text'],
+.line select {
+  flex: 1 1 8rem;
+  min-height: 44px;
+  padding: 0 8px;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--rule);
+}
+
+.control-wrap {
+  display: flex;
+  flex: 1 1 8rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-wrap input {
+  flex: 1 1 auto;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--carbon-ink);
+  outline-offset: 2px;
+}
+
+.add-photo {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+}
+
+img.photo {
+  max-width: 100%;
+  height: auto;
+  break-inside: avoid;
+}
+
+.signatures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.signature,
+.signature-slot {
+  flex: 1 1 10rem;
+  min-height: 6rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.signature polyline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.seal-words {
+  margin-top: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.missing {
+  outline: 2px solid var(--form-red);
+  outline-offset: 2px;
+}
+
+.note {
+  min-height: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.line-tools,
+.stamp-area,
+.pick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.screen button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 16px;
+}
+
+.stamp[aria-disabled='true'] {
+  opacity: 0.6;
+}
+.sheets {
+  position: relative;
+}
+
+.carbon-sheet {
+  position: absolute;
+  inset: 0;
+  transform: translate(6px, 6px);
+}
+
+.top-sheet {
+  position: relative;
+}
+
+.top-sheet.lift {
+  animation: lift 0.9s ease-out both;
+}
+
+.carbon-sheet.fade {
+  animation: fade 0.4s linear both;
+}
+
+.stamp {
+  background: linear-gradient(to right, var(--form-red) calc(var(--progress, 0) * 100%), transparent 0);
+}
+
+@keyframes lift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px) rotate(-0.6deg); }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top-sheet.lift {
+    animation: none;
+  }
+}

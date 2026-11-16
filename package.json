@@ -5,18 +5,20 @@
   "type": "module",
   "workspaces": [
     "core",
-    "mcp"
+    "mcp",
+    "app"
   ],
   "scripts": {
-    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json && npm run typecheck --workspace mcp",
+    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json && npm run typecheck --workspace mcp && npm run typecheck --workspace app",
     "lint": "eslint .",
-    "test": "npm test --workspace core && npm test --workspace mcp",
+    "test": "npm test --workspace core && npm test --workspace mcp && npm test --workspace app",
     "e2e": "node -e \"console.log('not built yet')\"",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run e2e",
     "build": "node -e \"console.log('not built yet')\""
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.65.1",
     "@types/node": "26.6.6",
     "eslint": "10.15.0",
     "fast-check": "4.10.2",

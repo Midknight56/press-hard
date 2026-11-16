@@ -9,11 +9,11 @@ const read = (path: string): string => readFileSync(resolve(root, path), 'utf8')
 const json = (path: string): Record<string, unknown> => JSON.parse(read(path)) as Record<string, unknown>;
 
 describe('workspace scaffold', () => {
-  it('root package is private, version 0.1.0, with workspaces core and mcp only', () => {
+  it('root package is private, version 0.1.0, with workspaces core, mcp and app only', () => {
     const pkg = json('package.json');
     expect(pkg.private).toBe(true);
     expect(pkg.version).toBe('0.1.0');
-    expect(pkg.workspaces).toEqual(['core', 'mcp']);
+    expect(pkg.workspaces).toEqual(['core', 'mcp', 'app']);
   });
 
   it('root has the six scripts', () => {

@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "npm run build --workspace core && tsc --noEmit -p tsconfig.json",
+    "pretest": "npm run build --workspace core",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "core": "0.1.0"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.8",
+    "happy-dom": "21.0.4",
+    "vite": "8.3.8"
+  }
+}

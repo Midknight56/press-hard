@@ -6,46 +6,46 @@ This spec owns `app/`, `e2e/` and `site/`. It reads `core/` only through its exp
 
 Write every file as UTF-8 with no byte order mark and with LF line endings. On Windows, do not write files with PowerShell `Set-Content` or `Out-File`.
 
-- [ ] 1. Scaffold the app and the first failing tests
+- [x] 1. Scaffold the app and the first failing tests
   - Create `app/` with `package.json` (`"version": "0.1.0"`, `"private": true`), `tsconfig.json` and `app/app.config.ts` holding the product title, add `app` to the root workspaces list, Vite and the DOM test environment for Vitest. Add Playwright at the root for `e2e/`, headless only. Write each licence in the log.
   - Write `templates.test.ts`, `stamp.test.ts` and `store.test.ts` from the design. Run them and see them fail.
   - Verify: the three test files run and fail because the code does not exist yet. `npm run typecheck` is not required here, because the tests import code that does not exist.
   - _Requirements: 1.2, 3.1, 3.2_
 
-- [ ] 2. Templates and the sample
+- [x] 2. Templates and the sample
   - Write the four templates and `sample.ts`, a filled rental return with made up names, two small original photos and two signatures. Each form starts with the giver name and receiver name lines.
   - Verify: `npm test -- templates` passes, and `validateRecord` from `core/` reports no problem for the sample.
   - _Requirements: 1.1, 1.2, 1.4, 1.5_
 
-- [ ] 3. Store
+- [x] 3. Store
   - Implement `store.ts` with IndexedDB and the memory fallback, and the one time notice when storage is blocked.
   - Verify: `npm test -- store` passes, including the storage blocked case.
   - _Requirements: 2.1, 2.7, 4.3, 4.4_
 
-- [ ] 4. Paper form renderer
+- [x] 4. Paper form renderer
   - Write `form.test.ts` first: every field of every template is drawn with its label, the `carbon` mode sets the carbon ink class, and text with `<b>` in a value is shown as text. See it fail.
   - Implement `app/src/form/` with the three modes and `theme.css`.
   - Verify: `npm test -- form` passes.
   - _Requirements: 2.1, 3.4_
 
-- [ ] 5. Photos and signatures
+- [x] 5. Photos and signatures
   - Write `signature.test.ts` first for the scaling, the stroke split and the 4000 point limit, with the numbers from the design. See it fail. Implement `signature.ts` and `photo.ts` with the quality steps and the digest rule from the design.
   - Verify: `npm test -- signature` passes. The photo size test runs in task 9.
   - _Requirements: 2.2, 2.3, 2.4, 2.6_
 
-- [ ] 6. Pick and fill screens
+- [x] 6. Pick and fill screens
   - Write the unit tests first for the lock rule, the draft save within 1 second (fake timer), the blank form limit of 12 lines and the 500 character limit. See them fail.
   - Implement `pick.ts` and `fill.ts`: draft save within 1 second, the blank form lines, the locked stamp with the first missing line marked, the name lines, and `data-control` and `data-screen` on every control and screen.
   - Verify: the unit tests pass, and a hand check in the browser fills the key handover form.
   - _Requirements: 1.1, 1.3, 1.4, 1.5, 2.1, 2.5, 2.6_
 
-- [ ] 7. Stamp, seal and carbon copy
+- [x] 7. Stamp, seal and carbon copy
   - Implement `stamp.ts`, `press.ts` and `copy.ts`: hold for 1.2 seconds, keyboard hold, the lift, the carbon copy, the seal words, the reduced motion fade, and the one line shown when `sealRecord` returns problems.
   - Implement `audio.ts` with a pen sound and a stamp sound made in code, and the saved sound switch.
   - Verify: `npm test -- stamp` passes with the fake timer.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 8.3_
 
-- [ ] 8. Tear off and library
+- [x] 8. Tear off and library
   - Write the unit tests first for the file name rule and the share fallback. See them fail.
   - Implement `share.ts` and `library.ts`: the file name rule, the size line, share or download, the list of sealed records, delete with a confirmation box.
   - Verify: the unit tests pass.
