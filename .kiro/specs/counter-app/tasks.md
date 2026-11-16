@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - [ ] 1. Scaffold the app and the first failing tests
-  - Create `app/` with `package.json`, `tsconfig.json`, Vite and the DOM test environment for Vitest. Add Playwright at the root for `e2e/`, headless only. Write each licence in the log.
+  - Create `app/` with `package.json`, `tsconfig.json`, add `app` to the root workspaces list, Vite and the DOM test environment for Vitest. Add Playwright at the root for `e2e/`, headless only. Write each licence in the log.
   - Write `templates.test.ts`, `stamp.test.ts` and `store.test.ts` from the design. Run them and see them fail.
   - Verify: `npm run typecheck` passes and the three test files fail because the code does not exist yet.
   - _Requirements: 1.2, 3.1, 3.2_
@@ -45,7 +45,7 @@
 
 - [ ] 9. Verify page and path tests
   - Implement the verify page: one file, seal words, two files with differences on their lines, and the plain error lines.
-  - Write `e2e/layout.spec.ts`, `e2e/good-path.spec.ts` and `e2e/bad-path.spec.ts`, with the photo size check inside the good path. Run them and fix every named control.
+  - Write `e2e/layout.spec.ts`, `e2e/good-path.spec.ts` and `e2e/bad-path.spec.ts`, with the photo size check inside the good path. In the good path and the bad path, also open the downloaded copy file from disk in the browser and read the text of the element with id `stamp`: `Seal matches this copy` for the good file, `This copy was changed after sealing` for the changed file (this is the real browser check of requirement 5.4 of `record-core`). Run them and fix every named control.
   - Replace the root `e2e` script with the Playwright run and add it to `verify` behind the variable `E2E=1`.
   - Verify: `E2E=1 npm run verify` passes.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 8.1, 8.2, 9.1, 9.2, 9.3_
@@ -65,6 +65,7 @@
 - [ ] 12. Site, privacy page and beacon
   - Build `site/index.html` with the self playing loop made from the real app screens, and `site/privacy.html` generated from the same list `beacon.ts` uses.
   - Implement `beacon.ts`. With no `VITE_BEACON_URL` it must send nothing. Add a unit test for both cases.
+  - Replace the root `build` script with the real build. It must still build `core` and `mcp`.
   - Verify: `npm run build` gives `dist/` with `/`, `/app/`, `/verify/` and `/privacy/`.
   - _Requirements: 10.1, 10.2, 10.3, 10.4_
 

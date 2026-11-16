@@ -24,7 +24,7 @@ These rules apply to `core/` and `mcp/`.
 ## Copy file
 - A copy file is one HTML document that holds the record as JSON in a `script` element with id `record` and type `application/json`.
 - The check script inside a copy file is built from `core/src/sha256.ts` and `core/src/canonical.ts`. It is never written by hand a second time.
-- `<` inside the embedded JSON is written as `<`, so that no text in a record can end the script element.
+- `<` inside the embedded JSON is written as the six characters `<`, so that no text in a record can end the script element.
 
 ## Tests come first
 - Write the failing test before the code. Run it and see it fail.
