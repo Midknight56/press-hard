@@ -17,6 +17,8 @@ One row for each finished task, added the same day.
 | 2026-11-16 | Kiro CLI 3.3.0 (v3, no person at the keyboard), Auto (model chosen by the server) | record-core task 9, properties | `core/tests/properties.test.ts`, `.kiro/specs/record-core/tasks.md` | `npm test -- properties` exit 0, 8 of 8 pass (a check of the generators and the seven properties, 100 runs each, the fast-check default). Run time: Vitest reported 1.32 s and 1.93 s in two runs (`Duration` line), and the whole `npm test -- properties` command took 13.4 s of wall time with npm start up and the generator. The target is 60 s. No property failed on the first run, because the code for tasks 3 to 8 already existed. To check that the properties can fail, two changes were made by hand and then reverted: removing the key sort in `canonical.ts` failed property 1, and a broken value compare in `diff.ts` failed property 6. After reverting, 8 of 8 pass. | | One type error in the test file (`kind` typed as `string`) was fixed by typing the new field as `Field`. No property was changed and no code needed a fix. |
 | 2026-11-16 | Kiro CLI 3.3.0 (v3, no person at the keyboard), Auto (model chosen by the server) | record-core task 11, tool handlers | `mcp/package.json`, `mcp/tsconfig.json`, `mcp/tsconfig.build.json`, `mcp/src/tools.ts`, `mcp/tests/tools.test.ts`, `package.json` (root `typecheck` and `test` now include `mcp`), `package-lock.json`, `.kiro/specs/record-core/tasks.md` | `npm test -- tools` in `mcp/` exit 0, 13 of 13 pass (both tools, each error code, a file of exactly 20 MB read and one byte over refused, and a snapshot of names, sizes, times and hashes in the temporary folder equal before and after all calls). Before `tools.ts` existed, the test file could not load `../src/tools.js` (0 tests ran). Root `npm run typecheck` and `npm run lint` exit 0. | | The first run with `tools.ts` failed in `beforeAll`: `buildCopyFile` refuses an unsealed record, so the unsealed test copy is made by cutting the seal out of the record element of a sealed copy. No assertion was changed. `mcp` `pretest` and `build` build `core` first, because `mcp` imports `core` from `core/dist`. |
 | 2026-11-16 | Kiro CLI 3.3.0 (v3, no person at the keyboard), Auto (model chosen by the server) | record-core task 12, tool server | `mcp/src/server.ts`, `mcp/tests/server.process.test.ts` | `npm run build --workspace mcp` exit 0, then `npm test -- server.process` in `mcp/` exit 0, 2 of 2 pass (the process lists exactly `diff_copies` and `verify_copy`; error calls return `isError` with `not_found`, `bad_args` and for an unknown tool, and the server keeps running). Before `server.ts` existed, the test failed at connect (no `dist/server.js`). Server written with the low level `Server` class and `StdioServerTransport` of the SDK. | | This Kiro CLI run was refused writes to `.kiro/settings/`, so it could not do the step that sets `copycheck` to `"disabled": false`. It was set outside Kiro, by hand, after the run; the task was ticked then. |
+| 2026-11-16 | Kiro CLI 3.3.0 (v3, no person at the keyboard), Auto (model chosen by the server) | record-core task 13, Kiro checks a copy | `mcp/scripts/make-demo-copies.ts`, `mcp/tsconfig.json` (`scripts` added to `include`), `mcp/demo/` (ignored by git), `.kiro/specs/record-core/tasks.md` | Script run with `node mcp/scripts/make-demo-copies.ts` (exit 0). In this session the `copycheck` tools were called: `verify_copy` gave `matches` for the good file and `changed` for the second, and `diff_copies` gave one difference with the path `fields.mileage.value` (48210.5 against 12.5). The answers are in "Tool door transcripts". | | None. |
+| 2026-11-16 | Kiro CLI 3.3.0 (v3, no person at the keyboard), Auto (model chosen by the server) | record-core task 14, export check | `core/tests/exports.test.ts`, `.kiro/specs/record-core/tasks.md` | `core/src/index.ts` was compared with the design: 7 types and 9 functions, all exported, nothing else. `npm run verify` result is in the final report of this run. | | The task names no failing test. `exports.test.ts` was added and it passed at once, because the exports were already right. It checks function names only; the type exports are covered by `typecheck`. |
 
 ## Hooks seen to fire
 
@@ -26,6 +28,28 @@ One row for each finished task, added the same day.
 ## Tool door transcripts
 
 Paste each real list of tool calls here, with the date and the level.
+
+### 2026-11-16, record-core task 13, Kiro CLI 3.3.0 (v3, no person at the keyboard), Auto
+
+The `copycheck` server was available in this session. The two demo copies were made by `node mcp/scripts/make-demo-copies.ts`. Calls in order, with the answers copied as the tools returned them:
+
+1. `verify_copy` with `{"path": "D:\\Projects\\kiroween\\press-hard\\mcp\\demo\\rental-return-good.html"}`
+
+```
+{"result":"matches","seal":"de7103e1ead11085f758207f1363a5e108368fec442b90a447786a77321cd67e","sealWords":"elm-marble-atlas-bagel","sealedAt":"2026-11-16T09:30:00Z","title":"Rental return","giver":"Mara Oduya","receiver":"Tobin Larch","photos":2}
+```
+
+2. `verify_copy` with `{"path": "D:\\Projects\\kiroween\\press-hard\\mcp\\demo\\rental-return-changed.html"}`
+
+```
+{"result":"changed","seal":"de7103e1ead11085f758207f1363a5e108368fec442b90a447786a77321cd67e","sealWords":"elm-marble-atlas-bagel","sealedAt":"2026-11-16T09:30:00Z","title":"Rental return","giver":"Mara Oduya","receiver":"Tobin Larch","photos":2}
+```
+
+3. `diff_copies` with `{"pathA": "D:\\Projects\\kiroween\\press-hard\\mcp\\demo\\rental-return-good.html", "pathB": "D:\\Projects\\kiroween\\press-hard\\mcp\\demo\\rental-return-changed.html"}`
+
+```
+{"equal":false,"differences":[{"path":"fields.mileage.value","a":"48210.5","b":"12.5"}]}
+```
 
 ## Dependencies and licences
 

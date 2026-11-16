@@ -82,13 +82,13 @@ This spec owns `core/`, `mcp/`, the root files and `docs/kiro-log.md`. It does n
   - Verify: `npm run build --workspace mcp` (not the root `build`, which stays a placeholder here), then `npm test -- server.process` passes.
   - _Requirements: 7.1_
 
-- [ ] 13. Kiro checks a copy
+- [x] 13. Kiro checks a copy
   - Write `mcp/scripts/make-demo-copies.ts`. It builds two copy files from `rental-return.json` into `mcp/demo/`: one good, and one with the `mileage` field text changed after sealing, without a new seal.
   - In a Kiro session, call `verify_copy` on both and `diff_copies` on the pair. Paste the real tool calls and answers into the "Tool door transcripts" section of the log, with the date. If no session was run, write that.
   - Verify: the log shows `changed` for the second file, `matches` for the first, and one difference with the path `fields.mileage.value`.
   - _Requirements: 7.2, 7.3_
 
-- [ ] 14. Export check
+- [x] 14. Export check
   - Check that `core/src/index.ts` exports every function and type in the design and nothing else.
   - Verify: `npm run verify` passes.
   - _Requirements: 1.1_
