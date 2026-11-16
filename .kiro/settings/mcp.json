@@ -6,7 +6,7 @@
         "mcp/dist/server.js"
       ],
       "env": {},
-      "disabled": true,
+      "disabled": false,
       "autoApprove": [
         "verify_copy",
         "diff_copies"

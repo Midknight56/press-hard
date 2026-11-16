@@ -8,9 +8,9 @@
     "mcp"
   ],
   "scripts": {
-    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json",
+    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json && npm run typecheck --workspace mcp",
     "lint": "eslint .",
-    "test": "npm test --workspace core",
+    "test": "npm test --workspace core && npm test --workspace mcp",
     "e2e": "node -e \"console.log('not built yet')\"",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run e2e",
     "build": "node -e \"console.log('not built yet')\""

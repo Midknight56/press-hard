@@ -2,5 +2,14 @@
   "name": "mcp",
   "version": "0.1.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "typecheck": "npm run build --workspace core && tsc --noEmit -p tsconfig.json",
+    "build": "npm run build --workspace core && tsc -p tsconfig.build.json",
+    "pretest": "npm run build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2"
+  }
 }

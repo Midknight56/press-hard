@@ -69,14 +69,14 @@ This spec owns `core/`, `mcp/`, the root files and `docs/kiro-log.md`. It does n
   - Verify: `npm test` passes.
   - _Requirements: 2.2, 4.1, 5.5, 6.1_
 
-- [ ] 11. Tool handlers
+- [x] 11. Tool handlers
   - Create `mcp/` with its `package.json` and `tsconfig.json` as in the design, and add the official Model Context Protocol TypeScript SDK to it only. Read its README for the server and stdio transport calls. Write the package name, version and licence in the log.
   - Write `mcp/tests/tools.test.ts` first for both tools, for each error code, and for the rule that no file is written (the temporary folder holds the same files and times after each call). See it fail.
   - Implement `tools.ts`.
   - Verify: `npm test -- tools` passes.
   - _Requirements: 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 12. Tool server
+- [x] 12. Tool server
   - Implement `mcp/src/server.ts` and `mcp/tests/server.process.test.ts`, a process test that lists the two tools.
   - Set the `copycheck` server in `.kiro/settings/mcp.json` to `"disabled": false`.
   - Verify: `npm run build --workspace mcp` (not the root `build`, which stays a placeholder here), then `npm test -- server.process` passes.
