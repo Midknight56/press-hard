@@ -4,7 +4,7 @@ After each finished task, add one row to `docs/kiro-log.md` on the same day. Lea
 
 This spec owns `core/`, `mcp/`, the root files and `docs/kiro-log.md`. It does not create or edit anything in `app/`, `e2e/` or `site/`, which belong to the `counter-app` spec.
 
-- [ ] 1. Scaffold the workspace
+- [x] 1. Scaffold the workspace
   - Create the root `package.json` with npm workspaces for `core` and `mcp` only, a base `tsconfig.json` with `strict` on, Vitest, fast-check and ESLint. The `counter-app` spec adds `app` to the workspaces when it creates that folder. Pin each version and write each licence in the log. Set `"version": "0.1.0"` and `"private": true` in each `package.json`.
   - Create `core/package.json` and `core/tsconfig.json` as in the design (ES module, `exports` to `dist/index.js`, scripts `build`, `prebuild`, `pretest`).
   - Add the root scripts `typecheck`, `lint`, `test`, `e2e`, `verify` and `build`. `e2e` and `build` print `not built yet` and exit 0 until the `counter-app` spec replaces them.

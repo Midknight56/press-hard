@@ -1,0 +1,27 @@
+{
+  "name": "press-hard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core",
+    "mcp"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p core/tsconfig.json",
+    "lint": "eslint .",
+    "test": "npm test --workspace core",
+    "e2e": "node -e \"console.log('not built yet')\"",
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run e2e",
+    "build": "node -e \"console.log('not built yet')\""
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "26.6.6",
+    "eslint": "10.15.0",
+    "fast-check": "4.10.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "5.1.0"
+  }
+}
