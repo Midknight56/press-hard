@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
-import { collectBoxes, findLayoutProblems, VIEWPORTS } from '../app/src/layout.js';
+import {
+  collectBoxes,
+  collectFacts,
+  findCentreProblems,
+  findFirstViewProblems,
+  findLayoutProblems,
+  findPictureProblems,
+  VIEWPORTS,
+} from '../app/src/layout.js';
 import { expectScreen } from './support.js';
 import { walkScreens } from './screens.js';
 
@@ -17,6 +25,16 @@ for (const viewport of VIEWPORTS) {
         for (const p of findLayoutProblems(result.boxes, { width: result.viewWidth, height: viewport.height }, result.pageHeight)) {
           problems.push(`${viewport.width}x${viewport.height}, ${step}, ${p.control}: ${p.problem}`);
         }
+        // The first view is the page at scroll 0.
+        await page.evaluate(() => window.scrollTo(0, 0));
+        const facts = await page.evaluate(collectFacts);
+        const where = `${viewport.width}x${viewport.height}, ${step}`;
+        const more = [
+          ...findPictureProblems(facts.pictures),
+          ...findCentreProblems(facts.screen, facts.column, facts.boxes, facts.viewWidth),
+          ...findFirstViewProblems(facts.screen, facts.firstView, { width: facts.viewWidth, height: viewport.height }),
+        ];
+        for (const p of more) problems.push(`${where}, ${p.control}: ${p.problem}`);
         if (result.scrollWidth > result.viewWidth) {
           problems.push(`${viewport.width}x${viewport.height}, ${step}, ${result.screen}: the page scrolls sideways (${result.scrollWidth} px in ${result.viewWidth} px)`);
         }
@@ -26,6 +44,24 @@ for (const viewport of VIEWPORTS) {
     });
   });
 }
+
+test.describe('top nav at 360 wide', () => {
+  test.use({ viewport: { width: 360, height: 640 } });
+
+  test('the five buttons sit on one row', async ({ page }) => {
+    await page.goto('/app/');
+    await expectScreen(page, 'pick');
+    const tops = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('nav [data-control]')).map((el) => ({
+        control: el.getAttribute('data-control'),
+        top: Math.round(el.getBoundingClientRect().top),
+        bottom: Math.round(el.getBoundingClientRect().bottom),
+      })),
+    );
+    expect(tops.map((t) => t.control)).toEqual(['nav-home', 'nav-library', 'nav-help', 'nav-verify', 'nav-sound']);
+    expect(new Set(tops.map((t) => t.top)).size, `the nav buttons are on more than one row: ${JSON.stringify(tops)}`).toBe(1);
+  });
+});
 
 test.describe('keyboard', () => {
   test.use({ viewport: { width: 390, height: 844 } });

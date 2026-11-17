@@ -181,12 +181,19 @@ img.photo {
 
 .carbon-sheet {
   position: absolute;
-  inset: 0;
-  transform: translate(6px, 6px);
+  inset: 0 10px 10px;
+  transform: translate(4px, 6px);
 }
 
 .top-sheet {
   position: relative;
+}
+
+/* The two sheets lean apart by 8 px, 4 px each way, so the pair stays centred. */
+@media screen {
+  .top-sheet {
+    left: -4px;
+  }
 }
 
 .top-sheet.lift {
@@ -198,20 +205,65 @@ img.photo {
 }
 
 .stamp {
-  min-width: 13rem;
-  min-height: 64px;
-  padding-left: 72px;
+  min-width: 11rem;
+  min-height: 56px;
+  gap: 12px;
   font-weight: 700;
   /* The meter is a bar along the bottom edge, so the text keeps its contrast while it fills.
-     The rubber stamp art sits at the left, clear of the text. */
+     The rubber stamp art is an element beside the label, never under it. */
   background: linear-gradient(var(--form-red), var(--form-red)) no-repeat left bottom / calc(var(--progress, 0) * 100%) 10px,
-    url('../assets/stamp.svg') no-repeat 12px center / 48px 48px,
     var(--paper);
+}
+
+.stamp-art,
+.seal-stamp {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  background: url('../assets/stamp.svg') no-repeat center / contain;
+}
+
+/* The bar with the stamp follows the person at the bottom of the view. */
+.stamp-area {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 12px 0 0;
+  padding: 8px 0 16px;
+  background: var(--desk);
+  border-top: 1px solid var(--rule);
+}
+
+.stamp-area p {
+  flex: 1 1 8rem;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+/* The stamp picture and the seal words, above the sheets of the copy screen. */
+.seal-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  background: var(--paper);
+  border: 2px solid var(--form-red);
+}
+
+.seal-strip-text {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 @keyframes lift {
   from { transform: translateY(0); }
-  to { transform: translateY(-12px) rotate(-0.6deg); }
+  to { transform: translateY(-12px) rotate(-0.3deg); }
 }
 
 @keyframes fade {

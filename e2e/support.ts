@@ -15,7 +15,7 @@ export interface Watcher {
   assertClean(): void;
 }
 
-export function watch(context: BrowserContext, origin = 'http://127.0.0.1:4173'): Watcher {
+export function watch(context: BrowserContext, origin = 'http://127.0.0.1:4473'): Watcher {
   const allowed = new Set<string>();
   const requests: string[] = [];
   const foreign: string[] = [];

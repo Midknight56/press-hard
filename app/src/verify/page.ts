@@ -106,6 +106,7 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
     }
     if (placed.others.length > 0) {
       const box = make('section', 'diff-list');
+      box.setAttribute('data-box', 'panel');
       box.setAttribute('data-role', 'differences');
       box.append(make('h2', undefined, 'Other differences'));
       const list = make('ul');

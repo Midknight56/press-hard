@@ -42,6 +42,7 @@ export function createLibraryScreen(options: LibraryOptions): {
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.className = 'confirm';
+    box.setAttribute('data-box', 'card');
     const text = document.createElement('p');
     text.textContent = `Delete ${words} from this device?`;
     const close = () => {
@@ -75,6 +76,7 @@ export function createLibraryScreen(options: LibraryOptions): {
       const words = sealWords(entry.seal);
       const row = document.createElement('article');
       row.className = 'record';
+      row.setAttribute('data-box', 'card');
       row.setAttribute('data-role', 'record');
       const info = document.createElement('p');
       info.textContent = `${entry.title}, ${entry.sealedAt.slice(0, 10)}, ${words}`;

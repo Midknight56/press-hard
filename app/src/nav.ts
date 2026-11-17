@@ -22,8 +22,9 @@ function button(control: string, text: string, onClick: () => void): HTMLButtonE
   return b;
 }
 
-function link(control: string, text: string, href: string): HTMLAnchorElement {
+function link(control: string, text: string, href: string, name?: string): HTMLAnchorElement {
   const a = document.createElement('a');
+  if (name !== undefined) a.setAttribute('aria-label', name);
   a.href = href;
   a.textContent = text;
   a.className = 'nav-link';
@@ -45,17 +46,16 @@ export function createNav(options: NavOptions): { element: HTMLElement; notice(m
       button('nav-home', 'Forms', () => options.onHome?.()),
       button('nav-library', 'Library', () => options.onLibrary?.()),
       button('nav-help', 'Help', () => options.onHelp?.()),
-      link('nav-verify', 'Check a copy', options.verifyHref),
+      link('nav-verify', 'Check', options.verifyHref, 'Check a copy'),
     );
   } else {
     nav.append(link('nav-app', 'Open the form', options.appHref));
   }
   const { audio } = options;
   if (audio !== undefined) {
-    const label = () => (audio.enabled() ? 'Sound on' : 'Sound off');
-    const sound = button('nav-sound', label(), () => {
+    // The label is short so that the bar fits one row at 360 px. Pressed means on; a dashed, struck out button means off.
+    const sound = button('nav-sound', 'Sound', () => {
       audio.setEnabled(!audio.enabled());
-      sound.textContent = label();
       sound.setAttribute('aria-pressed', String(audio.enabled()));
     });
     sound.setAttribute('aria-pressed', String(audio.enabled()));

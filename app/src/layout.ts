@@ -35,6 +35,8 @@ export interface ControlBox {
   width: number;
   height: number;
   padding: Padding | null;
+  /** `box` is a sheet, card or panel (`data-box`): only the edge rule applies. Default `control`. */
+  kind?: 'control' | 'box';
 }
 
 export interface LayoutProblem {
@@ -55,7 +57,8 @@ export function findLayoutProblems(
   const add = (control: string, problem: string) => problems.push({ control, problem });
 
   boxes.forEach((b, i) => {
-    if (b.width < MIN_SIZE - EPSILON || b.height < MIN_SIZE - EPSILON) {
+    const isBox = b.kind === 'box';
+    if (!isBox && (b.width < MIN_SIZE - EPSILON || b.height < MIN_SIZE - EPSILON)) {
       add(b.name, `smaller than ${MIN_SIZE} by ${MIN_SIZE} px: ${px(b.width)} by ${px(b.height)}`);
     }
     const left = b.x;
@@ -66,12 +69,13 @@ export function findLayoutProblems(
     for (const [side, space] of edges) {
       if (space < MIN_EDGE - EPSILON) add(b.name, `${px(space)} from the ${side} edge, needs ${MIN_EDGE} px`);
     }
-    if (b.padding !== null) {
+    if (!isBox && b.padding !== null) {
       const smallest = Math.min(b.padding.top, b.padding.right, b.padding.bottom, b.padding.left);
       if (smallest < MIN_PADDING - EPSILON) add(b.name, `padding ${px(smallest)}, needs ${MIN_PADDING} px`);
     }
     for (let j = 0; j < i; j++) {
       const a = boxes[j] as ControlBox;
+      if (isBox || a.kind === 'box') continue;
       const dx = Math.max(b.x - (a.x + a.width), a.x - (b.x + b.width));
       const dy = Math.max(b.y - (a.y + a.height), a.y - (b.y + b.height));
       if (dx < 0 && dy < 0) {
@@ -95,20 +99,26 @@ export function collectBoxes(): {
 } {
   const screen = document.querySelector('[data-screen]')?.getAttribute('data-screen') ?? 'none';
   const boxes: ControlBox[] = [];
-  for (const el of Array.from(document.querySelectorAll('[data-control]'))) {
+  // A bar that follows the person (`data-sticky`) is measured at its place in the flow, so that it
+  // does not seem to lie on top of the lines it floats over.
+  const sticky = Array.from(document.querySelectorAll<HTMLElement>('[data-sticky]'));
+  for (const el of sticky) el.style.position = 'static';
+  for (const el of Array.from(document.querySelectorAll('[data-control], [data-box]'))) {
     if (el.closest('[inert]') !== null) continue;
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 && rect.height === 0) continue;
     const style = getComputedStyle(el);
     if (style.visibility === 'hidden' || style.display === 'none') continue;
+    const isBox = el.hasAttribute('data-box') && !el.hasAttribute('data-control');
     boxes.push({
-      name: `${screen}/${el.getAttribute('data-control')}`,
+      name: isBox ? `${screen}/box:${el.getAttribute('data-box')}` : `${screen}/${el.getAttribute('data-control')}`,
       x: rect.left + window.scrollX,
       y: rect.top + window.scrollY,
       width: rect.width,
       height: rect.height,
+      ...(isBox ? { kind: 'box' as const } : {}),
       padding:
-        el.tagName === 'BUTTON'
+        !isBox && el.tagName === 'BUTTON'
           ? {
               top: parseFloat(style.paddingTop),
               right: parseFloat(style.paddingRight),
@@ -118,8 +128,181 @@ export function collectBoxes(): {
           : null,
     });
   }
+  for (const el of sticky) el.style.position = '';
   const page = document.documentElement;
   return { screen, boxes, pageHeight: page.scrollHeight, viewWidth: page.clientWidth, scrollWidth: page.scrollWidth };
+}
+
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** True when two boxes share area. Boxes that only touch do not overlap. */
+export function rectsOverlap(a: Rect, b: Rect): boolean {
+  return a.x < b.x + b.width - EPSILON && b.x < a.x + a.width - EPSILON && a.y < b.y + b.height - EPSILON && b.y < a.y + a.height - EPSILON;
+}
+
+/** One picture inside a control, with the box of the label text. `picture` is null for a background image. */
+export interface PictureCheck {
+  control: string;
+  picture: Rect | null;
+  label: Rect | null;
+  background: boolean;
+}
+
+/** A picture inside a control must be an element beside the label, never on top of it and never a background image. */
+export function findPictureProblems(items: PictureCheck[]): LayoutProblem[] {
+  const problems: LayoutProblem[] = [];
+  for (const item of items) {
+    if (item.background) {
+      problems.push({ control: item.control, problem: 'the picture is a background image, so its place cannot be measured; make it an element beside the label' });
+    } else if (item.picture !== null && item.label !== null && rectsOverlap(item.picture, item.label)) {
+      problems.push({ control: item.control, problem: 'the picture overlaps the label text' });
+    }
+  }
+  return problems;
+}
+
+export const MAX_CENTRE_OFFSET = 2;
+
+/** Middle of the span minus middle of the view. Negative when the span sits left of the middle. */
+export function centreOffset(left: number, right: number, viewWidth: number): number {
+  return (left + right) / 2 - viewWidth / 2;
+}
+
+/** The main column, and the sheets and panels in it, must sit in the middle of the view within 2 px. */
+export function findCentreProblems(
+  screen: string,
+  column: { left: number; right: number },
+  boxes: { left: number; right: number } | null,
+  viewWidth: number,
+): LayoutProblem[] {
+  const problems: LayoutProblem[] = [];
+  const check = (what: string, span: { left: number; right: number }) => {
+    const offset = centreOffset(span.left, span.right, viewWidth);
+    if (Math.abs(offset) > MAX_CENTRE_OFFSET + EPSILON) {
+      problems.push({ control: `${screen}/${what}`, problem: `the centre is ${px(Math.abs(offset))} ${offset < 0 ? 'left' : 'right'} of the centre of the view, needs within ${MAX_CENTRE_OFFSET} px` });
+    }
+  };
+  check('column', column);
+  if (boxes !== null) check('boxes', boxes);
+  return problems;
+}
+
+/**
+ * `whole`: the item is in the first view with 16 px to spare at the bottom. `start`: a tall item
+ * whose start is in the first view. `after`: the item starts below every `whole` item.
+ */
+export interface FirstViewItem {
+  name: string;
+  rule: 'whole' | 'start' | 'after';
+  top: number;
+  bottom: number;
+}
+
+/** The marks each screen must carry, so that a check with no marks cannot pass by finding nothing. */
+export const REQUIRED_FIRST_VIEW: Record<string, string[]> = {
+  pick: ['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank', 'pick-sample', 'pick-preview'],
+  fill: ['stamp'],
+  copy: ['seal-stamp', 'seal-words', 'carbon-sheet'],
+};
+
+/** The first view is the page at scroll 0. */
+export function findFirstViewProblems(screen: string, items: FirstViewItem[], view: { width: number; height: number }): LayoutProblem[] {
+  const problems: LayoutProblem[] = [];
+  const add = (name: string, problem: string) => problems.push({ control: `${screen}/${name}`, problem });
+  for (const name of REQUIRED_FIRST_VIEW[screen] ?? []) {
+    if (!items.some((i) => i.name === name)) add(name, 'no mark for the first view rules (data-first-view)');
+  }
+  const wholeBottom = Math.max(0, ...items.filter((i) => i.rule === 'whole').map((i) => i.bottom));
+  for (const item of items) {
+    if (item.rule === 'whole') {
+      if (item.top < -EPSILON || item.bottom > view.height - MIN_EDGE + EPSILON) {
+        add(item.name, `not whole in the first view: ${px(item.top)} to ${px(item.bottom)} in a view ${view.height} px high, needs 16 px to spare at the bottom`);
+      }
+    } else if (item.rule === 'start') {
+      if (item.top < -EPSILON || item.top + Math.min(item.bottom - item.top, MIN_SIZE) > view.height + EPSILON) {
+        add(item.name, `its start is not in the first view: it begins at ${px(item.top)} in a view ${view.height} px high`);
+      }
+    } else if (item.top < wholeBottom - EPSILON) {
+      add(item.name, `starts at ${px(item.top)}, needs to be below the form choices that end at ${px(wholeBottom)}`);
+    }
+  }
+  return problems;
+}
+
+/**
+ * Runs in the page, at the scroll position it finds. Pictures inside controls, the main column, the
+ * span of the sheets and panels, and the items marked `data-first-view`.
+ */
+export function collectFacts(): {
+  screen: string;
+  pictures: PictureCheck[];
+  column: { left: number; right: number };
+  boxes: { left: number; right: number } | null;
+  firstView: FirstViewItem[];
+  viewWidth: number;
+  scrollY: number;
+} {
+  const screen = document.querySelector('[data-screen]')?.getAttribute('data-screen') ?? 'none';
+  const toRect = (r: DOMRect | { left: number; top: number; width: number; height: number }) => ({ x: r.left, y: r.top, width: r.width, height: r.height });
+  const visible = (el: Element) => {
+    if (el.closest('[inert]') !== null) return false;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) return false;
+    const s = getComputedStyle(el);
+    return s.visibility !== 'hidden' && s.display !== 'none';
+  };
+
+  const pictures: PictureCheck[] = [];
+  for (const control of Array.from(document.querySelectorAll('[data-control]'))) {
+    if (!visible(control)) continue;
+    const name = `${screen}/${control.getAttribute('data-control')}`;
+    if (getComputedStyle(control).backgroundImage.includes('url(')) {
+      pictures.push({ control: name, picture: null, label: null, background: true });
+    }
+    const art = Array.from(control.querySelectorAll('img, svg, [data-art]'));
+    if (art.length === 0) continue;
+    const text: DOMRect[] = [];
+    const walker = document.createTreeWalker(control, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      if ((node.textContent ?? '').trim() === '') continue;
+      if (art.some((a) => a.contains(node))) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const r of Array.from(range.getClientRects())) text.push(r);
+    }
+    const label = text.length === 0 ? null : toRect({
+      left: Math.min(...text.map((r) => r.left)),
+      top: Math.min(...text.map((r) => r.top)),
+      width: Math.max(...text.map((r) => r.right)) - Math.min(...text.map((r) => r.left)),
+      height: Math.max(...text.map((r) => r.bottom)) - Math.min(...text.map((r) => r.top)),
+    });
+    for (const a of art) pictures.push({ control: name, picture: toRect(a.getBoundingClientRect()), label, background: false });
+  }
+
+  const main = document.querySelector('main') ?? document.querySelector('[data-screen]') ?? document.body;
+  const mainRect = main.getBoundingClientRect();
+  const sheets = Array.from(document.querySelectorAll('[data-box]')).filter(visible).map((el) => el.getBoundingClientRect());
+  const firstView: FirstViewItem[] = [];
+  for (const el of Array.from(document.querySelectorAll('[data-first-view]'))) {
+    if (!visible(el)) continue;
+    const r = el.getBoundingClientRect();
+    const rule = el.getAttribute('data-first-view') as FirstViewItem['rule'];
+    firstView.push({ name: el.getAttribute('data-control') ?? el.getAttribute('data-role') ?? 'unnamed', rule, top: r.top, bottom: r.bottom });
+  }
+  return {
+    screen,
+    pictures,
+    column: { left: mainRect.left, right: mainRect.right },
+    boxes: sheets.length === 0 ? null : { left: Math.min(...sheets.map((r) => r.left)), right: Math.max(...sheets.map((r) => r.right)) },
+    firstView,
+    viewWidth: document.documentElement.clientWidth,
+    scrollY: window.scrollY,
+  };
 }
 
 export interface Rgba {

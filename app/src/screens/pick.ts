@@ -17,7 +17,10 @@ function button(control: string, text: string, onClick: () => void): HTMLButtonE
   return b;
 }
 
-/** The first screen: the picture of a form, then the four forms and the sample. */
+/**
+ * The first screen. The picture of a form stays first in the markup, but it is hidden from readers
+ * of the screen and app.css draws it below the four forms and the sample, so the choices are in view first.
+ */
 export function createPickScreen(options: PickOptions): { element: HTMLElement } {
   const element = document.createElement('main');
   element.className = 'screen pick';
@@ -26,6 +29,8 @@ export function createPickScreen(options: PickOptions): { element: HTMLElement }
   const preview = document.createElement('div');
   preview.className = 'pick-preview';
   preview.setAttribute('aria-hidden', 'true');
+  preview.setAttribute('data-first-view', 'after');
+  preview.setAttribute('data-role', 'pick-preview');
   preview.append(renderForm(sampleRecord, { mode: 'top' }));
 
   const title = document.createElement('h1');
@@ -38,10 +43,13 @@ export function createPickScreen(options: PickOptions): { element: HTMLElement }
   const list = document.createElement('div');
   list.className = 'pick-list';
   for (const template of templates) {
-    list.append(button(`pick-${template.id}`, template.title, () => options.onPick(template.id)));
+    const b = button(`pick-${template.id}`, template.title, () => options.onPick(template.id));
+    b.setAttribute('data-first-view', 'whole');
+    list.append(b);
   }
   const sample = button('pick-sample', 'Sample: filled rental return', options.onSample);
   sample.className = 'sample';
+  sample.setAttribute('data-first-view', 'whole');
 
   element.append(preview, title, instruction, list, sample);
   return { element };

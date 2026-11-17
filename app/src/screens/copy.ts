@@ -34,10 +34,33 @@ export function createCopyScreen(options: CopyOptions): { element: HTMLElement }
   element.setAttribute('data-screen', 'copy');
   element.setAttribute('data-motion', reducedMotion ? 'reduced' : 'full');
 
+  // The seal strip: the stamp picture and the four seal words, above the sheets, so that they are in the first view.
+  const strip = document.createElement('div');
+  strip.className = 'seal-strip';
+  strip.setAttribute('data-box', 'panel');
+  const stripArt = document.createElement('span');
+  stripArt.className = 'seal-stamp';
+  stripArt.setAttribute('data-art', 'stamp');
+  stripArt.setAttribute('data-role', 'seal-stamp');
+  stripArt.setAttribute('data-first-view', 'whole');
+  stripArt.setAttribute('aria-hidden', 'true');
+  const stripText = document.createElement('p');
+  stripText.className = 'seal-strip-text';
+  stripText.append('Sealed. Seal words: ');
+  const stripWords = document.createElement('strong');
+  stripWords.setAttribute('data-role', 'seal-words');
+  stripWords.setAttribute('data-first-view', 'whole');
+  stripWords.textContent = sealWords(record.seal);
+  stripText.append(stripWords);
+  strip.append(stripArt, stripText);
+  element.append(strip);
+
   const sheets = document.createElement('div');
   sheets.className = 'sheets';
   const carbon = document.createElement('div');
   carbon.className = reducedMotion ? 'carbon-sheet fade' : 'carbon-sheet';
+  carbon.setAttribute('data-role', 'carbon-sheet');
+  carbon.setAttribute('data-first-view', 'start');
   carbon.append(renderForm(record, { mode: 'carbon' }));
   const top = document.createElement('div');
   top.className = reducedMotion ? 'top-sheet' : 'top-sheet lift';

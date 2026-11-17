@@ -23,26 +23,28 @@
 
         <h2>What stays on your device</h2>
         <p>
-          Forms, photos, signatures and sealed records are kept in your browser. No account is needed.
-          Target: form content never leaves the device unless you share the copy file. The check below
-          covers requests only. It does not look inside your browser storage.
+          Forms, photos, signatures and sealed records are kept in your browser. You need no account.
+          The aim is that form content never leaves your device unless you share the copy file.
+          The check described below looks at requests only. It does not look inside the storage of
+          your browser.
         </p>
 
         <h2>What was checked</h2>
         <p>
-          The path tests of this repository run the app in headless Chromium with Playwright 1.65.1 and
-          record every request. In those runs, every request went to the address of the site itself, no
+          We ran the app in Chromium with no window, driven by Playwright 1.65.1, and recorded every
+          request it made. In those runs, every request went to the address of the site itself, no
           request carried a body, and no page error or console error happened. Those runs had no
-          beacon address set. The record of the check is in <code>docs/kiro-log.md</code>: the check for
-          other addresses is in the row for task 9 of the counter-app spec, and the check for bodies
-          is in the row for task 12.
+          beacon address set. The results of these checks are written down in the project log: the
+          check for requests to other addresses in one entry, and the check for request bodies in
+          another.
         </p>
 
         <h2>Usage beacon</h2>
         <p>
-          A build sends nothing about use unless it was built with a beacon address
-          (<code>VITE_BEACON_URL</code>). When an address is set, the app sends only these events,
-          each with the form id and with no id, no time and no form content in the body:
+          A build of the site sends nothing about use unless it was built with a beacon address.
+          When an address is set, the app sends only the events below. Each message holds the name of
+          the event and the id of the form type, and nothing else: no personal id, no time and no
+          form content.
         </p>
         <!--BEACON_EVENTS-->
         <p>

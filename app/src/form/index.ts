@@ -135,6 +135,7 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
   const emit = (change: FormChange) => options.onChange?.(change);
   const root = el('section', `form form-${mode}${mode === 'carbon' ? ' ink-carbon' : ''}`);
   root.setAttribute('data-mode', mode);
+  root.setAttribute('data-box', 'sheet');
 
   const head = el('header', 'form-head');
   head.append(el('h2', undefined, record.form.title));

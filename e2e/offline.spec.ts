@@ -30,7 +30,7 @@ test('offline: load the app, go offline, reload and seal the sample', async ({ p
 test('offline needs the worker: with the worker blocked an offline reload fails', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers: 'block' });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4173/app/');
+  await page.goto('http://127.0.0.1:4473/app/');
   await expectScreen(page, 'pick');
   expect(await page.evaluate(() => navigator.serviceWorker.controller)).toBeNull();
   await context.setOffline(true);

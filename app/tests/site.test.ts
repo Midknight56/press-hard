@@ -50,6 +50,17 @@ describe('site pages', () => {
     }
   });
 
+  it('the privacy page uses none of the developer words', () => {
+    const html = read('site/privacy.html');
+    for (const word of ['Target:', 'kiro-log', 'spec', 'task 9']) {
+      expect(html, word).not.toContain(word);
+    }
+  });
+
+  it('the privacy page has no dash between words', () => {
+    const text = read('site/privacy.html').replace(/<[^>]*>/g, ' ');
+    expect(text).not.toMatch(/\s[-\u2013\u2014]\s|[A-Za-z][\u2013\u2014][A-Za-z]/);
+  });
   it('the privacy page states the server sees the request, form content and the check', () => {
     const html = read('site/privacy.html').toLowerCase();
     expect(html).toContain('also sees the request');

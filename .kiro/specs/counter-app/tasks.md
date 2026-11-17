@@ -89,3 +89,16 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - Replace the placeholder paper and stamp art in `app/src/assets/` with the final files given for the app. Write in the log who made each file. A file not made for this repository is not added. Run the layout test and the contrast test again.
   - Verify: `npm run verify:e2e` passes.
   - _Requirements: 8.1, 8.5_
+
+- [x] 15. Layout polish from screenshots
+  - [x] 15.1 Pick screen: the four form choices and the sample are the first thing in view at 360x640 and 1920x1080, above the preview.
+  - [x] 15.2 Top nav: one row at 360 wide, shorter labels, each control at least 44 px and inside the edge rules.
+  - [x] 15.3 Copy screen: every sheet, card and panel (`data-box`) keeps 16 px from each screen edge. The carbon copy, the stamp picture and the seal words are in the first view.
+  - [x] 15.4 Fill screen: the stamp picture is an element beside the label "Hold to seal", never under it.
+  - [x] 15.5 Fill screen: the hold to seal bar is sticky at the bottom, so it is in view at every size.
+  - [x] 15.6 Centring: every main column and the sheets in it are centred within 2 px. Measured: the columns were already centred, the bar and the pick contents were not.
+  - [x] 15.7 Privacy page: plain words for a member of the public, every fact kept, no dashes between words. A site test bans "Target:", "kiro-log", "spec" and "task 9".
+  - [x] 15.8 Port: the preview and test server moved from 4173 to 4473 (nothing used 4174), `strictPort` stays true.
+  - Test first: `app/src/layout.ts` and `e2e/layout.spec.ts` now also measure sheets, cards and panels, pictures inside controls, centring and the first view rules. Unit tests in `app/tests/layout-screens.test.ts`.
+  - Verify: `npm run verify:e2e` passes.
+  - _Requirements: 1.1, 8.1_

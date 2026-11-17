@@ -123,8 +123,16 @@ export function createFillScreen(options: FillOptions): FillScreen {
   const stampArea = make('div', 'stamp-area');
   const instruction = make('p', undefined, '');
   instruction.setAttribute('data-role', 'instruction');
-  const stampButton = controlButton('stamp', 'Hold to seal');
+  const stampButton = controlButton('stamp', '');
   stampButton.classList.add('stamp');
+  // The stamp picture is an element beside the label, so that the layout test can measure that they do not overlap.
+  const stampArt = make('span', 'stamp-art');
+  stampArt.setAttribute('data-art', 'stamp');
+  stampArt.setAttribute('aria-hidden', 'true');
+  stampButton.append(stampArt, make('span', 'stamp-label', 'Hold to seal'));
+  stampButton.setAttribute('data-first-view', 'whole');
+  // The bar follows the person at the bottom of the view.
+  stampArea.setAttribute('data-sticky', 'true');
   stampArea.append(instruction, stampButton);
   const fileInput = make('input');
   fileInput.type = 'file';
