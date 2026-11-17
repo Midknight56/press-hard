@@ -140,7 +140,7 @@ test('good path: pick, fill, photo, sign twice, press, tear off, verify, change 
   await context.setOffline(true);
   await page.reload();
   await expectScreen(page, 'pick');
-  await expect(page.locator('[data-control="pick-sample"]')).toBeVisible();
+  await expect(page.locator('[data-control="pick-prefilled"]')).toBeVisible();
   await context.setOffline(false);
   watcher.assertClean();
 });
@@ -148,9 +148,9 @@ test('good path: pick, fill, photo, sign twice, press, tear off, verify, change 
 test('good path, short: open the sample and seal it', async ({ page, context }) => {
   const watcher = watch(context);
   await page.goto('/app/');
-  await page.click('[data-control="pick-sample"]');
+  await page.click('[data-control="pick-prefilled"]');
   await expectScreen(page, 'fill');
-  await expect(page.locator('[data-role="sample-badge"]')).toHaveText('Sample');
+  await expect(page.locator('[data-role="prefilled-badge"]')).toHaveText('Prefilled');
   await expect(page.locator('[data-control="stamp"]')).toHaveAttribute('data-locked', 'false');
   await holdStamp(page, 1300);
   await expectScreen(page, 'copy');

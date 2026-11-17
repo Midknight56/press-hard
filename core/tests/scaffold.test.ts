@@ -62,7 +62,7 @@ describe('workspace scaffold', () => {
       expect(scripts[name], name).toBeTypeOf('string');
     }
     expect(scripts.e2e).toBe('playwright test');
-    expect(scripts['verify:e2e']).toBe('npm run verify && npm run e2e');
+    expect(scripts['verify:e2e']).toBe('npm run verify && npm run build && npm run e2e');
     expect(scripts.verify).not.toContain('e2e');
     expect(scripts.build).toBe('node app/scripts/check-versions.ts && npm run build --workspace mcp && npm run build --workspace app');
   });

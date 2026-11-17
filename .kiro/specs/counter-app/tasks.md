@@ -108,3 +108,18 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - [x] 16.2 In `core/tests/scaffold.test.ts`, replace the three line README test with a README check: first line, the two headings, the five criteria in order, no em dash, no en dash, no hyphen joining two words, and none of the four banned words. The MIT LICENSE check is kept as its own test.
   - [x] 16.3 Test first: run the check on the current README and see it pass. Run it on a copy with two criteria swapped and see it fail.
   - [x] 16.4 Verify: `npm run verify` passes.
+
+- [x] 17. Words on screen
+  - [x] 17.1 Test first: `e2e/words.spec.ts` walks every screen of the app, the verify page, the landing page and the privacy page, and fails when the visible text, a title or an aria-label holds "sample", "simulated" or "synthetic" in any case. It failed on the old code (pick screen button and fill screen badge).
+  - [x] 17.2 The fill screen badge says "Prefilled". Its class and data-role are `prefilled-badge`.
+  - [x] 17.3 The pick screen button says "Try it prefilled: rental return". Its data-control is `pick-prefilled` and its class is `prefilled`.
+  - [x] 17.4 Tests, e2e helpers, the layout lists and the walk step use the new names. Nothing looks for `pick-sample` or `sample-badge`. Internal names such as `sampleRecord` stay.
+  - [x] 17.5 Verify: `npm run verify:e2e` passes.
+
+- [x] 18. A build that works from any web path
+  - [x] 18.1 Test first: `e2e/subpath.spec.ts` serves the existing `dist` with a Node http server on port 4474 under `/press-hard/`, follows the links, seals the prefilled rental return, and fails on a 404, a request outside the sub path, or a page or console error. The root of the same server answers 404. It failed on the old build.
+  - [x] 18.2 `base` is `./` in `app/vite.config.ts`. Pages moved to another folder depth get their asset paths counted again.
+  - [x] 18.3 The service worker precache list is relative to the worker, and its offline page fallback is found from the worker's folder.
+  - [x] 18.4 `verify:e2e` runs `npm run build` before `npm run e2e`, so the sub path test never reads an old `dist`.
+  - [x] 18.5 `docs/DEPLOY.md` gives the build command, the output folder, the no server code fact, the root or sub path fact and one local serve command.
+  - [x] 18.6 Verify: `npm run verify:e2e` and `npm run build` pass.

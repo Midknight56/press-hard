@@ -100,7 +100,7 @@ test.describe('keyboard', () => {
     await page.goto('/app/');
     await expectScreen(page, 'pick');
     await tabThrough(page, 'pick');
-    await page.click('[data-control="pick-sample"]');
+    await page.click('[data-control="pick-prefilled"]');
     await expectScreen(page, 'fill');
     await tabThrough(page, 'fill');
     await page.goto('/verify/');

@@ -47,8 +47,8 @@ export function createPickScreen(options: PickOptions): { element: HTMLElement }
     b.setAttribute('data-first-view', 'whole');
     list.append(b);
   }
-  const sample = button('pick-sample', 'Sample: filled rental return', options.onSample);
-  sample.className = 'sample';
+  const sample = button('pick-prefilled', 'Try it prefilled: rental return', options.onSample);
+  sample.className = 'prefilled';
   sample.setAttribute('data-first-view', 'whole');
 
   element.append(preview, title, instruction, list, sample);

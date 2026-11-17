@@ -90,7 +90,7 @@ describe('findFirstViewProblems', () => {
   const item = (name: string, rule: FirstViewItem['rule'], top: number, bottom: number): FirstViewItem => ({ name, rule, top, bottom });
 
   it('requires the marks the screen standards ask for', () => {
-    expect(REQUIRED_FIRST_VIEW['pick']).toEqual(['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank', 'pick-sample', 'pick-preview']);
+    expect(REQUIRED_FIRST_VIEW['pick']).toEqual(['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank', 'pick-prefilled', 'pick-preview']);
     expect(REQUIRED_FIRST_VIEW['fill']).toEqual(['stamp']);
     expect(REQUIRED_FIRST_VIEW['copy']).toEqual(['seal-stamp', 'seal-words', 'carbon-sheet']);
     expect(findFirstViewProblems('help', [], small)).toEqual([]);
@@ -122,7 +122,7 @@ describe('findFirstViewProblems', () => {
   });
 
   it('names a preview that is not below every form choice', () => {
-    const names = ['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank', 'pick-sample'];
+    const names = ['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank', 'pick-prefilled'];
     const choices = names.map((n, i) => item(n, 'whole', 100 + i * 60, 144 + i * 60));
     expect(findFirstViewProblems('pick', [...choices, item('pick-preview', 'after', 400, 1400)], small)).toEqual([]);
     const above = findFirstViewProblems('pick', [...choices, item('pick-preview', 'after', 80, 1000)], small);

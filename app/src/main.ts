@@ -107,9 +107,9 @@ async function start(): Promise<void> {
     });
     if (isSample) {
       const badge = document.createElement('p');
-      badge.className = 'sample-badge';
-      badge.setAttribute('data-role', 'sample-badge');
-      badge.textContent = 'Sample';
+      badge.className = 'prefilled-badge';
+      badge.setAttribute('data-role', 'prefilled-badge');
+      badge.textContent = 'Prefilled';
       fill.element.prepend(badge);
     }
     mount(fill.element, () => {

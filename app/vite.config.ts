@@ -33,6 +33,17 @@ function productName(): Plugin {
   };
 }
 
+/**
+ * Vite writes each page with paths that are relative to the folder it was built in. A page that was
+ * moved to another depth needs the path to the assets folder counted again from where it now is.
+ */
+function relinkAssets(file: string, publicPath: string): void {
+  const depth = publicPath.split('/').length - 1;
+  const prefix = depth === 0 ? './' : '../'.repeat(depth);
+  const text = readFileSync(file, 'utf8');
+  writeFileSync(file, text.replace(/(?<=["'(])(?:\.\.?\/)+assets\//g, `${prefix}assets/`));
+}
+
 /** Moves the built pages to their public paths: /app/, /verify/. */
 function placePages(): Plugin {
   return {
@@ -46,6 +57,7 @@ function placePages(): Plugin {
         const target = resolve(outDir, to);
         mkdirSync(dirname(target), { recursive: true });
         renameSync(source, target);
+        relinkAssets(target, to);
       }
       // Remove the folders the pages were written to, once they are empty.
       for (const from of Object.keys(PAGES)) {
@@ -82,7 +94,8 @@ function serviceWorker(): Plugin {
 
 export default defineConfig({
   root: repo,
-  base: '/',
+  // Relative paths, so that dist/ works from the root of a host or from any sub path.
+  base: './',
   publicDir: false,
   plugins: [productName(), privacyList(), placePages(), serviceWorker()],
   build: {

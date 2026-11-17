@@ -41,7 +41,7 @@ export function checkDist(dist: string, options: DistOptions = {}): string[] {
     for (const placeholder of ['__PRECACHE__', '__CACHE_NAME__']) {
       if (text.includes(placeholder)) problems.push(`${WORKER_FILE}: ${placeholder} was not replaced`);
     }
-    if (!text.includes('/app/')) problems.push(`${WORKER_FILE}: the list of files does not list /app/`);
+    if (!text.includes('./app/')) problems.push(`${WORKER_FILE}: the list of files does not list ./app/`);
   }
   for (const forbidden of options.forbidden ?? []) {
     for (const path of files(dist)) {

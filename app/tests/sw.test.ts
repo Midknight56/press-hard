@@ -17,12 +17,12 @@ describe('precacheList', () => {
 
   it('gives the address of each page and each asset, and leaves out the worker and the maps', () => {
     expect(precacheList(files)).toEqual([
-      '/',
-      '/app/',
-      '/assets/app-abc.css',
-      '/assets/app-abc.js',
-      '/privacy/',
-      '/verify/',
+      './',
+      './app/',
+      './assets/app-abc.css',
+      './assets/app-abc.js',
+      './privacy/',
+      './verify/',
     ]);
   });
 
@@ -31,7 +31,7 @@ describe('precacheList', () => {
   });
 
   it('uses forward slashes for files found on Windows', () => {
-    expect(precacheList(['app\\index.html', 'assets\\a.js'])).toEqual(['/app/', '/assets/a.js']);
+    expect(precacheList(['app\\index.html', 'assets\\a.js'])).toEqual(['./app/', './assets/a.js']);
   });
 });
 
@@ -99,9 +99,9 @@ const request = (url: string, extra: object = {}) => ({ url: `https://site.test$
 describe('installWorker', () => {
   it('on install caches the list under the name and takes over at once', async () => {
     const f = fakeScope();
-    installWorker(f.scope, ['/', '/app/', '/assets/a.js'], 'app-cache-one');
+    installWorker(f.scope, ['./', './app/', './assets/a.js'], 'app-cache-one');
     await f.dispatch('install');
-    expect([...(f.stores.get('app-cache-one')?.keys() ?? [])]).toEqual(['/', '/app/', '/assets/a.js']);
+    expect([...(f.stores.get('app-cache-one')?.keys() ?? [])]).toEqual(['./', './app/', './assets/a.js']);
     expect(f.raw.skipWaiting).toHaveBeenCalled();
   });
 

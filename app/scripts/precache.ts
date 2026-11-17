@@ -6,16 +6,17 @@ export { CACHE_PREFIX };
 /**
  * The addresses the service worker keeps for offline use, from the files of `dist/` (paths with
  * `/` or `\`). Pages get the address of their folder, files under `assets/` get their own address.
- * The worker itself and the source maps are left out.
+ * Every address is relative to the worker, which sits at the root of `dist/`, so the list is the
+ * same at the root of a host and under a sub path. The worker itself and the source maps are left out.
  */
 export function precacheList(files: string[]): string[] {
   const list: string[] = [];
   for (const raw of files) {
     const file = raw.replace(/\\/g, '/');
     if (file === 'sw.js' || file.endsWith('.map')) continue;
-    if (file === 'index.html') list.push('/');
-    else if (file.endsWith('/index.html')) list.push(`/${file.slice(0, -'index.html'.length)}`);
-    else if (file.startsWith('assets/')) list.push(`/${file}`);
+    if (file === 'index.html') list.push('./');
+    else if (file.endsWith('/index.html')) list.push(`./${file.slice(0, -'index.html'.length)}`);
+    else if (file.startsWith('assets/')) list.push(`./${file}`);
   }
   return [...new Set(list)].sort();
 }

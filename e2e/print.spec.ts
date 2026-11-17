@@ -6,7 +6,7 @@ for (const format of ['A4', 'Letter'] as const) {
     const watcher = watch(context);
     await stubPrint(page);
     await page.goto('/app/');
-    await page.click('[data-control="pick-sample"]');
+    await page.click('[data-control="pick-prefilled"]');
     await holdStamp(page, 1300);
     await expectScreen(page, 'copy');
     const words = (await page.locator('.top-sheet .seal-words').textContent()) ?? '';

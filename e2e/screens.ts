@@ -27,9 +27,9 @@ export async function walkScreens(
   await visit('fill, rental return, empty');
 
   await page.click('[data-control="nav-home"]');
-  await page.click('[data-control="pick-sample"]');
+  await page.click('[data-control="pick-prefilled"]');
   await expectScreen(page, 'fill');
-  await visit('fill, sample');
+  await visit('fill, prefilled');
 
   await holdStamp(page, 1300);
   await expectScreen(page, 'copy');

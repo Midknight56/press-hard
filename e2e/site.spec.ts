@@ -64,7 +64,7 @@ test.describe('site', () => {
   test('this build sends no beacon: every request is a GET to the site itself', async ({ page, context }) => {
     const watcher = watch(context);
     await page.goto('/app/');
-    await page.click('[data-control="pick-sample"]');
+    await page.click('[data-control="pick-prefilled"]');
     await expectScreen(page, 'fill');
     await page.goto('/verify/');
     await page.goto('/privacy/');

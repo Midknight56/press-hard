@@ -18,7 +18,7 @@ import {
 test('bad path: release the stamp early and nothing is sealed', async ({ page, context }) => {
   const watcher = watch(context);
   await page.goto('/app/');
-  await page.click('[data-control="pick-sample"]');
+  await page.click('[data-control="pick-prefilled"]');
   await expectScreen(page, 'fill');
   // 800 ms hold, release, 600 ms more: 1400 ms in all, past the 1200 ms hold.
   await holdStamp(page, 800);
@@ -52,7 +52,7 @@ test('bad path: changed copy, text file, copy with no seal', async ({ page, cont
   const watcher = watch(context);
   await noShareSheet(page);
   await page.goto('/app/');
-  await page.click('[data-control="pick-sample"]');
+  await page.click('[data-control="pick-prefilled"]');
   await holdStamp(page, 1300);
   await expectScreen(page, 'copy');
   const copy = await tearOffTo(page, testInfo, 'copy.html');
@@ -111,7 +111,7 @@ test('bad path: storage blocked, the app still fills, seals and tears off', asyn
   await page.goto('/app/');
   await expectScreen(page, 'pick');
   await expect(page.locator('[data-role="notice"]')).toHaveText('Drafts will not be kept on this device.');
-  await page.click('[data-control="pick-sample"]');
+  await page.click('[data-control="pick-prefilled"]');
   await expectScreen(page, 'fill');
   await page.fill('[data-control="field-damage"]', 'Scratch on the right panel');
   await holdStamp(page, 1300);
@@ -166,7 +166,7 @@ test.describe('service worker blocked', () => {
     await expectScreen(page, 'pick');
     expect(await page.evaluate(() => navigator.serviceWorker.controller)).toBeNull();
     expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length)).toBe(0);
-    await page.click('[data-control="pick-sample"]');
+    await page.click('[data-control="pick-prefilled"]');
     await holdStamp(page, 1300);
     await expectScreen(page, 'copy');
     await page.goto('/verify/');

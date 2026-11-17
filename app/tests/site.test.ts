@@ -76,7 +76,7 @@ describe('checkDist', () => {
     for (const dir of made.splice(0)) rmSync(dir, { recursive: true, force: true });
   });
 
-  function dist(files: string[], worker: string | null = 'const list = ["/", "/app/"];'): string {
+  function dist(files: string[], worker: string | null = 'const list = ["./", "./app/"];'): string {
     const dir = mkdtempSync(join(tmpdir(), 'dist-check-'));
     made.push(dir);
     if (worker !== null) writeFileSync(join(dir, WORKER_FILE), worker);
@@ -105,8 +105,8 @@ describe('checkDist', () => {
   it('names a service worker that is missing, that still has a placeholder, or that lists no page', () => {
     expect(WORKER_FILE).toBe('sw.js');
     expect(checkDist(dist([...REQUIRED_PAGES], null)).join(' ')).toContain('sw.js: the file is missing');
-    expect(checkDist(dist([...REQUIRED_PAGES], 'const a = __PRECACHE__; "/app/"')).join(' ')).toContain('__PRECACHE__');
-    expect(checkDist(dist([...REQUIRED_PAGES], 'const a = [];')).join(' ')).toContain('does not list /app/');
+    expect(checkDist(dist([...REQUIRED_PAGES], 'const a = __PRECACHE__; "./app/"')).join(' ')).toContain('__PRECACHE__');
+    expect(checkDist(dist([...REQUIRED_PAGES], 'const a = [];')).join(' ')).toContain('does not list ./app/');
   });
 
   it('names a dist folder that does not exist', () => {

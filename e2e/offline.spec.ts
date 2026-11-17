@@ -10,7 +10,7 @@ test('offline: load the app, go offline, reload and seal the sample', async ({ p
   await context.setOffline(true);
   await page.reload();
   await expectScreen(page, 'pick');
-  await page.click('[data-control="pick-sample"]');
+  await page.click('[data-control="pick-prefilled"]');
   await expectScreen(page, 'fill');
   await holdStamp(page, 1300);
   await expectScreen(page, 'copy');

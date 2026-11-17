@@ -20,7 +20,7 @@ describe('pick screen', () => {
     const { screen } = make();
     const forms = [...screen.element.querySelectorAll('[data-control^="pick-"]')]
       .map((b) => b.getAttribute('data-control'))
-      .filter((c) => c !== 'pick-sample');
+      .filter((c) => c !== 'pick-prefilled');
     expect(forms).toEqual(['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank']);
     expect(button(screen.element, 'pick-rental-return')?.textContent).toContain('Rental return');
     expect(button(screen.element, 'pick-key-handover')?.textContent).toContain('Key handover');
@@ -35,10 +35,10 @@ describe('pick screen', () => {
     expect(onPick.mock.calls).toEqual([['key-handover'], ['blank']]);
   });
 
-  it('offers the sample, marked Sample', () => {
+  it('offers the prefilled rental return', () => {
     const { screen, onSample, onPick } = make();
-    const sample = button(screen.element, 'pick-sample');
-    expect(sample?.textContent).toContain('Sample');
+    const sample = button(screen.element, 'pick-prefilled');
+    expect(sample?.textContent).toContain('Try it prefilled: rental return');
     sample?.click();
     expect(onSample).toHaveBeenCalledTimes(1);
     expect(onPick).not.toHaveBeenCalled();

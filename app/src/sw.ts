@@ -19,7 +19,7 @@ export interface WorkerScope {
   addEventListener(type: 'fetch', listener: (event: FetchEventLike) => void): void;
   skipWaiting(): Promise<void>;
   clients: { claim(): Promise<void> };
-  location: { origin: string };
+  location: { origin: string; href?: string };
   caches: {
     open(name: string): Promise<{ addAll(urls: string[]): Promise<void> }>;
     keys(): Promise<string[]>;
@@ -62,8 +62,13 @@ export function installWorker(scope: WorkerScope, precache: string[], cacheName:
           return await fetch(request as unknown as RequestInfo);
         } catch (error) {
           if (request.mode === 'navigate') {
-            const folder = url.pathname.split('/')[1] ?? '';
-            const page = (await scope.caches.match(`/${folder}/`, { ignoreVary: true })) ?? (await scope.caches.match('/app/', { ignoreVary: true }));
+            // The pages sit in folders next to this file, so the folder is counted from the folder of the worker.
+            const root = new URL('./', scope.location.href ?? `${scope.location.origin}/`);
+            const inside = url.pathname.startsWith(root.pathname) ? url.pathname.slice(root.pathname.length) : '';
+            const folder = inside.split('/')[0] ?? '';
+            const page =
+              (await scope.caches.match(new URL(`${folder}/`, root).href, { ignoreVary: true })) ??
+              (await scope.caches.match(new URL('app/', root).href, { ignoreVary: true }));
             if (page !== undefined) return page;
           }
           throw error;
