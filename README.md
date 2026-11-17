@@ -1,6 +1,6 @@
 # Press Hard
 
-The carbon copy form, back to life in the browser. Two people fill one handover form on one phone. They press and hold a stamp. Each leaves with the same sealed copy. A changed copy no longer matches its seal, and the changed line is shown.
+Press Hard is our entry in the Resurrection category: "Bring your favorite dead technology back to life. Reimagine obsolete tech with today's innovations." Our dead technology is the carbon copy form. Two people fill one handover form on one phone, both sign, and press and hold a stamp. Each person keeps the same sealed copy, one small file. Today's innovations do the rest: a SHA-256 seal shown as four plain words, a check that marks the changed line in a changed copy, and an app that works offline with no account and no server. Kiro built it with spec driven development: two specs, four steering files, two agent hooks, a custom MCP server and 26 properties checked by property based testing.
 
 Category: Resurrection. Built with Kiro: two specs, four steering files, two hooks, a custom MCP server and 26 property tests.
 
@@ -53,19 +53,19 @@ npm run build
 
 **Kiro IDE, CLI, Web, Crew.** Press Hard was built with the Kiro CLI 3.3.0, run with no person at the keyboard, model Auto. Each task was one CLI run from a written prompt, and each run ended with the verify command. The CLI cannot press the IDE's spec correctness button, so for task 10 of `record-core` Kiro derived the properties by reading every acceptance criterion in `requirements.md` and comparing it with `design.md`. The log says so on that row.
 
-**Custom agents.** None. One CLI agent did every task, guided by the steering files.
+**Custom agents.** Not used in this build. One CLI agent did every task, guided by the steering files.
 
 **Agent hooks.** Two hooks live in `.kiro/hooks/`: a type check on each TypeScript save, and the full `npm run verify` when the agent finishes a turn. In CLI runs these hooks did not fire, so each prompt ran the verify command itself and the log records each result.
 
-**Spec driven development.** Two specs. `record-core` is the record, the canonical text, the SHA-256 seal, the seal words, the copy file and the compare. `counter-app` is every screen built on it. Kiro reviewed each spec first and fixed the gaps it found before any code. Then each task went test first, and each log row records the failing test, the passing run and the files touched. Compared with vibe coding, nothing was built that a requirement did not ask for, and every requirement has a test.
+**Spec driven development.** Two specs, each in three files: `requirements.md` (user stories with acceptance criteria), `design.md` (the design and the correctness properties) and `tasks.md` (the numbered tasks). 17 requirements and 35 tasks in all. `record-core` is the record, the canonical text, the SHA-256 seal, the seal words, the copy file and the compare. `counter-app` is every screen built on it. Kiro reviewed each spec first and fixed the gaps it found before any code. Then each task went test first, and each log row records the failing test, the passing run and the files touched. Compared with vibe coding, nothing was built that a requirement did not ask for, and every requirement has a test.
 
 **Steering docs.** `product.md` holds the flow, the words to use and never use, and the limits. `record-rules.md` holds the record format and the seal. `ui-standards.md` holds edges, sizes and contrast. `claims-policy.md` holds what the product may claim. The words rule made the biggest difference: the app never says "tamper proof" or "secure"; it says "a changed copy no longer matches the seal", and a test checks for the banned words.
 
 **MCP.** The `copycheck` server (`mcp/src/server.ts`) gives Kiro two tools. With them Kiro checked a real copy file and a changed one, and named the changed field: `fields.mileage.value`, 48210.5 changed to 12.5. The full call list is in `docs/kiro-log.md`.
 
-**Property based testing.** 26 properties: 7 from the design and 19 derived from the requirements. They cover the copy file round trip, the seal changing when any field changes, the seal words, the canonical text, the record limits and the compare. No property found a bug in the finished code. To prove they can fail, two faults were put in by hand and then removed: dropping the key sort in the canonical text failed property 1, and a broken value compare failed property 6.
+**Property based testing (PBT).** 26 properties: 7 from the design and 19 derived from the requirements. They cover the copy file round trip, the seal changing when any field changes, the seal words, the canonical text, the record limits and the compare. No property found a bug in the finished code. To prove they can fail, two faults were put in by hand and then removed: dropping the key sort in the canonical text failed property 1, and a broken value compare failed property 6.
 
-**Kiro powers.** None.
+**Kiro powers.** Not used in this build.
 
 ## Licence
 
