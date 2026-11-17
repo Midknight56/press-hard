@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>%APP_TITLE%</title>
+    <meta name="description" content="A carbon copy form for the browser. Two people sign, press hard, and each keeps the same sealed copy." />
+  </head>
+  <body>
+    <div data-screen="landing" class="landing">
+      <header class="bar">
+        <p class="brand">%APP_TITLE%</p>
+        <nav aria-label="Main">
+          <a class="nav-link" data-control="open-app" href="app/">Open the app</a>
+          <a class="nav-link" data-control="open-verify" href="verify/">Check a copy</a>
+          <a class="nav-link" data-control="open-privacy" href="privacy/">Privacy</a>
+        </nav>
+      </header>
+      <main class="hero">
+        <h1>Fill the form. Press hard. Keep the copy.</h1>
+        <p class="lead">Two people fill one form on one phone. Both sign. Each leaves with the same sealed copy.</p>
+        <div id="loop" class="loop" aria-hidden="true"></div>
+        <p id="loop-caption" class="loop-caption" role="status">Press and hold the stamp</p>
+        <p class="lead">A changed copy no longer matches its seal, and the changed line is shown.</p>
+        <p>
+          <a class="nav-link primary" data-control="start" href="app/">Open the app</a>
+        </p>
+      </main>
+    </div>
+    <script type="module" src="/site/landing.ts"></script>
+  </body>
+</html>

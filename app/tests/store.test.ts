@@ -148,3 +148,25 @@ describe('store with storage blocked', () => {
     expect(await store.getSealed(record.seal as string)).toEqual(record);
   });
 });
+
+describe('storage that throws when it is touched', () => {
+  it('falls back to memory with one notice when reading indexedDB throws', async () => {
+    Object.defineProperty(globalThis, 'indexedDB', {
+      configurable: true,
+      get() {
+        throw new DOMException('The operation is insecure.', 'SecurityError');
+      },
+    });
+    try {
+      const onNotice = vi.fn<(message: string) => void>();
+      const store = await openStore({ onNotice });
+      expect(store.persistent).toBe(false);
+      const record = sealed('2026-11-16T09:30:00Z');
+      await store.saveSealed(record);
+      expect(await store.getSealed(record.seal as string)).toEqual(record);
+      expect(onNotice).toHaveBeenCalledTimes(1);
+    } finally {
+      delete (globalThis as { indexedDB?: unknown }).indexedDB;
+    }
+  });
+});

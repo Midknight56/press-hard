@@ -5,6 +5,7 @@ export interface LibraryOptions {
   store: Store;
   onOpen(seal: string): void;
   onTearOff(seal: string): void;
+  onTamper?(seal: string): void;
   onBack(): void;
 }
 
@@ -81,6 +82,7 @@ export function createLibraryScreen(options: LibraryOptions): {
         info,
         button(`open-${key}`, 'View', () => options.onOpen(entry.seal)),
         button(`tear-off-${key}`, 'Tear off', () => options.onTearOff(entry.seal)),
+        ...(options.onTamper ? [button(`tamper-${key}`, 'Try to change', () => options.onTamper?.(entry.seal))] : []),
         button(`delete-${key}`, 'Delete', () => askDelete(entry.seal, words)),
       );
       list.append(row);

@@ -177,6 +177,11 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
     if (mode === 'edit') {
       const slot = el('div', 'signature-slot');
       slot.setAttribute('data-signature-slot', party);
+      slot.setAttribute('data-control', `signature-${party}`);
+      slot.setAttribute('data-caption', party === 'giver' ? 'Giver signs here' : 'Receiver signs here');
+      slot.setAttribute('role', 'group');
+      slot.tabIndex = 0;
+      slot.setAttribute('aria-label', party === 'giver' ? 'Giver signature' : 'Receiver signature');
       signatures.append(slot);
     } else if (signature !== undefined) {
       signatures.append(signatureSvg(signature));

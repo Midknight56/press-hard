@@ -106,8 +106,17 @@ function run<T>(
   });
 }
 
+/** Reading `indexedDB` itself throws in some browsers when storage is blocked. */
+function browserIndexedDb(): IDBFactory | null {
+  try {
+    return (globalThis as { indexedDB?: IDBFactory }).indexedDB ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function openStore(options: StoreOptions = {}): Promise<Store> {
-  const idb = options.idb === undefined ? ((globalThis as { indexedDB?: IDBFactory }).indexedDB ?? null) : options.idb;
+  const idb = options.idb === undefined ? browserIndexedDb() : options.idb;
   const memory = createMemoryStore();
   let db: IDBDatabase | null = null;
   let noticed = false;

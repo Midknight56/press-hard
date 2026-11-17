@@ -1,0 +1,72 @@
+/* The landing page and the privacy page. System fonts only. Colours come from the app theme. */
+.hero,
+.document {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 8px max(16px, env(safe-area-inset-right)) 40px max(16px, env(safe-area-inset-left));
+}
+
+.hero h1,
+.document h1 {
+  margin: 8px 0 12px;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.lead {
+  margin: 8px 0 16px;
+  font-size: 1.1rem;
+}
+
+.document h2 {
+  margin: 24px 0 8px;
+  font-size: 1.2rem;
+}
+
+.document ul {
+  padding-left: 1.25rem;
+}
+
+.document li {
+  margin: 4px 0;
+}
+
+.document code,
+.landing code {
+  font-family: ui-monospace, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.nav-link.primary {
+  min-height: 52px;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--carbon-ink);
+}
+
+/* The loop is made of the real app screens and is not for touching. */
+.loop {
+  position: relative;
+  margin: 16px 0 8px;
+  padding: 8px;
+  overflow: hidden;
+  background: var(--desk);
+  border: 1px solid var(--rule);
+  pointer-events: none;
+  user-select: none;
+}
+
+.loop .screen {
+  max-width: none;
+  padding: 8px 8px 8px 8px;
+}
+
+.loop-caption {
+  margin: 0 0 16px;
+  font-weight: 700;
+}
+
+.loop-static {
+  display: grid;
+  gap: 16px;
+}

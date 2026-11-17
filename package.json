@@ -9,12 +9,13 @@
     "app"
   ],
   "scripts": {
-    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json && npm run typecheck --workspace mcp && npm run typecheck --workspace app",
+    "typecheck": "node core/scripts/gen-check.ts && tsc --noEmit -p core/tsconfig.json && npm run typecheck --workspace mcp && npm run typecheck --workspace app && tsc --noEmit -p e2e/tsconfig.json",
     "lint": "eslint .",
     "test": "npm test --workspace core && npm test --workspace mcp && npm test --workspace app",
-    "e2e": "node -e \"console.log('not built yet')\"",
-    "verify": "npm run typecheck && npm run lint && npm run test && npm run e2e",
-    "build": "node -e \"console.log('not built yet')\""
+    "e2e": "playwright test",
+    "verify:e2e": "npm run verify && npm run e2e",
+    "verify": "npm run typecheck && npm run lint && npm run test",
+    "build": "node app/scripts/check-versions.ts && npm run build --workspace mcp && npm run build --workspace app"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

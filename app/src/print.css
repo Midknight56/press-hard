@@ -1,0 +1,88 @@
+/*
+ * The print layout of a sealed record: the top copy only, with the seal words and the full seal in
+ * a page foot on every page. The foot of every page is a page margin box, written for the record by
+ * screens/copy.ts. The foot in the flow, at the end of the sheet, is the same two lines for a browser
+ * that has no margin boxes. A photo is never cut in two.
+ */
+.print-foot {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 12mm 12mm 22mm;
+  }
+
+  html,
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .bar,
+  .copy-actions,
+  .copy-info,
+  .carbon-sheet,
+  .notice {
+    display: none !important;
+  }
+
+  .screen.copy {
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sheets {
+    padding: 0;
+  }
+
+  .top-sheet,
+  .top-sheet.lift {
+    animation: none;
+    transform: none;
+  }
+
+  .form {
+    max-width: none;
+    margin: 0;
+    border: 0;
+    background: #fff;
+    color: #000;
+  }
+
+  .line,
+  .signatures,
+  .form-head {
+    break-inside: avoid;
+  }
+
+  img.photo {
+    display: block;
+    max-width: 100%;
+    max-height: 110mm;
+    width: auto;
+    height: auto;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-foot {
+    display: block;
+    margin-top: 6mm;
+    border-top: 1px solid #000;
+    font-size: 9pt;
+    color: #000;
+    break-inside: avoid;
+  }
+
+  .print-foot p {
+    margin: 2mm 0 0;
+    overflow-wrap: anywhere;
+  }
+
+  .print-foot code {
+    font-family: ui-monospace, Consolas, monospace;
+  }
+}

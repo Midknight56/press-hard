@@ -21,8 +21,10 @@ describe('workspace scaffold', () => {
     for (const name of ['typecheck', 'lint', 'test', 'e2e', 'verify', 'build']) {
       expect(scripts[name], name).toBeTypeOf('string');
     }
-    expect(scripts.e2e).toContain('not built yet');
-    expect(scripts.build).toContain('not built yet');
+    expect(scripts.e2e).toBe('playwright test');
+    expect(scripts['verify:e2e']).toBe('npm run verify && npm run e2e');
+    expect(scripts.verify).not.toContain('e2e');
+    expect(scripts.build).toBe('node app/scripts/check-versions.ts && npm run build --workspace mcp && npm run build --workspace app');
   });
 
   it('every dependency version is pinned', () => {

@@ -6,7 +6,9 @@
   "scripts": {
     "typecheck": "npm run build --workspace core && tsc --noEmit -p tsconfig.json",
     "pretest": "npm run build --workspace core",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "node scripts/check-versions.ts && npm run build --workspace core && vite build --config vite.config.ts && node scripts/check-dist.ts",
+    "serve": "npm run build && vite preview --config vite.config.ts"
   },
   "dependencies": {
     "core": "0.1.0"

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Privacy, %APP_TITLE%</title>
+    <link rel="stylesheet" href="/app/src/form/theme.css" />
+    <link rel="stylesheet" href="/app/src/app.css" />
+    <link rel="stylesheet" href="/site/site.css" />
+  </head>
+  <body>
+    <div data-screen="privacy" class="privacy">
+      <header class="bar">
+        <p class="brand">%APP_TITLE%</p>
+        <nav aria-label="Main">
+          <a class="nav-link" data-control="open-home" href="../">Home</a>
+          <a class="nav-link" data-control="open-app" href="../app/">Open the app</a>
+        </nav>
+      </header>
+      <main class="document">
+        <h1>Privacy</h1>
+
+        <h2>What stays on your device</h2>
+        <p>
+          Forms, photos, signatures and sealed records are kept in your browser. No account is needed.
+          Target: form content never leaves the device unless you share the copy file. The check below
+          covers requests only. It does not look inside your browser storage.
+        </p>
+
+        <h2>What was checked</h2>
+        <p>
+          The path tests of this repository run the app in headless Chromium with Playwright 1.65.1 and
+          record every request. In those runs, every request went to the address of the site itself, no
+          request carried a body, and no page error or console error happened. Those runs had no
+          beacon address set. The record of the check is in <code>docs/kiro-log.md</code>: the check for
+          other addresses is in the row for task 9 of the counter-app spec, and the check for bodies
+          is in the row for task 12.
+        </p>
+
+        <h2>Usage beacon</h2>
+        <p>
+          A build sends nothing about use unless it was built with a beacon address
+          (<code>VITE_BEACON_URL</code>). When an address is set, the app sends only these events,
+          each with the form id and with no id, no time and no form content in the body:
+        </p>
+        <!--BEACON_EVENTS-->
+        <p>
+          The server that receives a beacon also sees the request itself, such as the address it came
+          from and the time it arrived. A build with no beacon address sends no beacon.
+        </p>
+
+        <h2>Sharing a copy</h2>
+        <p>
+          A copy file is one HTML file. If you send it to someone, that person can read all of it,
+          including the photos and signatures.
+        </p>
+      </main>
+    </div>
+  </body>
+</html>

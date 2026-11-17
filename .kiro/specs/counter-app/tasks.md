@@ -51,7 +51,7 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - Verify: the unit tests pass.
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 9. Verify page and path tests
+- [x] 9. Verify page and path tests
   - Write the unit tests first for the typed seal words and the typed full seal on the verify page. See them fail.
   - Implement the verify page: one file, seal words, two files with differences on their lines or listed under the form, and the plain lines for each error and for an unsealed copy.
   - Write `e2e/layout.spec.ts` (with `app/src/layout.ts`), `e2e/contrast.spec.ts`, `e2e/good-path.spec.ts` and `e2e/bad-path.spec.ts`, with the photo size check inside the good path. Each path test records every request and fails on any request to another origin, and fails on any page error or console error. In the good path and the bad path, also open the downloaded copy file from disk in the browser and read the text of the element with id `stamp`: `Seal matches this copy` for the good file, `This copy was changed after sealing` for a file with one character of a field changed in the file text (this is the real browser check of requirement 5.4 of `record-core`). The bad path also loads a copy with its seal removed. Run them and fix every named control.
@@ -59,19 +59,19 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - Verify: `npm run verify:e2e` passes. Write in the log the name of the tool and the result of the request check.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 8.1, 8.2, 8.4, 8.5, 9.1, 9.2, 9.3_
 
-- [ ] 10. Try to change this copy
+- [x] 10. Try to change this copy
   - Write the property "a changed duplicate is caught" from the design as a unit test over the sample and a sealed record built from each of the four templates first. See it fail.
   - Implement `tamper.ts`, the duplicate editor and its verify view. Add its screen to the layout test, one step to the good path test (change one line and see the broken seal) and one step to the bad path test (the stored original still shows `Seal matches`).
   - Verify: `npm run verify:e2e` passes.
   - _Requirements: 6.1, 6.2_
 
-- [ ] 11. Print
+- [x] 11. Print
   - Write `e2e/print.spec.ts` first, for A4 and for Letter. See it fail.
   - Implement `print.css`, the Print button on a sealed record, and the seal words and the full seal in the page foot. Add one step to the good path test (the Print button opens the print layout) and one step to the bad path test (a record with 6 photos prints with no photo split).
   - Verify: `npm run verify:e2e` passes.
   - _Requirements: 4.4, 7.1_
 
-- [ ] 12. Site, privacy page and beacon
+- [x] 12. Site, privacy page and beacon
   - Build `site/index.html` with the self playing loop made from the real app screens, and `site/privacy.html` generated from the same list `beacon.ts` uses. Both read the product name from `app/app.config.ts` at build time.
   - Implement `beacon.ts`. With no `VITE_BEACON_URL` it must send nothing. Add a unit test for both cases and for the `other` template id.
   - State on the privacy page only what a recorded check covers. Until the request check of task 9 has run and is in the log, write the claim as a target.
@@ -79,7 +79,7 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - Verify: `npm run build` gives `dist/` with `/`, `/app/`, `/verify/` and `/privacy/`.
   - _Requirements: 10.1, 10.2, 10.3, 10.4_
 
-- [ ] 13. Offline and version guard
+- [x] 13. Offline and version guard
   - Add `app/src/sw.ts`, the service worker that caches the built files. Add a browser test that loads the app, goes offline, reloads and seals the sample. Add one step to the good path test and one to the bad path test (a reload while offline shows the pick screen, and a blocked service worker leaves the app working).
   - Add a build step that fails when any `package.json` version is 1.0.0 or higher. Write its test first.
   - Verify: `npm run verify:e2e` and `npm run build` pass.
