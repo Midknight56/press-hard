@@ -1209,11 +1209,11 @@
 
   /* ---------- The wide screen: the rail, the sheet and the tray (1900 px and up, fill screen only) ---------- */
   @media (min-width: 1900px) {
-    #root:has(.stage > .fill) {
+    #root:has(.stage > :is(.fill, .copy)) {
       position: relative;
     }
 
-    #root:has(.stage > .fill) > .bar {
+    #root:has(.stage > :is(.fill, .copy)) > .bar {
       position: absolute;
       top: 60px;
       left: 72px;
@@ -1225,25 +1225,25 @@
       padding: 0;
     }
 
-    #root:has(.stage > .fill) .brand {
+    #root:has(.stage > :is(.fill, .copy)) .brand {
       font-size: 66px;
       line-height: 0.98;
     }
 
-    #root:has(.stage > .fill) .tagline {
+    #root:has(.stage > :is(.fill, .copy)) .tagline {
       display: block;
       margin: 20px 0 0;
       font: 400 21px/1.35 var(--ph-font-ui);
       color: var(--ph-muted);
     }
 
-    #root:has(.stage > .fill) .bar nav {
+    #root:has(.stage > :is(.fill, .copy)) .bar nav {
       flex-direction: column;
       margin-top: 44px;
     }
 
-    #root:has(.stage > .fill) .bar nav button,
-    #root:has(.stage > .fill) .bar nav .nav-link {
+    #root:has(.stage > :is(.fill, .copy)) .bar nav button,
+    #root:has(.stage > :is(.fill, .copy)) .bar nav .nav-link {
       flex: none;
       justify-content: flex-start;
       min-height: 52px;
@@ -1252,11 +1252,11 @@
       text-align: left;
     }
 
-    #root:has(.stage > .fill) .notice {
+    #root:has(.stage > :is(.fill, .copy)) .notice {
       margin-top: 12px;
     }
 
-    #root:has(.stage > .fill) .steps {
+    #root:has(.stage > :is(.fill, .copy)) .steps {
       position: fixed;
       bottom: 64px;
       left: 72px;
@@ -1269,7 +1269,7 @@
       list-style: none;
     }
 
-    #root:has(.stage > .fill) .steps li {
+    #root:has(.stage > :is(.fill, .copy)) .steps li {
       display: flex;
       align-items: center;
       gap: 14px;
@@ -1277,7 +1277,7 @@
       color: var(--ph-muted);
     }
 
-    #root:has(.stage > .fill) .steps li::before {
+    #root:has(.stage > :is(.fill, .copy)) .steps li::before {
       content: attr(data-n);
       display: flex;
       flex: none;
@@ -1291,7 +1291,7 @@
       font: 400 13px/1 var(--ph-font-stamp);
     }
 
-    #root:has(.stage > .fill) .steps li::after {
+    #root:has(.stage > :is(.fill, .copy)) .steps li::after {
       content: attr(data-step);
     }
 
@@ -1411,9 +1411,348 @@
     }
   }
 
+  /* ---------- The carbon copy reveal (task 21): the pad, the bars on a phone, the tray on a wide screen ---------- */
+  /* The pinned bars reach the 16 px edges of the view, so the pad does too: the box span stays centred. */
+  .screen.copy {
+    max-width: none;
+    padding-bottom: 112px;
+  }
+
+  .seal-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 76px;
+    padding: 0 16px;
+    background: var(--ph-desk-raised);
+    border-bottom: 1px solid var(--ph-line);
+  }
+
+  .seal-bar .seal-strip {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 8px;
+    margin: 0;
+    padding: 6px 0;
+    background: none;
+    border: 0;
+  }
+
+  .seal-bar .seal-strip-text {
+    min-width: 0;
+    margin: 0;
+    font: 500 14px/1.3 var(--ph-font-ui);
+    overflow-wrap: normal;
+  }
+
+  .seal-bar .seal-strip-text strong {
+    font: 700 18px/1.2 var(--ph-font-label);
+    overflow-wrap: normal;
+  }
+
+  .seal-bar .seal-stamp {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    box-shadow: 0 0 0 2px #1e1512;
+    animation: stamp-lift 180ms ease-out both;
+  }
+
+  .seal-bar .seal-stamp .impression {
+    display: none;
+  }
+
+  .seal-bar .sheet-switch {
+    flex: none;
+    margin: 0;
+  }
+
+  .seal-bar .sheet-switch input {
+    width: 112px;
+    min-height: 52px;
+    padding: 8px;
+    font-size: 15px;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .seal-bar .sheet-switch input[value='Show top copy'] {
+    box-shadow: inset 0 2px 0 rgb(0 0 0 / 0.25);
+    transform: translateY(2px);
+  }
+
+  #root:has(.stage > .copy) > .bar {
+    margin-top: 76px;
+  }
+
+  .copy-bar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 80px;
+    padding: 0 16px;
+    background: var(--ph-desk-raised);
+    border-top: 1px solid var(--ph-line);
+    box-shadow: 0 -12px 24px rgb(0 0 0 / 0.45);
+  }
+
+  .copy-bar button {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .copy-bar button[data-control='print'] {
+    flex: 1 1 0;
+  }
+
+  .copy-actions {
+    margin: 12px 0;
+  }
+
+  .copy-info {
+    margin-top: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ph-line);
+  }
+
+  .copy-info p {
+    font: 600 17px/1.3 var(--ph-font-ui);
+  }
+
+  .copy-info [data-role='size'] {
+    color: var(--ph-muted);
+    font-weight: 400;
+  }
+
+  /* The ink of the copy, the signatures too: the same strength as the rules for the top copy's signatures. */
+  .form.ink-carbon .signatures > svg.signature {
+    color: var(--ph-carbon-ink);
+  }
+
+  .form.ink-carbon .signature-slot > svg.signature {
+    color: var(--ph-carbon-ink);
+  }
+
+  .form.ink-carbon .signature polyline {
+    stroke: var(--ph-carbon-ink);
+  }
+
+  @media (min-width: 900px) {
+    .screen.copy {
+      max-width: 52rem;
+      padding-bottom: 32px;
+    }
+
+    #root:has(.stage > .copy) > .bar {
+      margin-top: 0;
+    }
+
+    .seal-bar {
+      position: static;
+      flex-wrap: wrap;
+      gap: 12px;
+      min-height: 0;
+      padding: 0;
+      background: none;
+      border: 0;
+    }
+
+    .seal-bar .seal-strip {
+      flex: 1 1 100%;
+      gap: 18px;
+      padding: 16px 20px;
+      color: var(--ph-print);
+      background-color: var(--ph-paper);
+      background-image: url('./assets/paper.svg');
+      box-shadow: 0 10px 22px -8px rgb(0 0 0 / 0.6);
+    }
+
+    .seal-bar .seal-strip-text {
+      font: 500 18px/1.35 var(--ph-font-ui);
+    }
+
+    .seal-bar .seal-strip-text strong {
+      font: 700 27px/1.15 var(--ph-font-label);
+      letter-spacing: 0.03em;
+      color: var(--ph-stamp);
+    }
+
+    .seal-bar .seal-stamp {
+      position: relative;
+      flex: 0 0 72px;
+      width: 72px;
+      height: 72px;
+      background: none;
+      box-shadow: none;
+    }
+
+    .seal-bar .seal-stamp .impression {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: auto;
+      bottom: auto;
+      display: flex;
+      zoom: 0.5625;
+    }
+
+    .seal-bar .sheet-switch {
+      display: flex;
+    }
+
+    .seal-bar .sheet-switch input {
+      width: auto;
+      min-height: 52px;
+      padding: 8px 14px;
+      font-size: 17px;
+      white-space: nowrap;
+    }
+
+    .copy-bar {
+      display: contents;
+    }
+
+    .copy-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0 12px;
+    }
+
+    .copy-actions button {
+      min-height: 52px;
+    }
+
+    .copy-bar button[data-control='tear-off'] {
+      flex: 0 0 min(480px, 100%);
+      min-height: 100px;
+      padding: 12px 40px;
+      border-radius: 15px;
+      font-size: 27px;
+    }
+
+    .copy-bar button[data-control='tear-off']::before {
+      inset: 9px;
+      border-radius: 10px;
+    }
+
+    .copy-bar button[data-control='print'] {
+      flex: 0 0 auto;
+    }
+
+    .tear-edge {
+      margin: 16px 0 0;
+    }
+
+    .copy-info {
+      margin-top: 12px;
+      padding-top: 20px;
+    }
+
+    .copy-info p {
+      font-size: 19px;
+    }
+
+    .copy-info [data-role='size'] {
+      font-size: 17px;
+    }
+
+    .copy.torn .sheets {
+      max-width: 100%;
+    }
+  }
+
+  @media (min-width: 1900px) {
+    #root .screen.copy {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 720px minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr auto;
+      align-content: start;
+      max-width: none;
+      margin: 0;
+      padding: 60px 72px 64px;
+    }
+
+    .seal-bar {
+      display: contents;
+    }
+
+    .seal-bar .seal-strip {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .seal-bar .sheet-switch {
+      grid-column: 3;
+      grid-row: 1;
+      align-self: start;
+      margin: 0 0 0 48px;
+    }
+
+    #root .copy > .sheets {
+      grid-column: 2;
+      grid-row: 2 / span 2;
+      margin-top: 44px;
+    }
+
+    #root .copy > .copy-actions {
+      grid-column: 3;
+      grid-row: 2;
+      align-content: flex-start;
+      align-self: start;
+      margin: 44px 0 0 48px;
+    }
+
+    #root .copy > .copy-info {
+      grid-column: 3;
+      grid-row: 3;
+      align-self: start;
+      margin: 12px 0 0 48px;
+    }
+
+    #root .copy > .tear-edge {
+      grid-column: 2;
+      grid-row: 4;
+    }
+
+    #root:has(.stage > .copy) .steps li[data-n='4'] {
+      font-weight: 600;
+      color: var(--ph-paper);
+    }
+
+    #root:has(.stage > .copy) .steps li[data-n='4']::before {
+      color: var(--ph-desk);
+      background: var(--ph-stamp-on-dark);
+      border-color: var(--ph-stamp-on-dark);
+    }
+  }
+
   /* The loop on the landing page is made of the real screens. Its bar does not leave its box. */
   .loop .screen.fill {
     padding-bottom: 8px;
+  }
+}
+
+@keyframes stamp-lift {
+  0% {
+    transform: translateY(6px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 
@@ -1498,6 +1837,7 @@
   .copy.tearing .tear-edge,
   .copy.tearing .carbon-sheet,
   .seal-strip-text strong,
+  .seal-bar .seal-stamp,
   .copy .seal-words {
     animation: crossfade 150ms linear both;
   }

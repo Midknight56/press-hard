@@ -175,9 +175,21 @@ img.photo {
   border-style: dashed;
   background-color: #e4e0d6;
 }
-/* The copy screen. Narrow: the carbon sheet rests 24 px right and 24 px down from the top sheet, so a blue strip of it
-   shows along the right and bottom edges. The room for the strip is the padding of .sheets, so both sheets stay
-   inside the screen margins. Wide: side by side. The rules are for the screen only, print keeps the top copy alone. */
+/* The copy screen: the pad. The carbon copy lies full size under the top copy, in the same grid cell. The top copy is
+   clipped by a polygon whose fold is set by --fold-t (the top edge) and --fold-b (the bottom edge), and the roll lies over
+   the fold. The peel moves the fold from the right edge to its rest. The rules are for the screen only, print keeps the top copy alone. */
+@property --fold-t {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 190px;
+}
+
+@property --fold-b {
+  syntax: '<length-percentage>';
+  inherits: true;
+  initial-value: 110px;
+}
+
 .sheet-label {
   display: none;
   margin: 0 0 4px;
@@ -186,81 +198,157 @@ img.photo {
   line-height: 1.25;
 }
 
+.roll {
+  display: none;
+}
+
 @media screen {
   .sheets {
     position: relative;
-    padding: 0 24px 24px 0;
-  }
-
-  .top-sheet {
-    position: relative;
-    z-index: 1;
-  }
-
-  .carbon-sheet {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-  }
-
-  .carbon-sheet .form {
-    height: 100%;
-  }
-
-  /* The swap control: no motion, the other sheet comes to the front. */
-  .sheets[data-front='carbon'] .carbon-sheet {
-    z-index: 2;
-  }
-}
-
-@media screen and (min-width: 900px) {
-  .sheets {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 40rem));
-    gap: 24px;
-    justify-content: center;
-    padding: 0;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .top-sheet,
   .carbon-sheet {
-    position: static;
-    grid-row: 1;
+    position: relative;
+    grid-area: 1 / 1;
+    min-width: 0;
   }
 
   .top-sheet {
-    grid-column: 1;
+    --fold-t: 190px;
+    --fold-b: 110px;
+    z-index: 1;
   }
 
-  .carbon-sheet {
-    grid-column: 2;
+  .carbon-sheet .form,
+  .top-sheet .form {
+    max-width: none;
+    height: 100%;
+    margin: 0;
   }
 
-  .carbon-sheet .form {
-    height: auto;
+  /* The wrapper of the top copy is not a target, so that the part of the carbon copy that is not covered can be reached. */
+  .top-sheet {
+    pointer-events: none;
   }
 
-  .sheet-label {
+  .top-sheet [data-box='sheet'] {
+    clip-path: polygon(0 0, var(--fold-t) 0, var(--fold-b) 100%, 0 100%);
+    pointer-events: auto;
+  }
+
+  /* The roll: a rolled edge of the top copy, over the fold. 46 px wide at 9.58 degrees on a phone. */
+  .roll {
+    position: absolute;
+    top: -24px;
+    bottom: -24px;
+    left: calc((var(--fold-t) + var(--fold-b)) / 2 - 23px);
+    z-index: 2;
     display: block;
+    width: 46px;
+    transform: rotate(9.58deg);
+    background: linear-gradient(90deg, #f3ecdd 0, #f3ecdd 5%, #0c1140 9%, #1b2470 20%, #3345b8 40%, #8fa0f5 50%, #3345b8 60%, #1b2470 82%, #0e1447 100%);
+    box-shadow: 18px 0 26px -4px rgb(8 12 50 / 0.55), -3px 0 6px rgb(0 0 0 / 0.28);
+    pointer-events: none;
   }
 
+  /* Between a phone and the wide screen the pad is wider than 328 px, so the fold keeps its share of the width. */
+  @media (min-width: 480px) {
+    .top-sheet {
+      --fold-t: 58%;
+      --fold-b: 34%;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .sheets {
+      width: 100%;
+      max-width: 720px;
+      margin: 32px auto 0;
+    }
+
+    .sheet-label {
+      position: absolute;
+      display: block;
+      bottom: calc(100% + 6px);
+      left: 0;
+      margin: 0;
+    }
+
+    .carbon-sheet .sheet-label {
+      right: 0;
+      left: auto;
+    }
+
+    .roll {
+      top: -28px;
+      bottom: -28px;
+      left: calc((var(--fold-t) + var(--fold-b)) / 2 - 32px);
+      width: 64px;
+      transform: rotate(9.16deg);
+    }
+  }
+
+  @media (min-width: 1900px) {
+    .top-sheet {
+      --fold-t: 430px;
+      --fold-b: 310px;
+    }
+  }
+
+  /* Show carbon copy: the top copy is pulled away, with no motion. Pressed again, the fold comes back. */
+  .sheets[data-front='carbon'] .top-sheet {
+    --fold-t: -40px;
+    --fold-b: -40px;
+  }
+
+  .sheets[data-front='carbon'] .roll {
+    display: none;
+  }
+
+  /* After Tear off the copy on a wide screen: both copies side by side, each whole. */
+  .copy.torn .sheets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    max-width: 1248px;
+  }
+
+  .copy.torn .top-sheet [data-box='sheet'] {
+    clip-path: none;
+  }
+
+  .copy.torn .carbon-sheet {
+    grid-area: 1 / 2;
+  }
+
+  .copy.torn .roll {
+    display: none;
+  }
+
+  /* The peel: the fold goes from the right edge to its rest in 700 ms, and the carbon ink fades up in the first 300 ms. */
   .top-sheet.peel {
-    --peel-x: -62%;
+    animation: peel 700ms cubic-bezier(.2, .8, .2, 1) backwards;
   }
-}
 
-/* The peel: 1.1 s up and to the left, 1.4 s hold, 0.8 s back to rest. One animation of 3.3 s. On narrow
-   screens the sheet goes further left, so that the whole carbon sheet is in view during the hold. */
-.top-sheet.peel {
-  --peel-x: -120%;
-  animation: peel 3.3s both;
-}
+  .carbon-sheet.ink .form > * {
+    animation: ink-up 300ms linear both;
+  }
 
-.carbon-sheet.fade {
-  animation: fade 0.4s linear both;
+  .carbon-sheet.ink .form > .impression {
+    animation:
+      thump 120ms ease-out both,
+      ink-up 300ms linear both;
+  }
+
+  .carbon-sheet.fade {
+    animation: fade 0.4s linear both;
+  }
+
+  .screen.copy {
+    overflow-x: clip;
+  }
 }
 
 @media print {
@@ -327,21 +415,21 @@ img.photo {
 }
 
 @keyframes peel {
-  0% {
-    transform: none;
-    animation-timing-function: ease-out;
-  }
-  33.33% {
-    transform: translate(var(--peel-x), -3%) rotate(-7deg);
-  }
-  75.76% {
-    transform: translate(var(--peel-x), -3%) rotate(-7deg);
-    animation-timing-function: ease-in-out;
-  }
-  100% {
-    transform: none;
+  from {
+    --fold-t: calc(100% + 120px);
+    --fold-b: 100%;
   }
 }
+
+@keyframes ink-up {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes fade {
   from { opacity: 0; }
   to { opacity: 1; }

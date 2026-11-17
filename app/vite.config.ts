@@ -25,6 +25,20 @@ function privacyList(): Plugin {
   };
 }
 
+/** The font licence texts (SIL OFL) are written to assets/ beside the font files, as the licence asks. */
+function fontLicences(): Plugin {
+  const folder = resolve(repo, 'app/src/fonts');
+  return {
+    name: 'font-licences',
+    apply: 'build',
+    generateBundle() {
+      for (const name of readdirSync(folder).filter((f) => /^OFL-.*\.txt$/.test(f))) {
+        this.emitFile({ type: 'asset', fileName: `assets/${name}`, source: readFileSync(resolve(folder, name)) });
+      }
+    },
+  };
+}
+
 /** The product name comes from app/app.config.ts only. */
 function productName(): Plugin {
   return {
@@ -97,7 +111,7 @@ export default defineConfig({
   // Relative paths, so that dist/ works from the root of a host or from any sub path.
   base: './',
   publicDir: false,
-  plugins: [productName(), privacyList(), placePages(), serviceWorker()],
+  plugins: [productName(), privacyList(), fontLicences(), placePages(), serviceWorker()],
   build: {
     outDir,
     emptyOutDir: true,

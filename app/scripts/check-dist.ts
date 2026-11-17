@@ -8,6 +8,9 @@ export const REQUIRED_PAGES = ['index.html', 'app/index.html', 'verify/index.htm
 /** The service worker, at the root so that its scope is the whole site. */
 export const WORKER_FILE = 'sw.js';
 
+/** The licence texts of the four bundled fonts. The licence asks for them to travel with the font files, so they sit in assets/ beside them. */
+export const FONT_LICENCES = ['OFL-saira.txt', 'OFL-sairacondensed.txt', 'OFL-gochihand.txt', 'OFL-rubikmonoone.txt'] as const;
+
 export interface DistOptions {
   /** Texts that must not be anywhere in the built files, such as a beacon address that was not set. */
   forbidden?: string[];
@@ -51,13 +54,26 @@ export function checkDist(dist: string, options: DistOptions = {}): string[] {
   return problems;
 }
 
+/** Returns one line for each font licence text that is not in assets/ beside the font files. */
+export function checkFontLicences(dist: string): string[] {
+  const assets = join(dist, 'assets');
+  if (!existsSync(assets) || !statSync(assets).isDirectory()) return ['assets/: the folder does not exist'];
+  const names = readdirSync(assets);
+  const problems: string[] = [];
+  if (!names.some((name) => name.endsWith('.woff2'))) problems.push('assets/: no font file (woff2) for the licence texts to sit beside');
+  for (const licence of FONT_LICENCES) {
+    if (!names.includes(licence)) problems.push(`assets/${licence}: the font licence text is missing`);
+  }
+  return problems;
+}
+
 if (process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const dist = resolve(import.meta.dirname, '..', '..', 'dist');
-  const problems = checkDist(dist);
+  const problems = [...checkDist(dist), ...checkFontLicences(dist)];
   if (problems.length > 0) {
     console.error(`check-dist: ${problems.length} problem(s)`);
     for (const line of problems) console.error(`  ${line}`);
     process.exit(1);
   }
-  console.log(`check-dist: ${REQUIRED_PAGES.length} pages found in ${dist}`);
+  console.log(`check-dist: ${REQUIRED_PAGES.length} pages and ${FONT_LICENCES.length} font licence texts found in ${dist}`);
 }

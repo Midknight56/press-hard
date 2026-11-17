@@ -33,7 +33,7 @@ export async function walkScreens(
 
   await holdStamp(page, 1300);
   await expectScreen(page, 'copy');
-  // The peel moves the top sheet for 3.3 s. The layout is measured at its rest place.
+  // The peel moves the fold for 0.7 s. The layout is measured at its rest place.
   await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)).then(() => undefined));
   await visit('copy');
   const first = await tearOffTo(page, testInfo, 'walk-copy.html');

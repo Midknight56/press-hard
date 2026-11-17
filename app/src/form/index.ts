@@ -1,4 +1,5 @@
 import { sealWords, type Field, type HandoverRecord, type Photo, type Signature } from 'core';
+import { prefersReducedMotion } from '../motion.js';
 import type { Template, TemplateField } from '../templates/types.js';
 
 export type FormMode = 'edit' | 'top' | 'carbon';
@@ -77,12 +78,25 @@ function shownValue(line: Line, value: string | null): string {
   return line.kind === 'number' && line.unit ? `${value} ${line.unit}` : value;
 }
 
+/**
+ * A typed character inks in over 60 ms (a 150 ms cross fade with reduced motion): the ink bleeds a little and settles.
+ * Only a text shadow moves, so the colour of the text, and its contrast, are never lowered, and nothing shifts.
+ */
+const INK_IN_MS = 60;
+function inkIn(input: HTMLInputElement): void {
+  if (typeof input.animate !== 'function') return;
+  input.animate([{ textShadow: '0 0 2px currentColor' }, { textShadow: '0 0 0 transparent' }], {
+    duration: prefersReducedMotion() ? 150 : INK_IN_MS,
+    easing: 'ease-out',
+  });
+}
 function textInput(controlId: string, value: string, inputMode?: string): HTMLInputElement {
   const input = el('input');
   input.type = 'text';
   input.maxLength = MAX_TEXT;
   input.value = value;
   input.setAttribute('data-control', controlId);
+  input.addEventListener('input', () => inkIn(input));
   if (inputMode !== undefined) input.setAttribute('inputmode', inputMode);
   return input;
 }
@@ -139,7 +153,7 @@ export function stampDate(sealedAt: string | null | undefined): string {
 }
 
 /** The round stamp mark on a sealed sheet: three empty parts, so that no word is a text node. look.css writes the words. */
-function stampImpression(sealedAt: string | null | undefined): HTMLElement {
+export function stampImpression(sealedAt: string | null | undefined): HTMLElement {
   const mark = el('div', 'impression');
   mark.setAttribute('aria-hidden', 'true');
   const top = el('i', 'imp-top');

@@ -89,28 +89,33 @@ describe('copy screen, the style sheets', () => {
   const theme = css('form/theme.css');
   const app = css('app.css');
 
-  it('peels over 1.1 s, holds 1.4 s and settles over 0.8 s, in one animation of 3.3 s', () => {
-    expect(theme).toMatch(/\.top-sheet\.peel\s*\{[^}]*animation:\s*peel 3\.3s/);
+  it('peels from the right edge to the rest in 700 ms with cubic-bezier(.2, .8, .2, 1), and the carbon ink fades up in 300 ms', () => {
+    expect(theme).toMatch(/\.top-sheet\.peel\s*\{[^}]*animation:\s*peel 700ms cubic-bezier\(0?\.2, 0?\.8, 0?\.2, 1\)/);
+    expect(theme).toMatch(/\.carbon-sheet\.ink\s+\.form\s*>\s*\*\s*\{[^}]*animation:\s*ink-up 300ms/);
     const frames = /@keyframes peel\s*\{([\s\S]*?)\n\}/.exec(theme);
     expect(frames, 'a peel keyframes rule').not.toBeNull();
-    const body = frames?.[1] ?? '';
-    expect(body).toContain('33.33%');
-    expect(body).toContain('75.76%');
-    expect(body).toMatch(/translate\(var\(--peel-x\), -3%\) rotate\(-7deg\)/);
+    expect(frames?.[1] ?? '').toContain('--fold-t');
   });
 
   it('does not run the peel with reduced motion', () => {
     expect(theme).toMatch(/prefers-reduced-motion: reduce\)\s*\{[^}]*\.top-sheet\.peel\s*\{\s*animation: none/);
   });
 
-  it('puts the carbon sheet 24 px right and 24 px down on narrow screens', () => {
-    expect(theme).toMatch(/\.carbon-sheet\s*\{[^}]*top: 24px;[^}]*left: 24px/);
+  it('lays the carbon sheet under the top sheet at the same place, in one grid cell', () => {
+    expect(theme).toMatch(/\.top-sheet,\s*\.carbon-sheet\s*\{[^}]*grid-area:\s*1\s*\/\s*1/);
+    expect(theme).not.toMatch(/\.carbon-sheet\s*\{[^}]*top: 24px;[^}]*left: 24px/);
   });
 
-  it('puts the sheets side by side with a 24 px gap from 900 px', () => {
-    expect(theme).toMatch(/@media screen and \(min-width: 900px\)\s*\{[\s\S]*gap: 24px/);
+  it('clips the top sheet with the polygons of the design: 190 px and 110 px on a phone, 430 px and 310 px at 1900 px', () => {
+    expect(theme).toMatch(/--fold-t:\s*190px;[^}]*--fold-b:\s*110px/);
+    expect(theme).toMatch(/min-width: 1900px\)\s*\{[\s\S]*--fold-t:\s*430px;[^}]*--fold-b:\s*310px/);
+    expect(theme).toMatch(/clip-path:\s*polygon\(0 0, var\(--fold-t\) 0, var\(--fold-b\) 100%, 0 100%\)/);
   });
 
+  it('draws the roll 46 px wide at 9.58 degrees, and 64 px wide at 9.16 degrees from 900 px', () => {
+    expect(theme).toMatch(/\.roll\s*\{[^}]*width:\s*46px[^}]*rotate\(9\.58deg\)/);
+    expect(theme).toMatch(/min-width: 900px\)\s*\{[\s\S]*\.roll\s*\{[^}]*width:\s*64px[^}]*rotate\(9\.16deg\)/);
+  });
   it('shows the swap control on narrow screens only', () => {
     expect(app).toMatch(/\.sheet-switch\s*\{[^}]*display: flex/);
     expect(app).toMatch(/@media screen and \(min-width: 900px\)\s*\{[\s\S]*\.sheet-switch\s*\{\s*display: none/);

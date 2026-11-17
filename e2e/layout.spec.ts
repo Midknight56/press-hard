@@ -19,6 +19,8 @@ for (const viewport of VIEWPORTS) {
       const problems: string[] = [];
       const seen: string[] = [];
       await walkScreens(page, testInfo, async (step) => {
+        // The text is measured with the bundled fonts, not the fallback fonts of the first frames.
+        await page.evaluate(() => document.fonts.ready.then(() => undefined));
         const result = await page.evaluate(collectBoxes);
         seen.push(`${step}: ${result.boxes.length} controls`);
         expect(result.boxes.length, `${step} has controls`).toBeGreaterThan(0);
@@ -147,19 +149,19 @@ const frontAt = (page: import('@playwright/test').Page) =>
 test.describe('copy screen sheets, 360x640', () => {
   test.use({ viewport: { width: 360, height: 640 } });
 
-  test('the carbon copy shows a blue strip on the right and the bottom, inside 16 px', async ({ page }) => {
+  test('at rest the carbon copy lies under the clipped top copy at the same place, inside 16 px', async ({ page }) => {
     await sealPrefilled(page);
     await settle(page);
     const top = await sheetBox(page, 'top');
     const carbon = await sheetBox(page, 'carbon');
     const view = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(carbon.x + carbon.width - (top.x + top.width), 'carbon right edge beyond the top sheet').toBeGreaterThanOrEqual(20);
-    expect(carbon.y + carbon.height - (top.y + top.height), 'carbon bottom edge below the top sheet').toBeGreaterThanOrEqual(20);
-    expect(view - (carbon.x + carbon.width), 'carbon to the right screen edge').toBeGreaterThanOrEqual(16);
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(carbon[key] - top[key]), `carbon sheet ${key} against the top sheet`).toBeLessThanOrEqual(2);
+    }
+    await expect(page.locator('.top-sheet [data-box="sheet"]')).not.toHaveCSS('clip-path', 'none');
     expect(top.x, 'top sheet to the left screen edge').toBeGreaterThanOrEqual(16);
     expect(view - (top.x + top.width), 'top sheet to the right screen edge').toBeGreaterThanOrEqual(16);
   });
-
   test('swap-sheets brings the other sheet to the front, without motion', async ({ page }) => {
     await sealPrefilled(page);
     await settle(page);
@@ -174,22 +176,30 @@ test.describe('copy screen sheets, 360x640', () => {
     expect(await frontAt(page)).toBe('top');
   });
 
-  test('at the end of the hold the whole carbon copy is in view, and the peel takes 3.3 s', async ({ page }) => {
+  test('half way through the peel the fold is between the right edge and its rest, and the peel takes 700 ms', async ({ page }) => {
     await sealPrefilled(page);
+    await settle(page);
+    const rest = await page.locator('.top-sheet [data-box="sheet"]').evaluate((el) => getComputedStyle(el).clipPath);
     const info = await page.evaluate(() => {
+      const top = document.querySelector('.top-sheet') as HTMLElement;
+      top.classList.remove('peel');
+      void top.offsetWidth;
+      top.classList.add('peel');
       const a = document.getAnimations().find((x) => (x as CSSAnimation).animationName === 'peel');
       if (a === undefined) return null;
       a.pause();
-      a.currentTime = 1800;
-      return a.effect?.getComputedTiming().duration ?? null;
+      a.currentTime = 0;
+      const start = getComputedStyle(document.querySelector('.top-sheet [data-box="sheet"]') as Element).clipPath;
+      a.currentTime = 200;
+      const middle = getComputedStyle(document.querySelector('.top-sheet [data-box="sheet"]') as Element).clipPath;
+      return { duration: a.effect?.getComputedTiming().duration ?? null, start, middle };
     });
-    expect(info, 'a running peel animation').toBe(3300);
-    const top = await sheetBox(page, 'top');
-    const carbon = await sheetBox(page, 'carbon');
-    expect(top.x + top.width, 'the peeled sheet is clear of the carbon copy').toBeLessThanOrEqual(carbon.x);
+    expect(info?.duration, 'a running peel animation').toBe(700);
+    expect(info?.start, 'the fold starts at the right edge').not.toBe(rest);
+    expect(info?.middle, 'the fold is on its way').not.toBe(rest);
+    expect(info?.middle).not.toBe(info?.start);
   });
 });
-
 test.describe('copy screen sheets, 360x640, reduced motion', () => {
   test.use({ viewport: { width: 360, height: 640 }, reducedMotion: 'reduce' });
 
@@ -201,33 +211,34 @@ test.describe('copy screen sheets, 360x640, reduced motion', () => {
     await expect(page.locator('.carbon-sheet')).toHaveCSS('opacity', '1');
     const top = await sheetBox(page, 'top');
     const carbon = await sheetBox(page, 'carbon');
-    expect(carbon.x + carbon.width - (top.x + top.width)).toBeGreaterThanOrEqual(20);
+    expect(Math.abs(carbon.x - top.x)).toBeLessThanOrEqual(2);
+    expect(Math.abs(carbon.width - top.width)).toBeLessThanOrEqual(2);
   });
 });
 
 test.describe('copy screen sheets, 1920x1080', () => {
   test.use({ viewport: { width: 1920, height: 1080 } });
 
-  test('the sheets sit side by side, whole, 24 px apart, centred, with labels', async ({ page }) => {
+  test('at rest the carbon copy lies under the top copy at the same place, with labels above the pad and the swap control in the tray', async ({ page }) => {
     await sealPrefilled(page);
     await settle(page);
     const top = await sheetBox(page, 'top');
     const carbon = await sheetBox(page, 'carbon');
     const view = await page.evaluate(() => ({ w: document.documentElement.clientWidth, h: document.documentElement.scrollHeight }));
-    const overlap = top.x < carbon.x + carbon.width && carbon.x < top.x + top.width && top.y < carbon.y + carbon.height && carbon.y < top.y + top.height;
-    expect(overlap, 'the sheets overlap').toBe(false);
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(carbon[key] - top[key]), `carbon sheet ${key} against the top sheet`).toBeLessThanOrEqual(2);
+    }
     for (const b of [top, carbon]) {
       expect(b.x).toBeGreaterThanOrEqual(0);
       expect(b.x + b.width).toBeLessThanOrEqual(view.w);
       expect(b.y).toBeGreaterThanOrEqual(0);
       expect(b.y + b.height).toBeLessThanOrEqual(view.h);
     }
-    expect(Math.round(carbon.x - (top.x + top.width)), 'gap').toBe(24);
-    expect(Math.abs((top.x + carbon.x + carbon.width) / 2 - view.w / 2), 'centre offset').toBeLessThanOrEqual(2);
+    expect(Math.abs(top.x + top.width / 2 - view.w / 2), 'centre offset').toBeLessThanOrEqual(2);
     await expect(page.locator('.top-sheet .sheet-label')).toHaveText('Top copy');
     await expect(page.locator('.carbon-sheet .sheet-label')).toHaveText('Carbon copy');
     const label = await page.locator('.top-sheet .sheet-label').boundingBox();
     expect(label !== null && label.y + label.height <= top.y, 'label above the sheet').toBe(true);
-    await expect(page.locator('[data-control="swap-sheets"]')).toBeHidden();
+    await expect(page.locator('[data-control="swap-sheets"]')).toBeVisible();
   });
 });
