@@ -123,3 +123,14 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - [x] 18.4 `verify:e2e` runs `npm run build` before `npm run e2e`, so the sub path test never reads an old `dist`.
   - [x] 18.5 `docs/DEPLOY.md` gives the build command, the output folder, the no server code fact, the root or sub path fact and one local serve command.
   - [x] 18.6 Verify: `npm run verify:e2e` and `npm run build` pass.
+
+- [x] 19. Show the carbon copy
+  - [x] 19.1 Test first: unit tests in `app/tests/copy-sheets.test.ts` and `app/tests/verify-picker.test.ts`, and e2e tests in `e2e/layout.spec.ts` (360x640 strip and swap, the peel at 1.8 s, reduced motion, 1920x1080 side by side). They failed on the old code.
+  - [x] 19.2 The peel: with motion allowed, the top sheet peels up and to the left over 1.1 s, holds 1.4 s, settles over 0.8 s (one `peel` animation of 3.3 s). On screens under 900 px it moves by -120% so the whole carbon copy is in view; from 900 px it moves by -62%.
+  - [x] 19.3 Narrow rest place: the carbon sheet sits 24 px right and 24 px down from the top sheet. Both sheets stay 16 px inside the edges at 360 px wide.
+  - [x] 19.4 Wide rest place (900 px and up): side by side, 24 px gap, centred, labelled "Top copy" and "Carbon copy" above each sheet.
+  - [x] 19.5 Control `swap-sheets` on narrow screens, "Show carbon copy" or "Show top copy", no motion. It is an `input type="button"`, so the existing copy screen test that counts `button` elements still holds.
+  - [x] 19.6 Reduced motion: no peel, the carbon copy fades in at its rest place. Print is unchanged.
+  - [x] 19.7 Verify page: the real file input is kept (`verify-file`), shown as a button "Choose a copy file" with the chosen file names beside it.
+  - [x] 19.8 The walk waits for the peel to end before it measures the copy screen.
+  - [x] 19.9 Verify: `npm run verify:e2e` passes.

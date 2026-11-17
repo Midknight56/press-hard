@@ -175,35 +175,100 @@ img.photo {
   border-style: dashed;
   background-color: #e4e0d6;
 }
-.sheets {
-  position: relative;
+/* The copy screen. Narrow: the carbon sheet rests 24 px right and 24 px down from the top sheet, so a blue strip of it
+   shows along the right and bottom edges. The room for the strip is the padding of .sheets, so both sheets stay
+   inside the screen margins. Wide: side by side. The rules are for the screen only, print keeps the top copy alone. */
+.sheet-label {
+  display: none;
+  margin: 0 0 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
 }
 
-.carbon-sheet {
-  position: absolute;
-  inset: 0 10px 10px;
-  transform: translate(4px, 6px);
-}
-
-.top-sheet {
-  position: relative;
-}
-
-/* The two sheets lean apart by 8 px, 4 px each way, so the pair stays centred. */
 @media screen {
+  .sheets {
+    position: relative;
+    padding: 0 24px 24px 0;
+  }
+
   .top-sheet {
-    left: -4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .carbon-sheet {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+  }
+
+  .carbon-sheet .form {
+    height: 100%;
+  }
+
+  /* The swap control: no motion, the other sheet comes to the front. */
+  .sheets[data-front='carbon'] .carbon-sheet {
+    z-index: 2;
   }
 }
 
-.top-sheet.lift {
-  animation: lift 0.9s ease-out both;
+@media screen and (min-width: 900px) {
+  .sheets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 40rem));
+    gap: 24px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .top-sheet,
+  .carbon-sheet {
+    position: static;
+    grid-row: 1;
+  }
+
+  .top-sheet {
+    grid-column: 1;
+  }
+
+  .carbon-sheet {
+    grid-column: 2;
+  }
+
+  .carbon-sheet .form {
+    height: auto;
+  }
+
+  .sheet-label {
+    display: block;
+  }
+
+  .top-sheet.peel {
+    --peel-x: -62%;
+  }
+}
+
+/* The peel: 1.1 s up and to the left, 1.4 s hold, 0.8 s back to rest. One animation of 3.3 s. On narrow
+   screens the sheet goes further left, so that the whole carbon sheet is in view during the hold. */
+.top-sheet.peel {
+  --peel-x: -120%;
+  animation: peel 3.3s both;
 }
 
 .carbon-sheet.fade {
   animation: fade 0.4s linear both;
 }
 
+@media print {
+  .sheet-label,
+  .sheet-switch {
+    display: none !important;
+  }
+}
 .stamp {
   min-width: 11rem;
   min-height: 56px;
@@ -261,18 +326,29 @@ img.photo {
   overflow-wrap: anywhere;
 }
 
-@keyframes lift {
-  from { transform: translateY(0); }
-  to { transform: translateY(-12px) rotate(-0.3deg); }
+@keyframes peel {
+  0% {
+    transform: none;
+    animation-timing-function: ease-out;
+  }
+  33.33% {
+    transform: translate(var(--peel-x), -3%) rotate(-7deg);
+  }
+  75.76% {
+    transform: translate(var(--peel-x), -3%) rotate(-7deg);
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    transform: none;
+  }
 }
-
 @keyframes fade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .top-sheet.lift {
+  .top-sheet.peel {
     animation: none;
   }
 }

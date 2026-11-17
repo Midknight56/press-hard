@@ -107,8 +107,7 @@ button,
   margin: 12px 0;
 }
 
-.field-label input[type='text'],
-.field-label input[type='file'] {
+.field-label input[type='text'] {
   min-height: 44px;
   padding: 8px;
   color: var(--ink);
@@ -146,11 +145,82 @@ button,
   text-transform: uppercase;
 }
 
-/* The room round the sheets holds the offset of the carbon copy and the tilt of the top sheet, so that every sheet stays 16 px from the edges. */
-.sheets {
-  padding: 0 10px 10px;
+/* The sheets and the room for the carbon strip are in form/theme.css. The swap control shows on narrow screens only. */
+@media screen {
+  .sheet-switch {
+    display: flex;
+    margin: 0 0 12px;
+  }
+
+  .sheet-switch input {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 16px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    font: inherit;
+    cursor: pointer;
+  }
 }
 
+@media screen and (min-width: 900px) {
+  .sheet-switch {
+    display: none;
+  }
+
+  /* Two sheets of 40 rem and a gap of 24 px, with the screen margins. */
+  .screen.copy {
+    max-width: calc(80rem + 24px + 32px);
+  }
+}
+
+.file-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* The real file input lies over the button, invisible, so a click, the keyboard and a test all reach it. */
+.file-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.file-button input {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-button:focus-within {
+  outline: 3px solid var(--carbon-ink);
+  outline-offset: 2px;
+}
+
+.file-names {
+  flex: 1 1 8rem;
+  overflow-wrap: anywhere;
+}
 .copy-actions {
   display: flex;
   flex-wrap: wrap;
