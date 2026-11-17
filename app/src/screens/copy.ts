@@ -21,9 +21,16 @@ function action(control: string, text: string, onClick: () => void): HTMLButtonE
   return b;
 }
 
+function sheetLabel(text: string): HTMLElement {
+  const label = document.createElement('p');
+  label.className = 'sheet-label';
+  label.textContent = text;
+  return label;
+}
+
 /**
- * The top sheet lifts to show the carbon copy under it. With reduced motion nothing lifts and the
- * copy appears with a plain fade.
+ * The top sheet peels up and to the left to show the whole carbon copy, holds, and settles at its rest place. With reduced motion nothing peels and the
+ * carbon copy appears with a plain fade at its rest place.
  */
 export function createCopyScreen(options: CopyOptions): { element: HTMLElement } {
   const { record, reducedMotion } = options;
@@ -55,17 +62,33 @@ export function createCopyScreen(options: CopyOptions): { element: HTMLElement }
   strip.append(stripArt, stripText);
   element.append(strip);
 
+  // A person sees both sheets. The swap control (narrow screens) brings the other one to the front, with no motion.
   const sheets = document.createElement('div');
   sheets.className = 'sheets';
+  sheets.setAttribute('data-front', 'top');
   const carbon = document.createElement('div');
-  carbon.className = reducedMotion ? 'carbon-sheet fade' : 'carbon-sheet';
+  carbon.className = reducedMotion ? 'carbon-sheet rest fade' : 'carbon-sheet rest';
   carbon.setAttribute('data-role', 'carbon-sheet');
   carbon.setAttribute('data-first-view', 'start');
-  carbon.append(renderForm(record, { mode: 'carbon' }));
+  carbon.append(sheetLabel('Carbon copy'), renderForm(record, { mode: 'carbon' }));
   const top = document.createElement('div');
-  top.className = reducedMotion ? 'top-sheet' : 'top-sheet lift';
-  top.append(renderForm(record, { mode: 'top' }));
+  top.className = reducedMotion ? 'top-sheet rest' : 'top-sheet rest lift peel';
+  top.append(sheetLabel('Top copy'), renderForm(record, { mode: 'top' }));
   sheets.append(carbon, top);
+
+  const swap = document.createElement('input');
+  swap.type = 'button';
+  swap.value = 'Show carbon copy';
+  swap.setAttribute('data-control', 'swap-sheets');
+  swap.addEventListener('click', () => {
+    const next = sheets.getAttribute('data-front') === 'top' ? 'carbon' : 'top';
+    sheets.setAttribute('data-front', next);
+    swap.value = next === 'top' ? 'Show carbon copy' : 'Show top copy';
+  });
+  const switcher = document.createElement('div');
+  switcher.className = 'sheet-switch';
+  switcher.append(swap);
+  element.append(switcher);
   element.append(sheets);
 
   const edge = document.createElement('div');

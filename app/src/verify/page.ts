@@ -30,12 +30,19 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
   instruction.setAttribute('data-role', 'instruction');
 
   const fileLabel = make('label', 'field-label', 'Copy file, or two to compare');
+  const picker = make('span', 'file-picker');
+  const button = make('span', 'file-button');
   const fileInput = make('input');
   fileInput.type = 'file';
   fileInput.multiple = true;
   fileInput.accept = '.html,text/html';
   fileInput.setAttribute('data-control', 'verify-file');
-  fileLabel.append(fileInput);
+  // The browser's own box is not shown. The real input lies over this button and takes the click.
+  const fileNames = make('span', 'file-names', 'No file chosen');
+  fileNames.setAttribute('data-role', 'file-names');
+  button.append('Choose a copy file', fileInput);
+  picker.append(button, fileNames);
+  fileLabel.append(picker);
 
   const typedLabel = make('label', 'field-label', 'Seal words or full seal');
   const typedInput = make('input');
@@ -120,6 +127,7 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
   }
 
   function loadFiles(files: File[]): Promise<void> {
+    fileNames.textContent = files.length === 0 ? 'No file chosen' : files.map((f) => f.name).join(', ');
     const run = Promise.all(files.slice(0, 2).map((f) => f.text()))
       .then((loaded) => {
         texts = loaded;
