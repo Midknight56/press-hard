@@ -102,3 +102,9 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - Test first: `app/src/layout.ts` and `e2e/layout.spec.ts` now also measure sheets, cards and panels, pictures inside controls, centring and the first view rules. Unit tests in `app/tests/layout-screens.test.ts`.
   - Verify: `npm run verify:e2e` passes.
   - _Requirements: 1.1, 8.1_
+
+- [x] 16. Submission README
+  - [x] 16.1 The root `README.md` is the full submission README, written by hand on 2026-11-17. Its text is not changed by Kiro.
+  - [x] 16.2 In `core/tests/scaffold.test.ts`, replace the three line README test with a README check: first line, the two headings, the five criteria in order, no em dash, no en dash, no hyphen joining two words, and none of the four banned words. The MIT LICENSE check is kept as its own test.
+  - [x] 16.3 Test first: run the check on the current README and see it pass. Run it on a copy with two criteria swapped and see it fail.
+  - [x] 16.4 Verify: `npm run verify` passes.

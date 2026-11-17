@@ -8,6 +8,46 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const read = (path: string): string => readFileSync(resolve(root, path), 'utf8');
 const json = (path: string): Record<string, unknown> => JSON.parse(read(path)) as Record<string, unknown>;
 
+const criteria = ['Potential Impact.', 'Technological Implementation.', 'Design.', 'Innovation/Idea.', 'Presentation.'];
+const bannedWords = ['tamper proof', 'secure', 'certified', 'legal proof'];
+
+/** Returns the problems found in the README text. An empty list means it passes. */
+const checkReadme = (raw: string): string[] => {
+  const problems: string[] = [];
+  const text = raw.replace(/\r\n/g, '\n');
+  const lines = text.split('\n');
+  if (lines[0] !== '# Press Hard') problems.push('first line is not "# Press Hard"');
+
+  const start = lines.indexOf('## Judging criteria at a glance');
+  if (start < 0) {
+    problems.push('missing heading "## Judging criteria at a glance"');
+  } else {
+    let end = lines.findIndex((line, index) => index > start && line.startsWith('## '));
+    if (end < 0) end = lines.length;
+    const found: string[] = [];
+    for (const paragraph of lines.slice(start + 1, end).join('\n').split(/\n\s*\n/)) {
+      if (paragraph.trim() === '') continue;
+      const match = /^\*\*([^*]+)\*\*/.exec(paragraph.trim());
+      found.push(match?.[1] ?? '(no bold start)');
+    }
+    if (found.join('|') !== criteria.join('|')) {
+      problems.push(`criteria order: expected ${criteria.join(', ')} but found ${found.join(', ')}`);
+    }
+  }
+  if (!lines.includes('## How Kiro was used')) problems.push('missing heading "## How Kiro was used"');
+
+  const prose = text.replace(/^```[\s\S]*?^```/gm, '').replace(/`[^`\n]*`/g, '');
+  if (prose.includes('\u2014')) problems.push('em dash');
+  if (prose.includes('\u2013')) problems.push('en dash');
+  if (/\p{L}-\p{L}/u.test(prose)) problems.push('hyphen joining two words');
+  // A word shown in straight double quotes is named, not used (the README lists what the app never says).
+  const unquoted = prose.replace(/"[^"\n]*"/g, '');
+  for (const word of bannedWords) {
+    if (new RegExp(`(^|[^\\p{L}])${word}($|[^\\p{L}])`, 'iu').test(unquoted)) problems.push(`banned word: ${word}`);
+  }
+  return problems;
+};
+
 describe('workspace scaffold', () => {
   it('root package is private, version 0.1.0, with workspaces core, mcp and app only', () => {
     const pkg = json('package.json');
@@ -65,10 +105,29 @@ describe('workspace scaffold', () => {
     expect(read('core/tsconfig.json')).toContain('../tsconfig.json');
   });
 
-  it('has an MIT LICENSE and a three line README', () => {
+  it('has an MIT LICENSE', () => {
     expect(read('LICENSE')).toContain('MIT License');
-    const lines = read('README.md').split('\n').filter((line) => line.trim() !== '');
-    expect(lines).toHaveLength(3);
+  });
+
+  it('has the submission README', () => {
+    expect(checkReadme(read('README.md'))).toEqual([]);
+  });
+
+  it('the README check fails on a banned word used outside quotes, and on dashes', () => {
+    const text = read('README.md');
+    expect(checkReadme(`${text}\nThis copy is secure.\n`)).toContain('banned word: secure');
+    expect(checkReadme(`${text}\nA hand-made copy.\n`)).toContain('hyphen joining two words');
+    expect(checkReadme(`${text}\nA copy \u2014 here.\n`)).toContain('em dash');
+  });
+
+  it('the README check fails when two criteria are swapped in a copy of the text', () => {
+    const text = read('README.md');
+    const swapped = text
+      .replace('**Design.**', '**@@Design.**')
+      .replace('**Innovation/Idea.**', '**Design.**')
+      .replace('**@@Design.**', '**Innovation/Idea.**');
+    expect(swapped).not.toBe(text);
+    expect(checkReadme(swapped).join('\n')).toContain('criteria order');
   });
 
   it('.gitignore lists the four folders and not .kiro', () => {
