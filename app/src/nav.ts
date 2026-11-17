@@ -13,6 +13,8 @@ export interface NavOptions {
   audio?: Audio;
 }
 
+const STEPS = ['Fill in together', 'Both sign', 'Seal with the stamp', 'Peel back, keep the copy'];
+
 function button(control: string, text: string, onClick: () => void): HTMLButtonElement {
   const b = document.createElement('button');
   b.type = 'button';
@@ -33,12 +35,30 @@ function link(control: string, text: string, href: string, name?: string): HTMLA
 }
 
 /** The bar at the top of every page, and the one line that says drafts will not be kept. */
-export function createNav(options: NavOptions): { element: HTMLElement; notice(message: string): void } {
+export function createNav(options: NavOptions): {
+  element: HTMLElement;
+  notice(message: string): void;
+  /** Marks one button as the current page (the aria-current attribute), or none. */
+  setCurrent(control: string | null): void;
+} {
   const element = document.createElement('header');
   element.className = 'bar';
   const brand = document.createElement('p');
   brand.className = 'brand';
   brand.textContent = appConfig.title;
+  // The tagline shows in the rail of wide screens. The four steps are drawn by CSS from data attributes, so no text node holds them.
+  const tagline = document.createElement('p');
+  tagline.className = 'tagline';
+  tagline.textContent = 'The carbon copy, back from the dead.';
+  const steps = document.createElement('ol');
+  steps.className = 'steps';
+  steps.setAttribute('aria-hidden', 'true');
+  STEPS.forEach((step, i) => {
+    const item = document.createElement('li');
+    item.setAttribute('data-n', String(i + 1));
+    item.setAttribute('data-step', step);
+    steps.append(item);
+  });
   const nav = document.createElement('nav');
   nav.setAttribute('aria-label', 'Main');
   if (options.page === 'app') {
@@ -66,9 +86,15 @@ export function createNav(options: NavOptions): { element: HTMLElement; notice(m
   notice.setAttribute('data-role', 'notice');
   notice.setAttribute('role', 'status');
   notice.hidden = true;
-  element.append(brand, nav, notice);
+  element.append(brand, tagline, nav, steps, notice);
   return {
     element,
+    setCurrent(control) {
+      for (const item of Array.from(nav.querySelectorAll('[data-control]'))) {
+        if (item.getAttribute('data-control') === control) item.setAttribute('aria-current', 'page');
+        else item.removeAttribute('aria-current');
+      }
+    },
     notice(message) {
       notice.textContent = message;
       notice.hidden = false;

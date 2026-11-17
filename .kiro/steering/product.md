@@ -26,6 +26,6 @@ Small rental shops first. Also anyone who hands an item or a key to another pers
 - No account, no login, no server. The app works offline after the first load.
 - No AI model and no paid service is called.
 - A record never leaves the device unless the user shares the copy file.
-- Every asset in the repository is original work made for it. System fonts only.
+- Code, drawings and sounds in the repository are original work made for it. The fonts are Gochi Hand, Rubik Mono One, Saira and Saira Condensed, bundled in app/src/fonts under the SIL Open Font Licence, with the licence texts beside them.
 - The version stays below 1.0.
 - Write every text file as UTF-8 with no byte order mark and with LF line endings. On Windows, do not write files with PowerShell `Set-Content` or `Out-File`.

@@ -145,6 +145,22 @@ export function createFillScreen(options: FillOptions): FillScreen {
 
   element.append(formHolder, tools, note, stampArea, fileInput);
 
+  // The hold progress is mirrored on the screen, so that the ring around the stamp target and the dimming of the desk
+  // (look.css) follow the same number as the pad. stamp.ts is not changed.
+  const mirrorProgress = () => {
+    const progress = stampButton.getAttribute('data-progress') ?? '0';
+    element.style.setProperty('--progress', progress);
+    const wasHolding = element.classList.contains('holding');
+    element.classList.toggle('holding', Number(progress) > 0);
+    // When the pad is in a bar fixed to the bottom, the view moves to the foot of the form, where the stamp comes down.
+    if (!wasHolding && Number(progress) > 0 && getComputedStyle(stampArea).position === 'fixed') {
+      const target = element.querySelector('.seal-row');
+      if (target !== null && typeof target.scrollIntoView === 'function') target.scrollIntoView({ block: 'center' });
+    }
+  };
+  const progressWatcher = new MutationObserver(mirrorProgress);
+  progressWatcher.observe(stampButton, { attributes: true, attributeFilter: ['data-progress'] });
+
   let boxes: SignatureBox[] = [];
   let pendingPhotoField: string | null = null;
   let draftTimer: ReturnType<typeof setTimeout> | null = null;
@@ -266,7 +282,13 @@ export function createFillScreen(options: FillOptions): FillScreen {
   function render(): void {
     for (const box of boxes) box.destroy();
     boxes = [];
-    formHolder.replaceChildren(renderForm(getRecord(), { mode: 'edit', template: currentTemplate(), onChange: onFormChange }));
+    const sheet = renderForm(getRecord(), { mode: 'edit', template: currentTemplate(), onChange: onFormChange });
+    // The seal row at the foot of the sheet: the place where the stamp comes down. Decoration only, no text.
+    const sealRow = make('div', 'seal-row');
+    sealRow.setAttribute('aria-hidden', 'true');
+    sealRow.append(make('div', 'seal-target'));
+    sheet.append(sealRow);
+    formHolder.replaceChildren(sheet);
     for (const line of lines) {
       const photo = photoOf.get(line.id);
       if (photo === undefined) continue;
@@ -361,6 +383,7 @@ export function createFillScreen(options: FillOptions): FillScreen {
       if (destroyed) return;
       if (draftTimer !== null) flushDraft();
       destroyed = true;
+      progressWatcher.disconnect();
       for (const box of boxes) box.destroy();
       boxes = [];
     },

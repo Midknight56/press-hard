@@ -1,7 +1,9 @@
 import { verifyRecord, type HandoverRecord } from 'core';
+import './fonts.css';
 import './form/theme.css';
 import './app.css';
 import './print.css';
+import './look.css';
 import { appConfig } from '../app.config.js';
 import { createAudio } from './audio.js';
 import { buildBeacon } from './beacon.js';
@@ -21,6 +23,9 @@ import { openStore, type Store } from './store.js';
 import { getTemplate, templates, type Template } from './templates/index.js';
 import { sampleRecord } from './templates/sample.js';
 import { VERDICT_TEXT } from './verify/check.js';
+
+/** The nav button that stands for each screen. The copy and the tamper screens belong to no button. */
+const CURRENT_PAGE: Record<string, string> = { pick: 'nav-home', fill: 'nav-home', library: 'nav-library', help: 'nav-help' };
 
 async function start(): Promise<void> {
   const root = document.getElementById('root');
@@ -64,6 +69,7 @@ async function start(): Promise<void> {
     current = { destroy: destroy ?? (() => undefined) };
     stage.replaceChildren(element);
     const key = element.getAttribute('data-screen') ?? 'screen';
+    nav.setCurrent(CURRENT_PAGE[key] ?? null);
     for (const line of element.querySelectorAll<HTMLElement>('[data-role="instruction"]')) {
       if (!hints.take(key)) line.hidden = true;
     }
@@ -138,7 +144,9 @@ async function start(): Promise<void> {
     status.setAttribute('role', 'status');
     const stored = document.createElement('p');
     stored.setAttribute('data-role', 'stored-verdict');
-    stored.textContent = `Stored copy: ${VERDICT_TEXT[verifyRecord(record)]}`;
+    const storedVerdict = verifyRecord(record);
+    stored.setAttribute('data-verdict', storedVerdict);
+    stored.textContent = `Stored copy: ${VERDICT_TEXT[storedVerdict]}`;
     info.append(stored, size, status);
     screen.element.append(info);
     mount(screen.element);

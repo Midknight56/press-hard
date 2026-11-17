@@ -20,7 +20,7 @@ A new user must be able to say, within five seconds, what this is, what to press
 ## Look
 - Paper, a perforated edge, carbon blue for the copy, a red form number. The paper look must make the form easier to read, not harder.
 - Body text on its background has a contrast ratio of 4.5 or more. A test checks this.
-- System fonts only. Load no font, script, style or image from another site.
+- Fonts: only the four bundled fonts in app/src/fonts (SIL Open Font Licence) and system fonts. Load no font, script, style or image from another site.
 
 ## Sound and motion
 - All sound is made in code with WebAudio. No sound files. Sound starts only after the first tap. Settings can turn it off.

@@ -1,0 +1,1512 @@
+/*
+ * The night desk look. A dark desk, real paper, rust stamp ink and blue carbon. Fonts come from fonts.css.
+ * Every rule is for the screen only: print keeps the rules of theme.css, app.css and print.css (paper colours, top copy only).
+ * Loaded after those three files. Colours, sizes and the order of things come from the owner's design, read off its values.
+ * Decorative words (the instruction line, the stamp words, the date, the four steps) are drawn with `content` on
+ * empty, hidden parts of the page, so that no text node holds them.
+ */
+@media screen {
+  :root {
+    --ph-desk: #14181d;
+    --ph-desk-raised: #222a32;
+    --ph-line: #3a444e;
+    --ph-muted: #a9b0b6;
+    --ph-paper: #f3ecdd;
+    --ph-rule: #a7a08f;
+    --ph-print: #26323b;
+    --ph-pen: #17171c;
+    --ph-stamp: #b33a12;
+    --ph-stamp-on-dark: #f0703a;
+    --ph-stamp-deep: #7e260a;
+    --ph-carbon-paper: #dce6f5;
+    --ph-carbon-ink: #23399b;
+    --ph-carbon-rule: #93a2cc;
+    --ph-carbon-back: #1b2470;
+    --ph-ok: #1e6b45;
+    --ph-dash: #7c8790;
+    --ph-radius: 3px;
+    --ph-sheet-shadow: 0 16px 34px -10px rgb(0 0 0 / 0.65), 0 2px 4px rgb(0 0 0 / 0.3);
+    --ph-font-ui: 'Saira', system-ui, sans-serif;
+    --ph-font-label: 'Saira Condensed', 'Saira', system-ui, sans-serif;
+    --ph-font-hand: 'Gochi Hand', cursive;
+    --ph-font-stamp: 'Rubik Mono One', 'Saira', sans-serif;
+
+    /* The old names, now with the new colours. Paper stays paper, ink is the print colour on paper. */
+    --paper: var(--ph-paper);
+    --desk: var(--ph-desk);
+    --ink: var(--ph-print);
+    --rule: var(--ph-rule);
+    --carbon-paper: var(--ph-carbon-paper);
+    --carbon-ink: var(--ph-carbon-ink);
+    --form-red: var(--ph-stamp);
+    font-family: var(--ph-font-ui);
+  }
+
+  /* ---------- The desk ---------- */
+  html {
+    background-color: var(--ph-desk);
+    background-image:
+      radial-gradient(1100px 820px at 46% 46%, rgb(255 196 107 / 0.17), transparent 68%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-attachment: fixed, scroll;
+  }
+
+  body {
+    background: transparent;
+    color: var(--ph-paper);
+    font: 400 16px/1.4 var(--ph-font-ui);
+  }
+
+  /* The dimming during the hold. It lies behind everything (z-index -1, the body has no background), so it only darkens the
+     desk and no text, so the contrast of text is not lowered. It takes the hold time to reach half. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, rgb(0 0 0 / 0.1) 0%, rgb(0 0 0 / 0.5) 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  body:has(.fill.holding)::before {
+    opacity: 1;
+    transition: opacity 1.2s linear;
+  }
+
+  a:not(.nav-link) {
+    color: var(--ph-stamp-on-dark);
+    text-underline-offset: 3px;
+  }
+
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid var(--ph-stamp-on-dark);
+    outline-offset: 2px;
+  }
+
+  /* ---------- The bar at the top (the rail on wide screens) ---------- */
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 16px;
+    max-width: 44rem;
+    padding-top: 16px;
+  }
+
+  .brand {
+    flex: 1 1 100%;
+    margin: 0;
+    font: 400 19px/1 var(--ph-font-stamp);
+    color: var(--ph-stamp-on-dark);
+  }
+
+  .tagline,
+  .steps {
+    display: none;
+  }
+
+  .bar nav {
+    flex: 1 1 100%;
+    gap: 12px;
+  }
+
+  .bar nav button,
+  .bar nav .nav-link {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px;
+    color: var(--ph-paper);
+    background: transparent;
+    border: 1px solid var(--ph-line);
+    border-radius: var(--ph-radius);
+    box-shadow: none;
+    font: 600 14px/1 var(--ph-font-label);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transform: none;
+  }
+
+  .bar nav [aria-current='page'] {
+    color: var(--ph-print);
+    background: var(--ph-paper);
+    border-color: var(--ph-paper);
+  }
+
+  .bar nav button[aria-pressed='false'] {
+    border-style: dashed;
+    text-decoration: line-through;
+  }
+
+  .notice {
+    padding: 8px 12px;
+    background: var(--ph-desk-raised);
+    border-left: 3px solid var(--ph-stamp-on-dark);
+    border-radius: var(--ph-radius);
+  }
+
+  @media (min-width: 900px) {
+    .brand {
+      flex: 0 0 auto;
+      font-size: 22px;
+    }
+
+    .bar nav {
+      flex: 1 1 0;
+      justify-content: flex-end;
+    }
+
+    .bar nav button,
+    .bar nav .nav-link {
+      flex: 0 0 auto;
+      min-width: 96px;
+      padding: 8px 16px;
+      font-size: 17px;
+    }
+  }
+
+  /* ---------- Screens on the desk ---------- */
+  .screen {
+    color: var(--ph-paper);
+  }
+
+  .screen h1 {
+    margin: 8px 0 12px;
+    font: 700 28px/1.15 var(--ph-font-ui);
+  }
+
+  .note,
+  .screen p {
+    overflow-wrap: anywhere;
+  }
+
+  .note {
+    color: var(--ph-paper);
+  }
+
+  /* ---------- Buttons: the paper tag ---------- */
+  button,
+  .nav-link,
+  .sheet-switch input,
+  .file-button {
+    color: var(--ph-print);
+    background-color: var(--ph-paper);
+    border: 1.5px solid var(--ph-print);
+    border-radius: var(--ph-radius);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
+    font: 600 15px/1.15 var(--ph-font-ui);
+  }
+
+  .nav-link {
+    color: var(--ph-print);
+  }
+
+  button:active:not([aria-disabled='true']),
+  .sheet-switch input:active,
+  button[aria-pressed='true']:not(.bar nav button) {
+    box-shadow: inset 0 2px 3px rgb(0 0 0 / 0.35);
+    transform: translateY(1px);
+  }
+
+  button[aria-disabled='true'] {
+    border-style: dashed;
+  }
+
+  .screen button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 14px;
+  }
+
+  .screen .pick-list button,
+  .screen .prefilled,
+  .copy-actions button {
+    min-height: 52px;
+    font-size: 17px;
+  }
+
+  .copy-actions {
+    gap: 12px;
+  }
+
+  /* ---------- Buttons: the ink pad. A tin with a felt pad, and a label in paper colour. ---------- */
+  .stamp,
+  .screen button[data-control='tear-off'],
+  .screen button[data-control='pick-prefilled'],
+  a.nav-link.primary {
+    position: relative;
+    isolation: isolate;
+    gap: 8px;
+    padding: 8px 16px;
+    color: var(--ph-paper);
+    /* The colour under the tin picture is the felt colour, so that the label's own background colour is the felt. */
+    background-color: var(--ph-stamp);
+    background-image: linear-gradient(#46525e, #262e36);
+    border: 0;
+    border-radius: 10px;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.2),
+      0 4px 0 #0a0d10,
+      0 12px 20px -8px rgb(0 0 0 / 0.65);
+    font: 700 16px/1 var(--ph-font-ui);
+    text-decoration: none;
+  }
+
+  .stamp::before,
+  .screen button[data-control='tear-off']::before,
+  .screen button[data-control='pick-prefilled']::before,
+  a.nav-link.primary::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    z-index: -1;
+    border-radius: 5px;
+    background:
+      linear-gradient(var(--ph-stamp-deep), var(--ph-stamp-deep)) no-repeat left / calc(var(--progress, 0) * 100%) 100%,
+      linear-gradient(var(--ph-stamp), #9a300e);
+    box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.45);
+  }
+
+  .stamp:active:not([aria-disabled='true']),
+  .screen button[data-control='tear-off']:active,
+  .screen button[data-control='pick-prefilled']:active {
+    transform: translateY(3px);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.2),
+      0 1px 0 #0a0d10;
+  }
+
+  .stamp[aria-disabled='true'] {
+    color: #c9bfae;
+    background-color: #3b332f;
+    border: 0;
+  }
+
+  .stamp[aria-disabled='true']::before {
+    background: #3b332f;
+    border: 1.5px dashed #8e8478;
+  }
+
+  .stamp-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The wood stamp on the left of the label. A picture made of an element, never under the text. */
+  .stamp .stamp-art {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #e3b27a, #b98148 55%, #6e421c);
+    box-shadow: 0 0 0 2.4px #1e1512;
+  }
+
+  /* ---------- Pick ---------- */
+  .pick h1 {
+    margin: 4px 0 8px;
+    font: 400 28px/1.1 var(--ph-font-stamp);
+    color: var(--ph-stamp-on-dark);
+  }
+
+  .pick-list {
+    gap: 12px;
+  }
+
+  .pick-preview {
+    opacity: 1;
+  }
+
+  .prefilled-badge {
+    justify-self: start;
+    padding: 4px 8px;
+    color: var(--ph-stamp-on-dark);
+    border: 1.5px solid var(--ph-stamp-on-dark);
+    border-radius: var(--ph-radius);
+    font: 600 14px/1.2 var(--ph-font-label);
+    letter-spacing: 0.1em;
+  }
+
+  /* ---------- The sheet ---------- */
+  .form {
+    --rule: var(--ph-rule);
+    position: relative;
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-content: start;
+    max-width: 40rem;
+    padding: 14px 14px 16px 44px;
+    color: var(--ph-print);
+    background-color: var(--ph-paper);
+    background-image: url('./assets/paper.svg');
+    background-size: 64px 64px;
+    background-repeat: repeat;
+    border: 0;
+    border-radius: 0;
+    box-shadow: var(--ph-sheet-shadow);
+    font: 400 16px/1.3 var(--ph-font-ui);
+  }
+
+  .form.ink-carbon {
+    --rule: var(--ph-carbon-rule);
+    color: var(--ph-carbon-ink);
+    background-color: var(--ph-carbon-paper);
+    text-shadow: 0 0 1.5px rgb(35 57 155 / 0.55);
+  }
+
+  /* The tractor feed stub down the left: a dashed edge and holes that show the desk. */
+  .form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 24px;
+    border-right: 1px dashed var(--rule);
+    background: radial-gradient(circle at 12px 16px, var(--ph-desk) 3.6px, transparent 4.2px) 0 0 / 24px 32px repeat-y;
+    pointer-events: none;
+  }
+
+  .form > * {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .form-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 12px;
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid currentColor;
+  }
+
+  .form-head h2 {
+    font: 700 23px/1.05 var(--ph-font-ui);
+    color: var(--ph-print);
+  }
+
+  .form-number {
+    font: 600 17px/1 var(--ph-font-label);
+    letter-spacing: 0.1em;
+    color: var(--ph-stamp);
+  }
+
+  /* The instruction line of the form, drawn here and not written in the page. */
+  .form-head::after {
+    content: 'PEN ONLY \00b7  YOU ARE MAKING 2 COPIES';
+    flex: 1 1 100%;
+    margin-top: 5px;
+    font: 600 12px/1.2 var(--ph-font-label);
+    letter-spacing: 0.1em;
+    color: var(--ph-stamp);
+  }
+
+  .ink-carbon .form-head h2,
+  .ink-carbon .form-number,
+  .ink-carbon .form-head::after {
+    color: var(--ph-carbon-ink);
+  }
+
+  /* A cell: the label on top, the written value below. */
+  .form .line {
+    position: relative;
+    display: block;
+    min-height: 56px;
+    padding: 7px 8px 5px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .form .line .label {
+    display: block;
+    flex: none;
+    font: 600 12px/1.2 var(--ph-font-label);
+    letter-spacing: 0.05em;
+    color: var(--ph-print);
+  }
+
+  .ink-carbon .line .label {
+    color: var(--ph-carbon-ink);
+  }
+
+  .form .line .value {
+    display: block;
+    min-height: 24px;
+    margin-top: 4px;
+    font: 400 21px/1.15 var(--ph-font-hand);
+    color: var(--ph-pen);
+  }
+
+  .form .line-number .value {
+    white-space: nowrap;
+  }
+
+  .ink-carbon .line .value {
+    color: var(--ph-carbon-ink);
+  }
+
+  /* The edit controls fill their cell. The label sits inside the top of the control, and the control is 6 px from the
+     cell edge, so two controls are never closer than 12 px. */
+  .form-edit .line:not(.line-photo) {
+    min-height: 68px;
+    padding: 6px;
+  }
+
+  .form-edit .line:not(.line-photo) .label {
+    position: absolute;
+    top: 11px;
+    left: 14px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .form-edit .line input[type='text'],
+  .form-edit .line select {
+    display: block;
+    flex: none;
+    width: 100%;
+    min-height: 56px;
+    margin: 0;
+    padding: 22px 8px 4px;
+    color: var(--ph-pen);
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    caret-color: var(--ph-stamp);
+    font: 400 21px/1.15 var(--ph-font-hand);
+    text-overflow: ellipsis;
+  }
+
+  .form-edit .line input[type='text']:focus-visible,
+  .form-edit .line select:focus-visible {
+    outline: 2px solid var(--ph-stamp);
+    outline-offset: 4px;
+  }
+
+  .form-edit .line:focus-within:not(.line-photo) {
+    /* A tint as a picture layer, not a background colour: the colour of the cell stays the paper. */
+    background-image: linear-gradient(rgb(179 58 18 / 0.07), rgb(179 58 18 / 0.07));
+  }
+
+  .form-edit .line select {
+    appearance: none;
+    padding-right: 28px;
+    background-image:
+      linear-gradient(to bottom left, var(--ph-print) 50%, transparent 50%),
+      linear-gradient(to bottom right, var(--ph-print) 50%, transparent 50%);
+    background-position:
+      right 13px bottom 14px,
+      right 8px bottom 14px;
+    background-size: 5px 7px;
+    background-repeat: no-repeat;
+  }
+
+  .form-edit .line option {
+    color: var(--ph-pen);
+    background: var(--ph-paper);
+  }
+
+  .form .control-wrap {
+    position: relative;
+    display: block;
+  }
+
+  .form .control-wrap .unit {
+    position: absolute;
+    right: 8px;
+    bottom: 10px;
+    font: 600 14px/1 var(--ph-font-label);
+    color: var(--ph-print);
+    pointer-events: none;
+  }
+
+  .form .control-wrap:has(.unit) input {
+    padding-right: 48px;
+  }
+
+  /* Photos: the picture, its size, and the button. */
+  .form .line-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 8px 10px;
+  }
+
+  .form .line-photo .label {
+    order: 0;
+  }
+
+  .form .line img.photo {
+    order: 1;
+    box-sizing: border-box;
+    width: 122px;
+    height: 84px;
+    max-width: 100%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+  }
+
+  .form .line-photo .add-photo {
+    order: 2;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  .form-edit .line-photo:not(:has(img.photo))::after {
+    content: '';
+    order: 1;
+    box-sizing: border-box;
+    width: 122px;
+    height: 84px;
+    border: 1.5px dashed var(--ph-dash);
+  }
+
+  .form .photo-size {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font: 500 12px/1.2 var(--ph-font-ui);
+    color: var(--ph-print);
+  }
+
+  /* The two signature boxes. */
+  .form .signatures {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin: 0;
+    padding-top: 12px;
+  }
+
+  .form .signature-slot {
+    position: relative;
+    min-height: 118px;
+    overflow: hidden;
+    border: 1.5px dashed var(--ph-dash);
+    border-radius: 2px;
+    touch-action: none;
+  }
+
+  .form .signature-slot::before {
+    top: 6px;
+    left: 8px;
+    color: var(--ph-print);
+    font: 600 12px/1.2 var(--ph-font-label);
+    letter-spacing: 0.05em;
+  }
+
+  /* The ink lies exactly over the box, so that what is drawn is where the pointer was. */
+  .form .signature-slot > svg.signature {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border: 0;
+    color: var(--ph-pen);
+  }
+
+  .form .signatures > svg.signature {
+    width: 100%;
+    height: 118px;
+    min-height: 0;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ph-pen);
+  }
+
+  .ink-carbon .signature {
+    color: var(--ph-carbon-ink);
+  }
+
+  .form .signature polyline {
+    stroke-width: 3;
+  }
+
+  /* The seal row at the foot of the sheet while it is filled: the place where the stamp comes down. */
+  .form .seal-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 150px;
+    pointer-events: none;
+  }
+
+  .seal-target {
+    position: relative;
+    flex: none;
+    width: 128px;
+    height: 128px;
+    border: 1.5px dashed var(--ph-dash);
+    border-radius: 50%;
+  }
+
+  /* The seal words and the stamp mark on a sealed sheet. */
+  .form .seal-words {
+    min-height: 110px;
+    margin: 0;
+    padding: 14px 150px 0 8px;
+    font: 700 16px/1.25 var(--ph-font-label);
+    letter-spacing: 0.04em;
+    color: var(--ph-stamp);
+    overflow-wrap: anywhere;
+  }
+
+  .ink-carbon .seal-words {
+    color: var(--ph-carbon-ink);
+  }
+
+  .impression {
+    position: absolute;
+    right: 18px;
+    bottom: 14px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    box-sizing: border-box;
+    width: 128px;
+    height: 128px;
+    border: 4.5px solid var(--ph-stamp);
+    border-radius: 50%;
+    color: var(--ph-stamp);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    transform: rotate(-9deg);
+    animation: thump 120ms ease-out both;
+  }
+
+  .impression::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .impression i {
+    position: relative;
+    display: block;
+    font-style: normal;
+    text-shadow: none;
+    white-space: nowrap;
+  }
+
+  .imp-top::before {
+    content: 'HANDED OVER';
+    font: 700 14px/1 var(--ph-font-label);
+    letter-spacing: 0.08em;
+  }
+
+  .imp-word::before {
+    content: 'SEALED';
+    display: block;
+    padding: 3px 4px;
+    border-top: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    font: 400 15px/1 var(--ph-font-stamp);
+  }
+
+  .imp-date::before {
+    content: attr(data-date);
+    font: 600 11px/1 var(--ph-font-label);
+    letter-spacing: 0.08em;
+  }
+
+  .ink-carbon .impression {
+    color: var(--ph-carbon-ink);
+    border-color: var(--ph-carbon-ink);
+  }
+
+  /* ---------- The stamp tool, the ring and the dimming (the stamp moment) ---------- */
+  .fill.holding .seal-target::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 168px;
+    height: 168px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: conic-gradient(var(--ph-stamp-on-dark) calc(var(--progress, 0) * 360deg), transparent 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 7px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 7px));
+  }
+
+  .fill.holding .seal-target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle closest-side, #f0c790, #b98148 60%, #7a4a22 99%, transparent 100%) center / 56px 56px no-repeat,
+      radial-gradient(circle at 38% 32%, #e3b27a 0, #c08a52 22%, #8f5a2c 55%, #5e3716 100%);
+    box-shadow:
+      0 0 0 3px var(--ph-stamp),
+      0 0 0 13px #1e1512,
+      0 19px 34px rgb(0 0 0 / 0.6);
+    animation: drop 150ms ease-out both;
+  }
+
+  /* ---------- The bar at the bottom with Hold to seal ---------- */
+  .stamp-area {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+    background: var(--ph-desk-raised);
+    border-top: 1px solid var(--ph-line);
+    box-shadow: 0 -12px 24px rgb(0 0 0 / 0.45);
+  }
+
+  .stamp-area p {
+    flex: 1 1 0;
+    margin: 0;
+    color: var(--ph-muted);
+    font: 400 15px/1.3 var(--ph-font-ui);
+  }
+
+  .stamp-area .stamp {
+    flex: none;
+    height: 48px;
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  #root .fill .stamp-area {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    min-height: calc(81px + env(safe-area-inset-bottom));
+    padding-right: max(16px, calc((100% - 720px) / 2));
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: max(16px, calc((100% - 720px) / 2));
+  }
+
+  /* Room under the sheet so that the bar never covers the last row. */
+  #root .screen.fill {
+    max-width: calc(720px + 32px);
+    padding-bottom: calc(80px + 32px + env(safe-area-inset-bottom));
+  }
+
+  #root .fill .line-tools {
+    gap: 12px;
+  }
+
+  /* ---------- Container rules: the cells of a wide sheet ---------- */
+  @container (min-width: 560px) {
+    .form .line-party {
+      grid-column: span 6;
+    }
+
+    .form .line-party + .line-party,
+    .form[data-template='rental-return'] [data-field='condition'],
+    .form[data-template='rental-return'] [data-field='fuel'],
+    .form[data-template='rental-return'] [data-field='damage'] {
+      border-left: 1px solid var(--rule);
+    }
+
+    .form[data-template='rental-return'] [data-field='item'] {
+      grid-column: 1 / 7;
+    }
+
+    .form[data-template='rental-return'] [data-field='condition'] {
+      grid-column: 7 / 10;
+    }
+
+    .form[data-template='rental-return'] [data-field='mileage'] {
+      grid-column: 1 / 4;
+    }
+
+    .form[data-template='rental-return'] [data-field='fuel'] {
+      grid-column: 10 / 13;
+    }
+
+    .form[data-template='rental-return'] [data-field='damage'] {
+      grid-column: 4 / 13;
+    }
+
+    /* The mileage line is below the fuel line in the markup order, so it keeps its row by the line numbers. */
+    .form[data-template='rental-return'] [data-field='item'],
+    .form[data-template='rental-return'] [data-field='condition'],
+    .form[data-template='rental-return'] [data-field='fuel'] {
+      grid-row: 3;
+    }
+
+    .form[data-template='rental-return'] [data-field='mileage'],
+    .form[data-template='rental-return'] [data-field='damage'] {
+      grid-row: 4;
+    }
+
+    .form .form-head {
+      grid-row: 1;
+    }
+
+    .form .line-party {
+      grid-row: 2;
+    }
+
+    .form .line-photo {
+      grid-column: span 6;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 6px 10px;
+    }
+
+    .form .line-photo + .line-photo {
+      border-left: 1px solid var(--rule);
+    }
+
+    .form .line-photo .label {
+      flex: 1 1 100%;
+    }
+
+    .form .line img.photo,
+    .form-edit .line-photo:not(:has(img.photo))::after {
+      width: 170px;
+      height: 104px;
+    }
+
+    .form .line .value,
+    .form-edit .line input[type='text'],
+    .form-edit .line select {
+      font-size: 26px;
+    }
+
+    .form .line .label {
+      font-size: 13px;
+    }
+
+    .form .signatures {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form .signature-slot {
+      min-height: 140px;
+    }
+
+    .form .signatures > svg.signature {
+      height: 140px;
+    }
+
+    .impression {
+      width: 140px;
+      height: 140px;
+    }
+
+    .seal-target {
+      width: 140px;
+      height: 140px;
+    }
+  }
+
+  /* On a narrow sheet: the condition, the mileage and the fuel share one row. */
+  @container (max-width: 559px) {
+    .form[data-template='rental-return'] [data-field='condition'],
+    .form[data-template='rental-return'] [data-field='mileage'],
+    .form[data-template='rental-return'] [data-field='fuel'] {
+      grid-column: span 4;
+    }
+
+    .form[data-template='rental-return'] [data-field='mileage'],
+    .form[data-template='rental-return'] [data-field='fuel'] {
+      border-left: 1px solid var(--rule);
+    }
+
+    .form[data-template='rental-return'] [data-field='damage'] {
+      min-height: 86px;
+    }
+
+    .form[data-template='rental-return'] [data-field='condition'] input,
+    .form[data-template='rental-return'] [data-field='condition'] select,
+    .form[data-template='rental-return'] [data-field='mileage'] input,
+    .form[data-template='rental-return'] [data-field='fuel'] select,
+    .form[data-template='rental-return'] .line-choice .value,
+    .form[data-template='rental-return'] .line-number .value {
+      font-size: 17px;
+    }
+
+    .form[data-template='rental-return'] [data-field='condition'] select,
+    .form[data-template='rental-return'] [data-field='fuel'] select {
+      padding: 22px 18px 4px 6px;
+    }
+
+    .form[data-template='rental-return'] [data-field='mileage'] .control-wrap:has(.unit) input {
+      padding: 22px 26px 4px 6px;
+    }
+
+    .form[data-template='rental-return'] [data-field='mileage'] .control-wrap .unit {
+      right: 4px;
+      font-size: 12px;
+    }
+
+    .form .line-photo {
+      grid-column: span 6;
+    }
+
+    .form .line-photo + .line-photo {
+      border-left: 1px solid var(--rule);
+    }
+
+    .form .line-photo .add-photo {
+      padding: 8px;
+    }
+  }
+
+  /* ---------- The copy screen ---------- */
+  .seal-strip {
+    gap: 12px;
+    padding: 8px 12px;
+    color: var(--ph-paper);
+    background: var(--ph-desk-raised);
+    border: 1px solid var(--ph-line);
+    border-radius: var(--ph-radius);
+  }
+
+  .seal-strip-text {
+    font: 400 16px/1.3 var(--ph-font-ui);
+  }
+
+  .seal-strip-text strong {
+    display: block;
+    font: 700 18px/1.25 var(--ph-font-label);
+    letter-spacing: 0.04em;
+    color: var(--ph-stamp-on-dark);
+    animation: words 360ms steps(4, end) both;
+  }
+
+  .seal-stamp {
+    flex: 0 0 40px;
+    background: radial-gradient(circle at 38% 32%, #e3b27a, #b98148 55%, #6e421c);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px #1e1512;
+    margin: 3px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .copy .seal-words {
+    animation: words 360ms steps(4, end) both;
+  }
+
+  .sheet-label {
+    font: 600 14px/1.25 var(--ph-font-label);
+    letter-spacing: 0.1em;
+    color: var(--ph-muted);
+  }
+
+  .copy-info p {
+    margin: 4px 0;
+    color: var(--ph-paper);
+  }
+
+  .copy-info [data-role='stored-verdict']::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--ph-stamp-on-dark);
+  }
+
+  .copy-info [data-role='stored-verdict'][data-verdict='matches']::before {
+    background: #4fbf86;
+  }
+
+  .copy.tearing .tear-edge {
+    animation: perforate 450ms steps(8, end) both;
+  }
+
+  .copy.tearing .carbon-sheet {
+    animation: tear-off 600ms ease-in-out both;
+  }
+
+  /* The sheet gives one 2 px shake when the stamp lands. */
+  .copy {
+    animation: shake 80ms linear 1;
+  }
+
+  /* ---------- Library, help, tamper, verify ---------- */
+  .record,
+  .confirm,
+  .diff-list {
+    color: var(--ph-print);
+    background-color: var(--ph-paper);
+    background-image: url('./assets/paper.svg');
+    border: 0;
+    border-radius: 0;
+    box-shadow: var(--ph-sheet-shadow);
+  }
+
+  .record {
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .record p {
+    font: 600 16px/1.3 var(--ph-font-ui);
+  }
+
+  .confirm {
+    padding: 16px;
+    border-left: 4px solid var(--ph-stamp);
+  }
+
+  .diff-list h2 {
+    font: 700 18px/1.2 var(--ph-font-ui);
+  }
+
+  .help ol {
+    padding-left: 1.5rem;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .help li {
+    margin: 8px 0;
+    padding-left: 4px;
+  }
+
+  .help li::marker {
+    font: 400 14px/1 var(--ph-font-stamp);
+    color: var(--ph-stamp-on-dark);
+  }
+
+  .field-label {
+    color: var(--ph-paper);
+    font: 600 14px/1.2 var(--ph-font-label);
+    letter-spacing: 0.05em;
+  }
+
+  .field-label input[type='text'] {
+    min-height: 44px;
+    padding: 8px;
+    color: var(--ph-pen);
+    background-color: var(--ph-paper);
+    border: 1.5px solid var(--ph-print);
+    border-radius: var(--ph-radius);
+    font: 400 21px/1.15 var(--ph-font-hand);
+  }
+
+  .file-button {
+    border: 0;
+    box-shadow:
+      inset 0 0 0 1.5px var(--ph-print),
+      0 2px 0 rgb(0 0 0 / 0.4);
+    font-weight: 600;
+  }
+
+  .file-button input {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .file-button:focus-within {
+    outline: 3px solid var(--ph-stamp-on-dark);
+  }
+
+  .file-names {
+    color: var(--ph-paper);
+  }
+
+  .verdict {
+    background: var(--ph-paper);
+    border: 1.5px solid currentColor;
+    border-radius: var(--ph-radius);
+    box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
+    font: 700 22px/1.2 var(--ph-font-label);
+    letter-spacing: 0.05em;
+  }
+
+  .verdict-matches {
+    color: var(--ph-ok);
+  }
+
+  .verdict-changed,
+  .verdict-wrong_seal {
+    color: var(--ph-stamp);
+  }
+
+  .verdict-unsealed {
+    color: #6b4e00;
+  }
+
+  .verify-error {
+    color: var(--ph-stamp-on-dark);
+  }
+
+  .line.changed {
+    outline: 2px solid var(--ph-stamp);
+    outline-offset: -1px;
+  }
+
+  .diff {
+    margin-top: 4px;
+    color: var(--ph-stamp);
+    font: 600 15px/1.3 var(--ph-font-ui);
+  }
+
+  .ink-carbon .diff {
+    color: var(--ph-carbon-ink);
+  }
+
+  .refused {
+    color: var(--ph-stamp-on-dark);
+  }
+
+  /* ---------- The site: landing and privacy ---------- */
+  .hero h1,
+  .document h1 {
+    font: 700 32px/1.15 var(--ph-font-ui);
+  }
+
+  .document h2 {
+    font: 700 21px/1.25 var(--ph-font-ui);
+  }
+
+  .document code,
+  .landing code {
+    color: var(--ph-paper);
+  }
+
+  .loop {
+    background: var(--ph-desk);
+    border: 1px solid var(--ph-line);
+    border-radius: var(--ph-radius);
+  }
+
+  .loop-caption {
+    font: 600 17px/1.3 var(--ph-font-ui);
+    color: var(--ph-paper);
+  }
+
+  /* ---------- The wide screen: the rail, the sheet and the tray (1900 px and up, fill screen only) ---------- */
+  @media (min-width: 1900px) {
+    #root:has(.stage > .fill) {
+      position: relative;
+    }
+
+    #root:has(.stage > .fill) > .bar {
+      position: absolute;
+      top: 60px;
+      left: 72px;
+      z-index: 3;
+      display: block;
+      width: 340px;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #root:has(.stage > .fill) .brand {
+      font-size: 66px;
+      line-height: 0.98;
+    }
+
+    #root:has(.stage > .fill) .tagline {
+      display: block;
+      margin: 20px 0 0;
+      font: 400 21px/1.35 var(--ph-font-ui);
+      color: var(--ph-muted);
+    }
+
+    #root:has(.stage > .fill) .bar nav {
+      flex-direction: column;
+      margin-top: 44px;
+    }
+
+    #root:has(.stage > .fill) .bar nav button,
+    #root:has(.stage > .fill) .bar nav .nav-link {
+      flex: none;
+      justify-content: flex-start;
+      min-height: 52px;
+      padding: 8px 18px;
+      font-size: 19px;
+      text-align: left;
+    }
+
+    #root:has(.stage > .fill) .notice {
+      margin-top: 12px;
+    }
+
+    #root:has(.stage > .fill) .steps {
+      position: fixed;
+      bottom: 64px;
+      left: 72px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 340px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #root:has(.stage > .fill) .steps li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font: 400 19px/1.2 var(--ph-font-ui);
+      color: var(--ph-muted);
+    }
+
+    #root:has(.stage > .fill) .steps li::before {
+      content: attr(data-n);
+      display: flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid var(--ph-line);
+      border-radius: 50%;
+      font: 400 13px/1 var(--ph-font-stamp);
+    }
+
+    #root:has(.stage > .fill) .steps li::after {
+      content: attr(data-step);
+    }
+
+    #root:has(.stage > .fill) .steps li[data-n='1'] {
+      font-weight: 600;
+      color: var(--ph-paper);
+    }
+
+    #root:has(.stage > .fill) .steps li[data-n='1']::before {
+      color: var(--ph-desk);
+      background: var(--ph-stamp-on-dark);
+      border-color: var(--ph-stamp-on-dark);
+    }
+
+    #root .screen.fill {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 720px minmax(0, 1fr);
+      align-content: start;
+      max-width: none;
+      margin: 0;
+      padding: 168px 72px 64px;
+    }
+
+    #root .fill > * {
+      grid-column: 2;
+    }
+
+    #root .fill > .stamp-area {
+      position: relative;
+      right: auto;
+      bottom: auto;
+      left: auto;
+      z-index: 1;
+      grid-column: 3;
+      grid-row: 1 / span 3;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      align-self: start;
+      gap: 0;
+      min-height: 0;
+      margin: 82px 0 0 48px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    /* The stamp at rest, above the pad. While the hold lasts it is at the seal box, and its resting place shows a dashed ring. */
+    #root .fill > .stamp-area::before {
+      content: '';
+      flex: none;
+      order: -1;
+      width: 190px;
+      height: 190px;
+      margin-bottom: 80px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle closest-side, #f0c790, #b98148 60%, #7a4a22 99%, transparent 100%) center / 98px 98px no-repeat,
+        radial-gradient(circle at 38% 32%, #e3b27a 0, #c08a52 22%, #8f5a2c 55%, #5e3716 100%);
+      box-shadow:
+        0 0 0 13px #1e1512,
+        0 19px 34px rgb(0 0 0 / 0.6);
+    }
+
+    #root .fill.holding > .stamp-area::before {
+      background: none;
+      box-shadow: none;
+      outline: 1.5px dashed var(--ph-dash);
+      outline-offset: 10px;
+    }
+
+    #root .fill .stamp-area .stamp {
+      width: 440px;
+      max-width: 100%;
+      height: 124px;
+      min-height: 124px;
+      padding: 12px 40px;
+      border-radius: 16px;
+      font-size: 28px;
+      gap: 16px;
+    }
+
+    #root .fill .stamp-area .stamp::before {
+      inset: 10px;
+      border-radius: 11px;
+    }
+
+    #root .fill .stamp-area .stamp .stamp-art {
+      flex-basis: 50px;
+      width: 50px;
+      height: 50px;
+      margin-right: 6px;
+      box-shadow: 0 0 0 6px #1e1512;
+    }
+
+    #root .fill .stamp-area .stamp {
+      order: 1;
+    }
+
+    #root .fill .stamp-area p {
+      order: 2;
+      flex: none;
+      margin-top: 24px;
+      font-size: 19px;
+      text-align: center;
+    }
+
+    #root .fill.holding .seal-target::before {
+      width: 184px;
+      height: 184px;
+    }
+
+    #root .fill.holding .seal-target::after {
+      width: 132px;
+      height: 132px;
+    }
+  }
+
+  /* The loop on the landing page is made of the real screens. Its bar does not leave its box. */
+  .loop .screen.fill {
+    padding-bottom: 8px;
+  }
+}
+
+@keyframes thump {
+  from {
+    transform: rotate(-9deg) scale(1.04);
+  }
+  to {
+    transform: rotate(-9deg) scale(1);
+  }
+}
+
+@keyframes drop {
+  from {
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes words {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes perforate {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes tear-off {
+  0% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(24px) rotate(2deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes crossfade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion: everything is a 150 ms cross fade. The hold still takes 1200 ms. */
+@media screen and (prefers-reduced-motion: reduce) {
+  body::before,
+  body:has(.fill.holding)::before {
+    transition: opacity 150ms linear;
+  }
+
+  .copy,
+  .impression,
+  .copy.tearing .tear-edge,
+  .copy.tearing .carbon-sheet,
+  .seal-strip-text strong,
+  .copy .seal-words {
+    animation: crossfade 150ms linear both;
+  }
+
+  .carbon-sheet.fade {
+    animation-duration: 150ms;
+  }
+
+  .fill.holding .seal-target::after {
+    animation: crossfade 150ms linear both;
+  }
+}

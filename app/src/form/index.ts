@@ -39,8 +39,8 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-function lineShell(id: string, label: string): HTMLElement {
-  const line = el('div', 'line');
+function lineShell(id: string, label: string, kind: string): HTMLElement {
+  const line = el('div', `line line-${kind}`);
   line.setAttribute('data-field', id);
   line.append(el('span', 'label', label));
   return line;
@@ -118,7 +118,7 @@ function partyLine(
   options: RenderOptions,
   emit: (c: FormChange) => void,
 ): HTMLElement {
-  const line = lineShell(party, label);
+  const line = lineShell(party, label, 'party');
   if (options.mode === 'edit') {
     const input = textInput(`party-${party}`, value);
     input.addEventListener('input', () => emit({ kind: 'party', party, value: input.value }));
@@ -129,6 +129,27 @@ function partyLine(
   return line;
 }
 
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+/** A date text such as 2026-11-17T09:30:00Z, written as 17 NOV 2026. An empty string when the text is not a date. */
+export function stampDate(sealedAt: string | null | undefined): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(sealedAt ?? '');
+  const month = m === null ? undefined : MONTHS[Number(m[2]) - 1];
+  return m === null || month === undefined ? '' : `${Number(m[3])} ${month} ${m[1]}`;
+}
+
+/** The round stamp mark on a sealed sheet: three empty parts, so that no word is a text node. look.css writes the words. */
+function stampImpression(sealedAt: string | null | undefined): HTMLElement {
+  const mark = el('div', 'impression');
+  mark.setAttribute('aria-hidden', 'true');
+  const top = el('i', 'imp-top');
+  const word = el('i', 'imp-word');
+  const date = el('i', 'imp-date');
+  date.setAttribute('data-date', stampDate(sealedAt));
+  mark.append(top, word, date);
+  return mark;
+}
+
 /** Draws one paper form from a record. Every value is set as text, never as markup. */
 export function renderForm(record: HandoverRecord, options: RenderOptions): HTMLElement {
   const { mode, template } = options;
@@ -136,6 +157,7 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
   const root = el('section', `form form-${mode}${mode === 'carbon' ? ' ink-carbon' : ''}`);
   root.setAttribute('data-mode', mode);
   root.setAttribute('data-box', 'sheet');
+  root.setAttribute('data-template', record.form.templateId);
 
   const head = el('header', 'form-head');
   head.append(el('h2', undefined, record.form.title));
@@ -152,7 +174,7 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
 
   for (const line of lines) {
     const field = record.fields.find((f) => f.id === line.id);
-    const row = lineShell(line.id, line.label);
+    const row = lineShell(line.id, line.label, line.kind);
     if (line.kind === 'photo') {
       const photo = record.photos.find((p) => p.digest === field?.photoDigest);
       const img = photo !== undefined ? photoImage(photo) : null;
@@ -192,6 +214,8 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
 
   if (record.seal !== undefined) {
     root.append(el('footer', 'seal-words', sealWords(record.seal)));
+    // The stamp impression is decoration. Its words are drawn by CSS, so this markup holds no text.
+    if (mode !== 'edit') root.append(stampImpression(record.sealedAt));
   }
   return root;
 }

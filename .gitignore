@@ -4,3 +4,4 @@ core/src/generated
 mcp/demo
 test-results
 playwright-report
+.design-ref

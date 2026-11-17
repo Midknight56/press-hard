@@ -1,0 +1,49 @@
+/* The four families of the look, served from the app's own origin. The files are in ./fonts with their OFL texts.
+   Vite writes them into dist/assets/, so the service worker precache list holds them and the app works offline. */
+@font-face {
+  font-family: 'Saira';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fonts/Saira-variable-400-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./fonts/SairaCondensed-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/SairaCondensed-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/SairaCondensed-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Gochi Hand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/GochiHand-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rubik Mono One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/RubikMonoOne-400.woff2') format('woff2');
+}

@@ -98,7 +98,19 @@ export function createCopyScreen(options: CopyOptions): { element: HTMLElement }
 
   const actions = document.createElement('div');
   actions.className = 'copy-actions';
-  if (options.onTearOff) actions.append(action('tear-off', 'Tear off the copy', options.onTearOff));
+  if (options.onTearOff) {
+    const tearOff = options.onTearOff;
+    // The tear off motion (the perforation opens, the copy slides out and settles) is a class for 0.7 s. With reduced motion there is none.
+    actions.append(
+      action('tear-off', 'Tear off the copy', () => {
+        if (!reducedMotion) {
+          element.classList.add('tearing');
+          setTimeout(() => element.classList.remove('tearing'), 700);
+        }
+        tearOff();
+      }),
+    );
+  }
   if (options.onPrint) actions.append(action('print', 'Print', options.onPrint));
   if (options.onTamper) actions.append(action('tamper', 'Try to change this copy', options.onTamper));
   if (options.onLibrary) actions.append(action('library', 'Library', options.onLibrary));

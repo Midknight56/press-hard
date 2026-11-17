@@ -69,4 +69,4 @@ npm run build
 
 ## Licence
 
-MIT. Every asset in the repository is original work made for it. System fonts only.
+MIT for the code. Code, drawings and sounds are original work made for it. The fonts are Gochi Hand, Rubik Mono One, Saira and Saira Condensed, bundled in app/src/fonts under the SIL Open Font Licence, with the licence texts beside them.
