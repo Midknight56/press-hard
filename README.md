@@ -17,7 +17,7 @@ Video: https://youtu.be/JAdXdE0n1bc
 
 **Innovation/Idea.** It brings back the carbon paper duplicate book and keeps its best part: both people hold the same record. The new part is the seal. The copy is one HTML file with a SHA-256 seal shown as four plain words, so two people can compare copies by reading four words aloud.
 
-**Presentation.** The video shows the whole flow on a phone: fill, press hard, the carbon copy appears, tear off, four words, then a changed copy is caught with the changed line marked.
+**Presentation.** The video shows the whole flow on a phone: fill, press hard, the carbon copy appears, tear off, four words, then a changed copy is caught with the changed line marked. The last part shows how Kiro built it: the specs, the steering files, the hooks, the copycheck MCP server, the property tests and the log of all 35 runs.
 
 ## How it works
 
