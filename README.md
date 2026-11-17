@@ -46,8 +46,8 @@ npm run build
 | --- | --- | --- |
 | core: record, seal, copy file, compare | 249 | pass |
 | mcp: copycheck server | 15 | pass |
-| app: screens, store, art | 363 | pass |
-| browser: good path, bad path, layout, contrast, print, offline, site, words on screen, sub path | 30 | pass |
+| app: screens, store, art | 382 | pass |
+| browser: good path, bad path, layout, carbon copy, contrast, print, offline, site, words on screen, sub path | 35 | pass |
 
 ## How Kiro was used
 
