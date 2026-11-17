@@ -140,6 +140,28 @@ Tests are written first and seen to fail. The ESLint block for `core/` covers `c
 6. **Diff is exact.** `diffRecords(a, b)` is empty exactly when the canonical texts are equal, and for a single field value change it has exactly one entry with the path `fields.<id>.value`. (6.3, 6.4)
 7. **Words follow the seal.** Two seals with the same first four bytes give the same words, and seals that differ in one of those bytes give different words. (4.3)
 
+Properties 8 to 26 were derived by hand from every acceptance criterion in `requirements.md`, because the spec correctness feature of the Kiro IDE cannot run in the Kiro CLI. Each is in `core/tests/spec-properties.test.ts` as S(n - 7), so property 8 is S1 and property 26 is S19. Properties 1 to 7 stay in `core/tests/properties.test.ts`.
+
+8. **Validation never throws.** For any JSON value, `validateRecord` returns a list of text problems, and a value that is not a good record gives at least one. (1.2)
+9. **A problem names its path.** For a good record with one bad value (format, `sealedAt`, `seal`, a field id, a repeated id, a choice value, a number text, a photo field digest, a photo digest, an odd stroke, a stroke number out of range or not whole, a second signature for one party), the list holds a problem that starts with the path of that value. (1.2, 1.4, 1.5)
+10. **A limit is met exactly.** For counts around each limit, the record is refused exactly when it has more than 40 fields, 6 photos, 500 characters in any kind of text value, or 4000 points. A photo of 1,500,000 base64 characters is good and one of 1,500,004 is refused. (1.3)
+11. **Canonical text is sorted JSON of the record.** For any sealed record, the canonical text parses to the record without its `seal` key, every object in it has its keys in code unit order, and it is the same as `JSON.stringify` of that parsed value, so it holds no space outside strings. (2.1, 2.3)
+12. **The seal key is not part of the text.** For any record and any seal text, adding the `seal` key does not change the canonical text. (2.3)
+13. **Array order is part of the text.** Reversing a list of two or more fields changes the canonical text. (2.1, 2.2)
+14. **SHA-256 form and block edges.** `sha256Hex` returns 64 lower case hex characters, does not change its input, and equals Node's `crypto` for lengths on both sides of the 56 byte and 64 byte edges. (3.1, 3.3)
+15. **The seal is the hash of the canonical text.** For any valid unsealed record and any ISO 8601 time, `sealRecord` returns the record with `sealedAt` set, `seal` equal to the SHA-256 of the UTF-8 bytes of the canonical text, nothing else changed, and a record that validates and verifies as `matches`. (4.1)
+16. **Sealing is refused.** `sealRecord` refuses a record that already has a seal, a `sealedAt` that is not ISO 8601 text, and a record with problems. (4.2)
+17. **Seal words come from the list.** The list has 256 different lower case words of 3 to 6 letters. For any seal, `sealWords` gives four words joined with `-`, and word i is the list entry for byte i. (4.3, 4.4)
+18. **The copy file shows the record.** For any sealed record, the file holds the seal, the seal words, one `stamp` element, one `img` for each photo and one `svg` for each signature, and the embedded JSON has no `<` and parses to the record. (5.1, 5.2)
+19. **The copy file loads nothing.** For any sealed record, the file text has no `http://` or `https://`, no `@import`, no `link` element, no script `src`, and every `src`, `href` and `url(` value is a `data:` URL or starts with `#`. (5.3)
+20. **The inline check agrees with `verifyRecord`.** Run with a fake `document`, the check script writes `Seal matches this copy` for a built file and `This copy was changed after sealing` for a file whose record has a changed party name. (5.4)
+21. **Parsing is typed and total.** `parseCopyFile` returns a record or one of three error codes for any text and never throws. Text with no record element gives `no_record`, and a record element with text that is not JSON gives `bad_json`. (5.5)
+22. **A refused record gives `bad_record`.** A record element with a record that `validateRecord` refuses gives `bad_record` with a non-empty problem list. A built file parses to the same record. (5.5)
+23. **An expected seal only matters for a good record.** A record that matches the expected seal gives `matches`. A record that matches itself but not the expected seal gives `wrong_seal`. A changed record, a record with a replaced seal and an unsealed record keep `changed` or `unsealed` whatever the expected seal is. (6.1, 6.2)
+24. **A diff is symmetric and holds no image data.** Swapping the two records swaps `a` and `b` in each entry and keeps the same paths. No value is a photo's image data, and a `photos.` entry holds a digest. (6.3)
+25. **A diff names a single change by its path.** A changed party name, title, template id or time of sealing, a removed field, a removed or added photo, or an added stroke gives exactly one entry with the path from the design. (6.3)
+26. **The diff ignores the seal.** A record against itself without its seal, against itself with another seal, or against itself with its top level keys in another order gives an empty list. (6.4, 2.2, 2.3)
+
 ## Decisions and Alternatives
 
 - One HTML file over a zip or a JSON file. Chosen because it opens anywhere with no app. The verify page on the site also accepts it.

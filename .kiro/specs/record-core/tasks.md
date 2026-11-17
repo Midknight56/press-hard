@@ -62,7 +62,7 @@ This spec owns `core/`, `mcp/`, the root files and `docs/kiro-log.md`. It does n
   - Verify: `npm test -- properties` passes. Write the run time in the log. 60 seconds is the target.
   - _Requirements: 2.1, 2.2, 3.3, 4.1, 4.3, 5.2, 5.5, 6.1, 6.4_
 
-- [ ] 10. Property tests from the spec
+- [x] 10. Property tests from the spec
   - In the Kiro IDE, open this spec and use the spec correctness feature to generate property tests from the acceptance criteria. If the feature is not available or is not run, write that in the log and stop this task.
   - Keep each generated property that checks something new in `core/tests/spec-properties.test.ts`. Remove none of the seven.
   - Write in the log which properties were added and any failure they found.
