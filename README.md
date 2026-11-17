@@ -4,8 +4,8 @@ The carbon copy form, back to life in the browser. Two people fill one handover 
 
 Category: Resurrection. Built with Kiro: two specs, four steering files, two hooks, a custom MCP server and 26 property tests.
 
-Live app: link added at submission
-Video: link added at submission
+Live app: https://press-hard.midknight-ent-llc.workers.dev
+Video: https://youtu.be/LutKHumuw_Y
 
 ## Judging criteria at a glance
 
