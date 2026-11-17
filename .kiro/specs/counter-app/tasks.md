@@ -85,7 +85,7 @@ Write every file as UTF-8 with no byte order mark and with LF line endings. On W
   - Verify: `npm run verify:e2e` and `npm run build` pass.
   - _Requirements: 10.5_
 
-- [ ] 14. Art, final look and log
+- [x] 14. Art, final look and log
   - Replace the placeholder paper and stamp art in `app/src/assets/` with the final files given for the app. Write in the log who made each file. A file not made for this repository is not added. Run the layout test and the contrast test again.
   - Verify: `npm run verify:e2e` passes.
   - _Requirements: 8.1, 8.5_

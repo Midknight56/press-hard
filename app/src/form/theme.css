@@ -19,9 +19,10 @@
   color: var(--ink);
   border: 1px solid var(--rule);
   /* The perforated edge: a column of small holes down the left side. */
-  background-image: radial-gradient(circle at 0.75rem 0.75rem, var(--desk) 0.18rem, transparent 0.2rem);
-  background-size: 1.5rem 1.5rem;
-  background-repeat: repeat-y;
+  /* The paper tile sits over the holes. It is very light, so the text keeps its contrast. */
+  background-image: radial-gradient(circle at 0.75rem 0.75rem, var(--desk) 0.18rem, transparent 0.2rem), url('../assets/paper.svg');
+  background-size: 1.5rem 1.5rem, 64px 64px;
+  background-repeat: repeat-y, repeat;
 }
 
 .form.ink-carbon {
@@ -197,11 +198,14 @@ img.photo {
 }
 
 .stamp {
-  min-width: 12rem;
+  min-width: 13rem;
   min-height: 64px;
+  padding-left: 72px;
   font-weight: 700;
-  /* The meter is a bar along the bottom edge, so the text keeps its contrast while it fills. */
+  /* The meter is a bar along the bottom edge, so the text keeps its contrast while it fills.
+     The rubber stamp art sits at the left, clear of the text. */
   background: linear-gradient(var(--form-red), var(--form-red)) no-repeat left bottom / calc(var(--progress, 0) * 100%) 10px,
+    url('../assets/stamp.svg') no-repeat 12px center / 48px 48px,
     var(--paper);
 }
 
@@ -219,4 +223,11 @@ img.photo {
   .top-sheet.lift {
     animation: none;
   }
+}
+
+/* The torn perforated edge between the sheet and the tear off control. */
+.tear-edge {
+  height: 24px;
+  margin: 16px 0 0;
+  background: url('../assets/tear-edge.svg') repeat-x left top / 240px 24px;
 }

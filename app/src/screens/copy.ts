@@ -45,6 +45,11 @@ export function createCopyScreen(options: CopyOptions): { element: HTMLElement }
   sheets.append(carbon, top);
   element.append(sheets);
 
+  const edge = document.createElement('div');
+  edge.className = 'tear-edge';
+  edge.setAttribute('aria-hidden', 'true');
+  element.append(edge);
+
   const actions = document.createElement('div');
   actions.className = 'copy-actions';
   if (options.onTearOff) actions.append(action('tear-off', 'Tear off the copy', options.onTearOff));
