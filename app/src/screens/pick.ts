@@ -19,7 +19,7 @@ function button(control: string, text: string, onClick: () => void): HTMLButtonE
 
 /**
  * The first screen. The picture of a form stays first in the markup, but it is hidden from readers
- * of the screen and app.css draws it below the four forms and the sample, so the choices are in view first.
+ * of the screen and app.css draws it below the five forms and the sample, so the choices are in view first.
  */
 export function createPickScreen(options: PickOptions): { element: HTMLElement } {
   const element = document.createElement('main');

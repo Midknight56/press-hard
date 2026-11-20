@@ -205,7 +205,7 @@ export interface FirstViewItem {
 
 /** The marks each screen must carry, so that a check with no marks cannot pass by finding nothing. */
 export const REQUIRED_FIRST_VIEW: Record<string, string[]> = {
-  pick: ['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank', 'pick-prefilled', 'pick-preview'],
+  pick: ['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-tool-loan', 'pick-blank', 'pick-prefilled', 'pick-preview'],
   fill: ['stamp'],
   copy: ['seal-stamp', 'seal-words', 'carbon-sheet'],
 };

@@ -13,8 +13,8 @@ export const BEACON_EVENTS = [
 
 export type BeaconEvent = (typeof BEACON_EVENTS)[number]['event'];
 
-/** The four forms. Any other template id is sent as `other`. */
-export const FORM_IDS = ['rental-return', 'key-handover', 'sold-as-seen', 'blank'] as const;
+/** The five forms. Any other template id is sent as `other`. */
+export const FORM_IDS = ['rental-return', 'key-handover', 'sold-as-seen', 'tool-loan', 'blank'] as const;
 
 export interface BeaconBody {
   event: BeaconEvent;

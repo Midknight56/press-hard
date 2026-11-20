@@ -373,3 +373,32 @@ describe('fill screen, photos', () => {
     expect(root().querySelectorAll('[data-signature-slot="giver"] polyline')).toHaveLength(1);
   });
 });
+
+describe('firstMissing, tool loan', () => {
+  const template = getTemplate('tool-loan') as Template;
+  const base = recordFromTemplate(template);
+  const names = { ...base, parties: { giver: 'A', receiver: 'B' } };
+  const set = (record: typeof names, values: Record<string, string>) => ({
+    ...record,
+    fields: record.fields.map((f) => (f.id in values ? { ...f, value: values[f.id] as string } : f)),
+  });
+  const sign = (record: typeof names) => ({
+    ...record,
+    signatures: [
+      { party: 'giver' as const, strokes: [[1, 2]] },
+      { party: 'receiver' as const, strokes: [[1, 2]] },
+    ],
+  });
+
+  it('marks Tool, then Condition, then Return by, in form order', () => {
+    expect(firstMissing(names, template)).toBe('tool');
+    expect(firstMissing(set(names, { tool: 'Drill' }), template)).toBe('condition');
+    expect(firstMissing(set(names, { tool: 'Drill', condition: 'good' }), template)).toBe('return-by');
+    expect(firstMissing(set(names, { tool: 'Drill', condition: 'good', 'return-by': '   ' }), template)).toBe('return-by');
+  });
+
+  it('allows the stamp with Marking or serial, Deposit, Notes and the photo empty', () => {
+    const filled = sign(set(names, { tool: 'Drill', condition: 'worn', 'return-by': 'Friday' }));
+    expect(firstMissing(filled, template)).toBeNull();
+  });
+});

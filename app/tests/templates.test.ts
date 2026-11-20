@@ -4,12 +4,13 @@ import { getTemplate, recordFromTemplate, templates, type Template } from '../sr
 import { sampleRecord } from '../src/templates/sample.js';
 
 describe('templates', () => {
-  it('offers the four forms in order', () => {
-    expect(templates.map((t) => t.id)).toEqual(['rental-return', 'key-handover', 'sold-as-seen', 'blank']);
+  it('offers the five forms in order', () => {
+    expect(templates.map((t) => t.id)).toEqual(['rental-return', 'key-handover', 'sold-as-seen', 'tool-loan', 'blank']);
     expect(templates.map((t) => t.title)).toEqual([
       'Rental return',
       'Key handover',
       'Item sold as seen',
+      'Tool loan',
       'Blank form',
     ]);
   });
@@ -67,19 +68,77 @@ describe('templates', () => {
   });
 
   it('has ready forms with at least four lines and a blank form with none', () => {
-    for (const id of ['rental-return', 'key-handover', 'sold-as-seen']) {
+    for (const id of ['rental-return', 'key-handover', 'sold-as-seen', 'tool-loan']) {
       expect((getTemplate(id)?.fields.length ?? 0)).toBeGreaterThanOrEqual(4);
     }
     expect(getTemplate('blank')?.fields).toEqual([]);
   });
 
   it('has a photo line in each ready form', () => {
-    for (const id of ['rental-return', 'key-handover', 'sold-as-seen']) {
+    for (const id of ['rental-return', 'key-handover', 'sold-as-seen', 'tool-loan']) {
       expect(getTemplate(id)?.fields.some((f) => f.kind === 'photo')).toBe(true);
     }
   });
 });
 
+describe('tool-loan', () => {
+  const template = getTemplate('tool-loan') as Template;
+
+  it('has the id and the title of the design', () => {
+    expect(template.id).toBe('tool-loan');
+    expect(template.title).toBe('Tool loan');
+  });
+
+  it('has the seven fields of the design in order', () => {
+    expect(
+      template.fields.map((f) => [f.id, f.label, f.kind, f.required, f.unit, f.options]),
+    ).toEqual([
+      ['tool', 'Tool', 'text', true, undefined, undefined],
+      ['serial', 'Marking or serial', 'text', false, undefined, undefined],
+      ['condition', 'Condition', 'choice', true, undefined, ['good', 'worn', 'damaged']],
+      ['return-by', 'Return by', 'text', true, undefined, undefined],
+      ['deposit', 'Deposit', 'number', false, 'CA$', undefined],
+      ['notes', 'Notes', 'text', false, undefined, undefined],
+      ['photo-tool', 'Photo of the tool', 'photo', false, undefined, undefined],
+    ]);
+  });
+
+  it('requires only Tool, Condition and Return by', () => {
+    expect(template.fields.filter((f) => f.required).map((f) => f.label)).toEqual(['Tool', 'Condition', 'Return by']);
+  });
+
+  it('offers good, worn and damaged as the only values of Condition', () => {
+    expect(template.fields.find((f) => f.id === 'condition')?.options).toEqual(['good', 'worn', 'damaged']);
+  });
+
+  it('shows CA$ as the unit of Deposit and accepts a number with at most 3 decimal places', () => {
+    const base = recordFromTemplate(template);
+    const withDeposit = (value: string) => ({
+      ...base,
+      fields: base.fields.map((f) => (f.id === 'deposit' ? { ...f, value } : f)),
+    });
+    expect(base.fields.find((f) => f.id === 'deposit')?.unit).toBe('CA$');
+    expect(validateRecord(withDeposit('25.5'))).toEqual([]);
+    expect(validateRecord(withDeposit('25.125'))).toEqual([]);
+    expect(validateRecord(withDeposit('25'))).toEqual([]);
+    expect(validateRecord(withDeposit('25.1234')).length).toBeGreaterThan(0);
+  });
+
+  it('makes a record that validateRecord accepts with its required lines filled and the optional lines empty', () => {
+    const base = recordFromTemplate(template);
+    const values: Record<string, string> = { tool: 'Cordless drill', condition: 'worn', 'return-by': '2026-12-01' };
+    const record = {
+      ...base,
+      parties: { giver: 'Ana', receiver: 'Ben' },
+      fields: base.fields.map((f) => (f.id in values ? { ...f, value: values[f.id] as string } : f)),
+    };
+    expect(validateRecord(record)).toEqual([]);
+    expect(record.fields.map((f) => f.id)).toEqual(['tool', 'serial', 'condition', 'return-by', 'deposit', 'notes']);
+    const sealed = sealRecord(record, '2026-11-21T09:00:00Z');
+    expect(sealed.ok).toBe(true);
+    if (sealed.ok) expect(validateRecord(sealed.record)).toEqual([]);
+  });
+});
 describe('sample', () => {
   it('is a filled rental return that validateRecord accepts', () => {
     expect(validateRecord(sampleRecord)).toEqual([]);

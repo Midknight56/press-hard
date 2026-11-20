@@ -26,6 +26,11 @@ describe('privacy page list', () => {
     expect(html).toContain('<code>template</code>');
     expect(html).toContain('<code>other</code>');
   });
+
+  it('says five forms, and no longer four forms', () => {
+    expect(html).toContain('one of the five forms');
+    expect(html).not.toContain('four forms');
+  });
 });
 
 describe('site pages', () => {
