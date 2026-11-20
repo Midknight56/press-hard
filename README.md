@@ -22,7 +22,7 @@ Category: Resurrection. Built with Kiro: two specs, four steering files, two hoo
 
 ## How it works
 
-1. Pick a form: rental return, key handover, item sold as seen, or a blank form.
+1. Pick a form: rental return, key handover, item sold as seen, tool loan, or a blank form.
 2. Fill it. Add up to 6 photos. Both people sign.
 3. Press and hold the stamp. The record is sealed.
 4. Tear off the copy. It is one HTML file. The seal is shown as four words.
@@ -47,10 +47,10 @@ npm run build
 
 | Suite | Tests | Result |
 | --- | --- | --- |
-| core: record, seal, copy file, compare | 249 | pass |
+| core: record, seal, copy file, compare | 255 | pass |
 | mcp: copycheck server | 31 | pass |
-| app: screens, store, art | 419 | pass |
-| browser: good path, bad path, layout, carbon copy, carbon copy reveal, fonts and look, contrast, print, offline, site, words on screen, sub path, accessibility scan | 62 | pass |
+| app: screens, store, art | 439 | pass |
+| browser: good path, bad path, layout, carbon copy, carbon copy reveal, fonts and look, contrast, print, offline, site, words on screen, sub path, accessibility scan | 64 | pass |
 
 ## Accessibility
 

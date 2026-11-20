@@ -157,3 +157,64 @@ test('good path, short: open the sample and seal it', async ({ page, context }) 
   await expect(page.locator('.carbon-sheet .seal-words')).toHaveText(/^[a-z]+(-[a-z]+){3}$/);
   watcher.assertClean();
 });
+
+test('good path, tool loan: pick, fill, sign twice, press, tear off, verify, change the return date', async ({ page, context }, testInfo) => {
+  const watcher = watch(context);
+  await noShareSheet(page);
+  await page.goto('/app/');
+  await expectScreen(page, 'pick');
+  await expect(page.locator('[data-control="pick-tool-loan"]')).toContainText('Tool loan');
+
+  await page.click('[data-control="pick-tool-loan"]');
+  await expectScreen(page, 'fill');
+  await expect(page.locator('[data-control="stamp"]')).toHaveAttribute('data-locked', 'true');
+  await page.fill('[data-control="party-giver"]', 'Ines Calder');
+  await page.fill('[data-control="party-receiver"]', 'Omar Teague');
+  // The first missing line is marked: Tool, then Condition, then Return by.
+  await expect(page.locator('[data-field="tool"]')).toHaveAttribute('data-missing', 'true');
+  await page.fill('[data-control="field-tool"]', 'Cordless drill');
+  await expect(page.locator('[data-field="condition"]')).toHaveAttribute('data-missing', 'true');
+  expect(await page.locator('[data-control="field-condition"] option').evaluateAll((os) => os.map((o) => (o as HTMLOptionElement).value))).toEqual(['', 'good', 'worn', 'damaged']);
+  await page.selectOption('[data-control="field-condition"]', 'worn');
+  await expect(page.locator('[data-field="return-by"]')).toHaveAttribute('data-missing', 'true');
+  await page.fill('[data-control="field-return-by"]', 'Friday 5 December');
+  await expect(page.locator('[data-field="deposit"] .unit')).toHaveText('CA$');
+  await page.fill('[data-control="field-deposit"]', '25.125');
+  await sign(page, 'signature-giver');
+  await sign(page, 'signature-receiver');
+  await expect(page.locator('[data-control="stamp"]')).toHaveAttribute('data-locked', 'false');
+
+  await holdStamp(page, 1300);
+  await expectScreen(page, 'copy');
+  const words = (await page.locator('.carbon-sheet .seal-words').textContent()) ?? '';
+  expect(words).toMatch(/^[a-z]+(-[a-z]+){3}$/);
+  await expect(page.locator('.top-sheet .seal-words')).toHaveText(words);
+  await expect(page.locator('.top-sheet [data-field="return-by"] .value')).toHaveText('Friday 5 December');
+
+  const copy = await tearOffTo(page, testInfo, 'tool-loan.html');
+  const parsed = parseCopyFile(copy.text);
+  expect(parsed.ok).toBe(true);
+  if (!parsed.ok) return;
+  expect(parsed.record.form).toEqual({ templateId: 'tool-loan', title: 'Tool loan' });
+  expect(verifyRecord(parsed.record)).toBe('matches');
+  expect(sealWords(parsed.record.seal as string)).toBe(words);
+  expect(parsed.record.fields.find((f) => f.id === 'deposit')).toMatchObject({ value: '25.125', unit: 'CA$' });
+
+  await page.goto('/verify/');
+  await expectScreen(page, 'verify');
+  await page.setInputFiles('[data-control="verify-file"]', copy.path);
+  await expect(page.locator('[data-role="verdict"]')).toHaveText('Seal matches');
+  await page.fill('[data-control="verify-typed"]', words.replace(/-/g, ' '));
+  await expect(page.locator('[data-role="verdict"]')).toHaveText('Seal matches');
+
+  // Change the return date: the seal breaks and the Return by line is marked.
+  const changed = writeText(testInfo.outputPath('tool-loan-changed.html'), editRecordValue(copy.text, 'Friday 5 December', 'Monday 8 December'));
+  await page.fill('[data-control="verify-typed"]', '');
+  await page.setInputFiles('[data-control="verify-file"]', [copy.path, changed]);
+  await expect(page.locator('[data-role="verdict-b"]')).toHaveText('Second copy: Changed after sealing');
+  await expect(page.locator('[data-field="return-by"]')).toHaveClass(/changed/);
+  await expect(page.locator('[data-field="return-by"] [data-role="diff"]')).toContainText('Friday 5 December');
+  await expect(page.locator('[data-field="return-by"] [data-role="diff"]')).toContainText('Monday 8 December');
+  await expect(page.locator('[data-field="tool"]')).not.toHaveClass(/changed/);
+  watcher.assertClean();
+});

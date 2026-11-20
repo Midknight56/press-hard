@@ -10,6 +10,6 @@ export function privacyEventsHtml(): string {
     '<ul>',
     `      ${items}`,
     '    </ul>',
-    '    <p>The body of each message has two fields: <code>event</code> and <code>template</code>. The <code>template</code> field holds the id of one of the four forms, or <code>other</code> for any other value.</p>',
+    '    <p>The body of each message has two fields: <code>event</code> and <code>template</code>. The <code>template</code> field holds the id of one of the five forms, or <code>other</code> for any other value.</p>',
   ].join('\n');
 }

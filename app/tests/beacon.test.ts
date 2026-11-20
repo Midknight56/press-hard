@@ -15,12 +15,17 @@ describe('beacon list', () => {
     for (const e of BEACON_EVENTS) expect(e.when.length).toBeGreaterThan(5);
   });
 
-  it('lists the four forms of the templates', () => {
+  it('lists the five forms of the templates', () => {
     expect([...FORM_IDS]).toEqual(templates.map((t) => t.id));
+    expect([...FORM_IDS]).toEqual(['rental-return', 'key-handover', 'sold-as-seen', 'tool-loan', 'blank']);
   });
 });
 
 describe('beaconBody', () => {
+  it('sends tool-loan as the template of the Tool loan form', () => {
+    expect(beaconBody('form_start', 'tool-loan')).toEqual({ event: 'form_start', template: 'tool-loan' });
+  });
+
   it('has only the event and the template id', () => {
     expect(beaconBody('sealed', 'rental-return')).toEqual({ event: 'sealed', template: 'rental-return' });
     expect(Object.keys(beaconBody('open', 'blank'))).toEqual(['event', 'template']);
@@ -30,7 +35,7 @@ describe('beaconBody', () => {
     for (const id of FORM_IDS) expect(beaconBody('form_start', id).template).toBe(id);
   });
 
-  it('sends other for a template id that is not one of the four forms', () => {
+  it('sends other for a template id that is not one of the five forms', () => {
     for (const id of ['my-secret-form', '', 'Rental-Return', 'rental-return ', undefined, 'constructor', '__proto__']) {
       expect(beaconBody('sealed', id).template, String(id)).toBe('other');
     }
@@ -60,6 +65,13 @@ describe('createBeacon with VITE_BEACON_URL', () => {
     expect(init.referrerPolicy).toBe('no-referrer');
     expect(Object.keys(init).sort()).toEqual(['body', 'credentials', 'headers', 'keepalive', 'method', 'mode', 'referrerPolicy']);
     expect(init.headers).toEqual({ 'Content-Type': 'text/plain;charset=UTF-8' });
+  });
+
+  it('sends tool-loan for the Tool loan form', () => {
+    const { fetcher, beacon } = setup(URL_SET);
+    beacon.send('form_start', 'tool-loan');
+    const init = fetcher.mock.calls[0]?.[1] as RequestInit;
+    expect(JSON.parse(init.body as string)).toEqual({ event: 'form_start', template: 'tool-loan' });
   });
 
   it('sends other for an unknown template id', () => {

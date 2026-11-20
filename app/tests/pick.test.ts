@@ -16,23 +16,25 @@ describe('pick screen', () => {
     expect(make().screen.element.getAttribute('data-screen')).toBe('pick');
   });
 
-  it('offers the four forms in order, each with its title', () => {
+  it('offers the five forms in order, each with its title', () => {
     const { screen } = make();
     const forms = [...screen.element.querySelectorAll('[data-control^="pick-"]')]
       .map((b) => b.getAttribute('data-control'))
       .filter((c) => c !== 'pick-prefilled');
-    expect(forms).toEqual(['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-blank']);
+    expect(forms).toEqual(['pick-rental-return', 'pick-key-handover', 'pick-sold-as-seen', 'pick-tool-loan', 'pick-blank']);
     expect(button(screen.element, 'pick-rental-return')?.textContent).toContain('Rental return');
     expect(button(screen.element, 'pick-key-handover')?.textContent).toContain('Key handover');
     expect(button(screen.element, 'pick-sold-as-seen')?.textContent).toContain('Item sold as seen');
+    expect(button(screen.element, 'pick-tool-loan')?.textContent).toContain('Tool loan');
     expect(button(screen.element, 'pick-blank')?.textContent).toContain('Blank form');
   });
 
   it('calls onPick with the template id', () => {
     const { screen, onPick } = make();
     button(screen.element, 'pick-key-handover')?.click();
+    button(screen.element, 'pick-tool-loan')?.click();
     button(screen.element, 'pick-blank')?.click();
-    expect(onPick.mock.calls).toEqual([['key-handover'], ['blank']]);
+    expect(onPick.mock.calls).toEqual([['key-handover'], ['tool-loan'], ['blank']]);
   });
 
   it('offers the prefilled rental return', () => {

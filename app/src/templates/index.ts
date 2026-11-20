@@ -3,11 +3,12 @@ import { blank } from './blank.js';
 import { keyHandover } from './key-handover.js';
 import { rentalReturn } from './rental-return.js';
 import { soldAsSeen } from './sold-as-seen.js';
+import { toolLoan } from './tool-loan.js';
 import type { Template } from './types.js';
 
 export type { Template, TemplateField } from './types.js';
 
-export const templates: Template[] = [rentalReturn, keyHandover, soldAsSeen, blank];
+export const templates: Template[] = [rentalReturn, keyHandover, soldAsSeen, toolLoan, blank];
 
 export function getTemplate(id: string): Template | undefined {
   return templates.find((t) => t.id === id);

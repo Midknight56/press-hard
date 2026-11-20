@@ -1,5 +1,6 @@
 import { pathToFileURL } from 'node:url';
 import { expect, test } from '@playwright/test';
+import { parseCopyFile, sealWords } from 'core';
 import {
   addPhoto,
   editRecordValue,
@@ -157,6 +158,56 @@ test('bad path: a record with 6 photos prints with no photo split', async ({ pag
   watcher.assertClean();
 });
 
+test('bad path, tool loan: an empty Return by keeps the stamp locked, and a changed line breaks the seal', async ({ page, context }, testInfo) => {
+  const watcher = watch(context);
+  await noShareSheet(page);
+  await page.goto('/app/');
+  await page.click('[data-control="pick-tool-loan"]');
+  await expectScreen(page, 'fill');
+  await page.fill('[data-control="party-giver"]', 'Ines Calder');
+  await page.fill('[data-control="party-receiver"]', 'Omar Teague');
+  await page.fill('[data-control="field-tool"]', 'Cordless drill');
+  await page.selectOption('[data-control="field-condition"]', 'good');
+  await sign(page, 'signature-giver');
+  await sign(page, 'signature-receiver');
+
+  // Return by is empty: the stamp is locked, the line is marked, and a full hold seals nothing.
+  await expect(page.locator('[data-control="stamp"]')).toHaveAttribute('data-locked', 'true');
+  await expect(page.locator('[data-field="return-by"]')).toHaveAttribute('data-missing', 'true');
+  await expect(page.locator('[data-missing="true"]')).toHaveCount(1);
+  await holdStamp(page, 1400);
+  await expectScreen(page, 'fill');
+  await expect(page.locator('[data-screen="copy"]')).toHaveCount(0);
+
+  // Marking or serial, Deposit and Notes stay empty: Return by alone opens the stamp.
+  await page.fill('[data-control="field-return-by"]', 'Friday 5 December');
+  await expect(page.locator('[data-control="stamp"]')).toHaveAttribute('data-locked', 'false');
+  await holdStamp(page, 1300);
+  await expectScreen(page, 'copy');
+  const words = (await page.locator('.carbon-sheet .seal-words').textContent()) ?? '';
+  const copy = await tearOffTo(page, testInfo, 'tool-loan.html');
+  const parsed = parseCopyFile(copy.text);
+  expect(parsed.ok).toBe(true);
+  if (parsed.ok) expect(sealWords(parsed.record.seal as string)).toBe(words);
+
+  // Change the return date in the copy: the seal no longer matches and the line is marked.
+  const changed = writeText(testInfo.outputPath('tool-loan-changed.html'), editRecordValue(copy.text, 'Friday 5 December', 'Friday 12 December'));
+  const changedUrl = pathToFileURL(changed).href;
+  watcher.allowFile(changedUrl);
+  const filePage = await context.newPage();
+  await filePage.goto(changedUrl);
+  await expect(filePage.locator('#stamp')).toHaveText('This copy was changed after sealing');
+  await filePage.close();
+  await page.goto('/verify/');
+  await expectScreen(page, 'verify');
+  await page.setInputFiles('[data-control="verify-file"]', changed);
+  await expect(page.locator('[data-role="verdict"]')).toHaveText('Changed after sealing');
+  await page.setInputFiles('[data-control="verify-file"]', [copy.path, changed]);
+  await expect(page.locator('[data-field="return-by"]')).toHaveClass(/changed/);
+  await expect(page.locator('[data-field="return-by"] [data-role="diff"]')).toContainText('Friday 12 December');
+  await expect(page.locator('.line.changed')).toHaveCount(1);
+  watcher.assertClean();
+});
 test.describe('service worker blocked', () => {
   test.use({ serviceWorkers: 'block' });
 

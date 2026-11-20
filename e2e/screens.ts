@@ -27,6 +27,11 @@ export async function walkScreens(
   await visit('fill, rental return, empty');
 
   await page.click('[data-control="nav-home"]');
+  await page.click('[data-control="pick-tool-loan"]');
+  await expectScreen(page, 'fill');
+  await visit('fill, tool loan, empty');
+
+  await page.click('[data-control="nav-home"]');
   await page.click('[data-control="pick-prefilled"]');
   await expectScreen(page, 'fill');
   await visit('fill, prefilled');
