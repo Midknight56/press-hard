@@ -27,3 +27,9 @@ This spec owns `power/`, `.kiro/agents/`, `docs/acceptance/`, `mcp/tests/extensi
   - Put `fs_read` in `.kiro/agents/copy-checker.json`.
   - Verify: the agent cases pass, and `kiro-cli agent validate --path .kiro/agents/copy-checker.json` exits 0.
   - _Requirements: 2.2_
+
+- [x] 5. Correct the tool name claim
+  - Replace the claim that the name `read` failed and `fs_read` worked with the run counts: `read` 2 of 5, `fs_read` 6 of 7, cause not established.
+  - Change design.md and the log row of task 4. requirements.md, this file and the power README hold no such claim.
+  - Verify: `npx vitest run tests/extensions.test.ts` in `mcp/` fails only 4.1 and 4.2, and `npm run lint` exits 0. No code and no test changed.
+  - _Requirements: 2.2_
