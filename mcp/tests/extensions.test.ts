@@ -132,10 +132,11 @@ describe('2 the custom agent copy-checker', () => {
     expect(agent.prompt.length).toBeGreaterThan(50);
   });
 
-  it('2.2 lists file reads and the two real copycheck tools only, with no write or shell tool', () => {
+  it('2.2 lists the file read tool fs_read and the two real copycheck tools only, with no write or shell tool', () => {
     const agent = json<Agent>(...path);
     const real = serverTools().map((name) => `@copycheck/${name}`);
-    expect([...agent.tools].sort()).toEqual(['read', ...real].sort());
+    expect([...agent.tools].sort()).toEqual(['fs_read', ...real].sort());
+    expect(agent.tools).not.toContain('read');
     for (const tool of agent.tools) expect(tool, tool).not.toMatch(WRITE_OR_SHELL);
     for (const rule of agent.permissions?.rules ?? []) {
       expect(['shell', 'write', 'edit'], `rule ${rule.capability}`).not.toContain(rule.capability);

@@ -23,7 +23,7 @@ Press Hard has a small MCP server, `copycheck`, with two tools: `verify_copy` an
 
 #### Acceptance Criteria
 1. THE SYSTEM SHALL hold `.kiro/agents/copy-checker.json` with a name, a description and a prompt.
-2. THE agent SHALL list only `read`, `@copycheck/verify_copy` and `@copycheck/diff_copies` as tools. It SHALL have no write tool, no shell tool, no `allowedTools` and no `toolsSettings`.
+2. THE agent SHALL list only `fs_read`, `@copycheck/verify_copy` and `@copycheck/diff_copies` as tools. It SHALL have no write tool, no shell tool, no `allowedTools` and no `toolsSettings`.
 3. THE agent SHALL set `includeMcpJson` to true and `includePowers` to false.
 4. THE prompt SHALL tell the agent to call `verify_copy` on each given file first, and `diff_copies` when two files are given.
 5. THE prompt SHALL tell the agent to report the result (matches, changed, unsealed or wrong_seal), the seal words, and each difference as its path with the value on each side.

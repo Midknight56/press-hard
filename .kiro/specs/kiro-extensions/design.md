@@ -29,7 +29,7 @@ One skill, `handover-records`. It holds the rules of `record-rules.md` and `clai
 
 ## The agent
 
-`copy-checker.json` follows `custom-agents.md`: `tools` holds `read` and the two full MCP selectors, `includeMcpJson` is true and `includePowers` is false. It has no `permissions`, no `allowedTools` and no `toolsSettings`. The server comes from the workspace `.kiro/settings/mcp.json`, which already defines `copycheck`.
+`copy-checker.json` follows `custom-agents.md`: `tools` holds `fs_read` and the two full MCP selectors, `includeMcpJson` is true and `includePowers` is false. It has no `permissions`, no `allowedTools` and no `toolsSettings`. The server comes from the workspace `.kiro/settings/mcp.json`, which already defines `copycheck`. The tool name is fs_read. With the name read, a headless V3 session of Kiro CLI 3.5.0 did not load the copycheck tools; with fs_read it did (see docs/kiro-log.md).
 
 ## Tests (`mcp/tests/extensions.test.ts`)
 
