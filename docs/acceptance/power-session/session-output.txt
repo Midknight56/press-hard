@@ -1,0 +1,38 @@
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=7
+[tool] Kiro Powers
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=15
+[tool] status: InProgress
+[tool] status: Completed
+[tool] Tool Load
+[tool] status: Completed
+[tool] Tool Load
+[tool] status: Completed
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=27
+[tool] @press-hard/copycheck/verify_copy
+[tool] status: Pending
+[tool] status: InProgress
+[tool] status: Completed
+[tool] @press-hard/copycheck/verify_copy
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=42
+[tool] status: Pending
+[tool] status: InProgress
+[tool] status: Completed
+[tool] @press-hard/copycheck/diff_copies
+[tool] status: Pending
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=29
+[tool] status: InProgress
+[tool] status: Completed
+**rental-return-good.html:** The result is `matches`. The copy was not changed after it was sealed.
+- Seal: `de7103e1ead11085f758207f1363a5e108368fec442b90a447786a77321cd67e`
+- Seal words: elm-marble-atlas-bagel
+- Sealed at: 2026-11-16T09:30:00Z
+- Form: Rental return, from Mara Oduya to Tobin Larch, with 2 photos.
+
+**rental-return-changed.html:** The result is `changed`. This copy no longer matches the seal. It still shows the same seal and seal words as the good copy, so the seal is the original one and the content under it has been edited.
+
+**The difference:** There is one changed line, `fields.mileage.value`.
+- In rental-return-good.html it is `48210.5`.
+- In rental-return-changed.html it is `12.5`.
+
+A seal shows only that a copy was not changed after it was sealed. It does not show who signed, when, or what really happened.[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=57
+
