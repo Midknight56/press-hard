@@ -67,6 +67,12 @@ describe('workspace scaffold', () => {
     expect(scripts.build).toBe('node app/scripts/check-versions.ts && npm run build --workspace mcp && npm run build --workspace app');
   });
 
+  it('the a11y script runs only the accessibility scan, and the README names it', () => {
+    const scripts = json('package.json').scripts as Record<string, string>;
+    expect(scripts.a11y).toBe('playwright test e2e/a11y.spec.ts');
+    expect(read('README.md')).toContain('npm run a11y');
+  });
+
   it('every dependency version is pinned', () => {
     const pkg = json('package.json');
     const deps = { ...(pkg.devDependencies as object), ...(pkg.dependencies as object) } as Record<string, string>;
