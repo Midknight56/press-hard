@@ -50,7 +50,7 @@ Every headless V3 session run in this repository on 20 November after the proof 
 
 ## The save hook
 
-`typecheck-on-save` (trigger `PostFileSave`) was not seen to fire in a CLI session. Its trigger is the save of a file in an editor. A headless session writes files through the agent's tools, and no hook output for a save was seen in any CLI run. The Kiro IDE route is recorded in `docs/acceptance/ide-session/` when that session has been run.
+`typecheck-on-save` (trigger `PostFileSave`) was not seen to fire in a CLI session. Its trigger is the save of a file in an editor. A headless session writes files through the agent's tools, and no hook output for a save was seen in any CLI run. In the Kiro IDE it did fire once, from a file the agent saved with its edit tool; it did not fire for a file written by a shell command. That is recorded in `docs/acceptance/ide-session/`.
 
 ## Limits
 
