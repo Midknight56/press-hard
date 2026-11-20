@@ -47,7 +47,7 @@ npm run build
 
 | Suite | Tests | Result |
 | --- | --- | --- |
-| core: record, seal, copy file, compare | 255 | pass |
+| core: record, seal, copy file, compare, README and steering checks | 263 | pass |
 | mcp: copycheck server | 31 | pass |
 | app: screens, store, art | 439 | pass |
 | browser: good path, bad path, layout, carbon copy, carbon copy reveal, fonts and look, contrast, print, offline, site, words on screen, sub path, accessibility scan | 64 | pass |
