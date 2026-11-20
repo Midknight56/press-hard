@@ -14,6 +14,7 @@ Both builds started from the same commit of `kiro-breadth` (the vibe build from 
 | | Vibe | Spec (Auto) |
 | --- | --- | --- |
 | Wall time of the build run | 3 min 13 s | 4 min 01 s, plus 1 min 30 s to write the spec |
+| Credits of the run (from the session file) | 2.39 | 2.99, plus 1.60 for the spec |
 | Files changed | 11 (+22, -18 lines) | 15 (+145, -23 lines) |
 | App unit tests after the build (419 before) | 428 (+9) | 433 (+14) |
 | Browser tests after the build (62 before) | 62 (+0) | 64 (+2: a good path and a bad path step for the new form) |
@@ -28,7 +29,7 @@ Sources: the run logs in `D:\Projects\kiroween\hauntmap-logs\PH-V.log`, `PH-SPEC
 
 ## Credits
 
-The credit pool is shared with other work on the same account, and Kiro gives no figure per run, so a pool reading before and after a run is an upper bound, not the cost of the run. Readings of the Kiroween pool (`credits.ps1`, total used): 3,384.62 at 2:25 PM before the vibe build; 3,389.86 at 2:28 PM after it (a README run shared that window); 3,391.47 at 2:31 PM before the spec build; 3,408.90 at 2:35 PM after it. So the vibe window moved the pool by 5.24 and the spec build window by 17.43, with other Kiro work running on the account in both.
+Kiro writes the credits of each session into its own session file (`~/.kiro/sessions/.../messages.jsonl`, the field `usage` of each turn). Read on 2026-11-20 with `D:\Projects\kiroween\press-hard-logs\credits_for.py`: the vibe build used 2.39 credits in 189 s, the spec build 2.99 credits in 238 s, and writing the spec 1.60 credits in 87 s. So the spec route cost 4.59 credits in all against 2.39. The Kiroween pool reading (`credits.ps1`) is shared with other work on the account, so it is not used for these figures.
 
 ## What it shows
 

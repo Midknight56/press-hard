@@ -17,13 +17,13 @@ The credit multipliers are read from `kiro-cli chat --list-models` on 2026-11-20
 | Privacy page updated | yes | yes | yes |
 | Extra tests beyond the spec | none | a `firstMissing` unit test for the form and a privacy sentence test | a privacy sentence check |
 | Faults reported by the model in its own run | one fixture moved | a number typed as 25 where a record stores text, fixed; the same fixture moved | two test setup errors in the first browser run, fixed |
-| Pool reading before to after (shared, upper bound) | 3,391.47 to 3,408.90 | 3,408.90 to 3,491.41 | 3,491.41 to 3,538.02 |
+| Credits of the run (from the session file) | 2.99 | 10.00 | 6.54 |
 
 Sources: `D:\Projects\kiroween\hauntmap-logs\PH-S-auto.log`, `PH-S-sonnet.log`, `PH-S-luna.log` (outside the repository), the log rows each run added to `docs/kiro-log.md`, and the `verify:e2e` output re-run on each worktree (`D:\Projects\kiroween\press-hard-logs\e2e-spec-auto.txt`, `e2e-spec-sonnet.txt`, `e2e-spec-luna.txt`).
 
 ## Credits
 
-The pool is shared with other work on the same account and Kiro gives no figure per run, so the last row is an upper bound and is not the cost of a run. The sonnet window also held a Kiro Web session of this repository (estimated 0.81 credits by Kiro Web) and other Kiro work, so its 82.51 is not comparable with the others. Read the multipliers and the times, not the last row, to compare cost.
+Read from each run's own session file (`usage` of each turn) on 2026-11-20 with `D:\Projects\kiroween\press-hard-logs\credits_for.py`: Auto 2.99 credits, claude-sonnet-5.5 10.00 credits, gpt-5.6-luna 6.54 credits. Against Auto, that is 3.3 times for sonnet and 2.2 times for luna, in this one task. The listed multipliers are 1.30x and 0.60x. The shared pool reading is not used.
 
 ## Which build was kept
 
@@ -32,9 +32,9 @@ The pool is shared with other work on the same account and Kiro gives no figure 
 ## What it shows
 
 - The spec task is done by all three models and passes the same gate. The speed order is the reverse of the test count order: Auto was fastest, luna slowest.
-- A cheaper multiplier did not mean a cheaper run: luna's multiplier is 0.60x and its run took 17 minutes.
+- A cheaper multiplier did not mean a cheaper run: luna's listed multiplier is 0.60x, yet its run cost 6.54 credits against 2.99 for Auto, because its run took 17 minutes.
 - The three form files are the same, so the spec fixed the shape of the feature, and the models differed in how many tests and how much care they added.
 
 ## Limits
 
-One task, one run per model, with the pool shared. Not a benchmark. No claim is made about other tasks or other days.
+One task, one run per model. Not a benchmark. No claim is made about other tasks or other days.
