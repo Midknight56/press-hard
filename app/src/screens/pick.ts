@@ -34,6 +34,7 @@ export function createPickScreen(options: PickOptions): { element: HTMLElement }
   preview.append(renderForm(sampleRecord, { mode: 'top' }));
 
   const title = document.createElement('h1');
+  title.className = 'sr-only';
   title.textContent = appConfig.title;
 
   const instruction = document.createElement('p');

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { appConfig } from '../app/app.config.js';
 import { expectScreen, holdStamp, noShareSheet, watch, workerReady } from './support.js';
 
 const ORIGIN = 'http://127.0.0.1:4473';
@@ -216,5 +217,33 @@ test.describe('fill screen, 360x640', () => {
     expect(result.atEnd, 'the page is scrolled to its end').toBe(true);
     expect(result.rowBottom, 'last row bottom above the bar').toBeLessThanOrEqual(result.barTop);
     expect(result.signaturesBottom, 'signature boxes above the bar').toBeLessThanOrEqual(result.barTop);
+  });
+});
+
+test.describe('first screen, 390x844', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('draws the app name once, in the top bar, and no visible heading has it', async ({ page }) => {
+    await page.goto('/app/');
+    await expectScreen(page, 'pick');
+    const title = appConfig.title;
+    const found = await page.evaluate((name) => {
+      const drawn = (el: Element) => {
+        const r = el.getBoundingClientRect();
+        const s = getComputedStyle(el);
+        return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && s.display !== 'none' && s.clipPath === 'none';
+      };
+      const withText = Array.from(document.querySelectorAll('body *')).filter(
+        (el) => Array.from(el.childNodes).some((n) => n.nodeType === 3 && (n.textContent ?? '').trim() === name) && drawn(el),
+      );
+      const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]')).filter(
+        (el) => (el.textContent ?? '').trim() === name && drawn(el),
+      );
+      return { shown: withText.map((el) => el.className || el.tagName), headings: headings.length, h1: document.querySelectorAll('h1').length };
+    }, title);
+    expect(found.headings, 'visible headings with the app title').toBe(0);
+    expect(found.shown, 'visible elements with the app title').toHaveLength(1);
+    expect(found.shown[0]).toBe('brand');
+    expect(found.h1, 'h1 elements kept for screen readers').toBe(1);
   });
 });

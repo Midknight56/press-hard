@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { appConfig } from '../app.config.js';
 import { createPickScreen } from '../src/screens/pick.js';
 
 function make() {
@@ -50,6 +51,14 @@ describe('pick screen', () => {
     const { screen } = make();
     const first = screen.element.firstElementChild as HTMLElement;
     expect(first.querySelector('.form') ?? first.classList.contains('form')).toBeTruthy();
+  });
+
+  it('keeps one h1 with the app title that is not drawn', () => {
+    const { screen } = make();
+    const headings = screen.element.querySelectorAll('h1');
+    expect(headings.length).toBe(1);
+    expect(headings[0]?.textContent).toBe(appConfig.title);
+    expect(headings[0]?.classList.contains('sr-only')).toBe(true);
   });
 
   it('puts data-control on every button', () => {
