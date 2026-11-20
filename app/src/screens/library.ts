@@ -30,6 +30,10 @@ export function createLibraryScreen(options: LibraryOptions): {
   const { store } = options;
   const element = document.createElement('main');
   element.className = 'screen library';
+  const pageTitle = document.createElement('h1');
+  pageTitle.className = 'sr-only';
+  pageTitle.textContent = 'Sealed records on this device';
+  element.append(pageTitle);
   element.setAttribute('data-screen', 'library');
 
   const list = document.createElement('div');
@@ -45,6 +49,8 @@ export function createLibraryScreen(options: LibraryOptions): {
     box.setAttribute('data-box', 'card');
     const text = document.createElement('p');
     text.textContent = `Delete ${words} from this device?`;
+    text.id = 'confirm-text';
+    box.setAttribute('aria-labelledby', 'confirm-text');
     const close = () => {
       box.remove();
     };

@@ -115,6 +115,7 @@ export function createFillScreen(options: FillOptions): FillScreen {
 
   const element = make('main', 'screen fill');
   element.setAttribute('data-screen', 'fill');
+  element.append(make('h1', 'sr-only', 'Fill in the form'));
   const formHolder = make('div', 'form-holder');
   const note = make('p', 'note');
   note.setAttribute('data-role', 'note');

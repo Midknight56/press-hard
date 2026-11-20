@@ -44,6 +44,10 @@ export function createCopyScreen(options: CopyOptions): { element: HTMLElement }
   const element = document.createElement('main');
   element.className = 'screen copy';
   element.setAttribute('data-screen', 'copy');
+  const pageTitle = document.createElement('h1');
+  pageTitle.className = 'sr-only';
+  pageTitle.textContent = 'Your sealed copy';
+  element.append(pageTitle);
   element.setAttribute('data-motion', reducedMotion ? 'reduced' : 'full');
 
   // The seal strip: the stamp picture and the four seal words, above the sheets, so that they are in the first view.

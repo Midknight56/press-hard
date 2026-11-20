@@ -40,11 +40,21 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
+let labelCount = 0;
+
 function lineShell(id: string, label: string, kind: string): HTMLElement {
   const line = el('div', `line line-${kind}`);
   line.setAttribute('data-field', id);
-  line.append(el('span', 'label', label));
+  const name = el('span', 'label', label);
+  name.id = `line-label-${(labelCount += 1)}`;
+  line.append(name);
   return line;
+}
+
+/** Names a control by the visible label of its line, as on paper. */
+function nameByLabel(line: HTMLElement, control: HTMLElement): void {
+  const label = line.querySelector('.label');
+  if (label !== null) control.setAttribute('aria-labelledby', label.id);
 }
 
 function photoImage(photo: Photo): HTMLImageElement | null {
@@ -137,6 +147,7 @@ function partyLine(
     const input = textInput(`party-${party}`, value);
     input.addEventListener('input', () => emit({ kind: 'party', party, value: input.value }));
     line.append(input);
+    nameByLabel(line, input);
   } else {
     line.append(el('span', 'value', value));
   }
@@ -202,6 +213,8 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
       }
     } else if (mode === 'edit') {
       row.append(editControl(line, field, emit));
+      const control = row.querySelector<HTMLElement>('input, select');
+      if (control !== null) nameByLabel(row, control);
     } else {
       row.append(el('span', 'value', shownValue(line, field?.value ?? null)));
     }
