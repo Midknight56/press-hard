@@ -26,7 +26,7 @@ Kiro Web's session ran with network access set to "Repository access only". Its 
 
 | | Kiro CLI (headless) | Kiro Web |
 | --- | --- | --- |
-| Where the code runs | This machine, in the repository folder | A cloud sandbox with its own copy of the repository |
+| Where the code runs | This machine, in the repository folder | A cloud workspace with its own copy of the repository |
 | Packages | Installed here | Could not be downloaded (403), so no test suite ran |
 | Result | Files changed in the working tree, no commit by Kiro | A branch pushed by the GitHub app and a pull request |
 | Credits | Read from the usage page | The session shows an estimate (0.81) |
