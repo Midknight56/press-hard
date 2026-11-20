@@ -54,7 +54,7 @@ npm run build
 
 ## Accessibility
 
-An automated axe scan (`axe-core` 4.14.1, through `@axe-core/playwright` 4.14.0) runs on every screen at 390 by 844 and at 1280 by 720 and fails the build on any serious or critical violation. It scanned 18 screens at each size, 36 scans in all. Before the fixes it found 30 violations (a rule on a screen) on 74 elements, 20 of them serious or critical. After the fixes it finds none. An automated scan does not prove that a product is accessible to every person.
+An automated axe scan (`axe-core` 4.14.1, through `@axe-core/playwright` 4.14.0) runs on every screen at 390 by 844 and at 1280 by 720 and fails the build on any serious or critical violation. It scanned 18 screens at each size, 36 scans in all. Before the fixes it found 30 violations (a rule on a screen) on 74 elements, 20 of them serious or critical. After the fixes it finds none. An automated scan does not prove that a product is accessible to every person. To run the scan alone, use `npm run a11y`.
 
 ## How Kiro was used
 
