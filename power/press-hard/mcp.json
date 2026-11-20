@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "copycheck": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "-e",
+        "const { pathToFileURL } = require('node:url'); const dist = process.env.PRESS_HARD_MCP_DIST; const work = process.env.PRESS_HARD_WORKSPACE; if (!dist || !work) { console.error('press-hard power: set PRESS_HARD_MCP_DIST to the full path of mcp/dist/server.js and PRESS_HARD_WORKSPACE to the folder you work in.'); process.exit(1); } process.chdir(work); import(pathToFileURL(dist).href);"
+      ],
+      "env": {
+        "PRESS_HARD_MCP_DIST": "${PRESS_HARD_MCP_DIST}",
+        "PRESS_HARD_WORKSPACE": "${PRESS_HARD_WORKSPACE}"
+      }
+    }
+  }
+}

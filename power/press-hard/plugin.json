@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "press-hard",
+  "version": "0.1.0",
+  "description": "Check a sealed carbon copy file and find the changed line in a changed copy. Gives Kiro the verify_copy and diff_copies tools of Press Hard, and a skill with the words to use when you report a result.",
+  "author": {
+    "name": "Press Hard"
+  },
+  "keywords": ["carbon copy", "seal", "seal words", "handover record", "verify copy", "diff copies", "changed copy", "copy file"],
+  "license": "MIT"
+}
