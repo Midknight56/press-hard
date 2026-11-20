@@ -36,7 +36,7 @@ const checkReadme = (raw: string): string[] => {
   }
   if (!lines.includes('## How Kiro was used')) problems.push('missing heading "## How Kiro was used"');
 
-  const prose = text.replace(/^```[\s\S]*?^```/gm, '').replace(/`[^`\n]*`/g, '').replace(/https?:\/\/\S+/g, '');
+  const prose = text.replace(/^```[\s\S]*?^```/gm, '').replace(/`[^`\n]*`/g, '').replace(/\]\([^)\n]*\)/g, ']').replace(/https?:\/\/\S+/g, '');
   if (prose.includes('\u2014')) problems.push('em dash');
   if (prose.includes('\u2013')) problems.push('en dash');
   if (/\p{L}-\p{L}/u.test(prose)) problems.push('hyphen joining two words');

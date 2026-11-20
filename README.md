@@ -1,11 +1,12 @@
 # Press Hard
 
+![A sealed carbon copy of a handover form on a phone, with the four seal words shown at the bottom](docs/img/hero-carbon-copy.png)
+
+Live app: https://press-hard.midknight-ent-llc.workers.dev | Video: https://youtu.be/Xl3lRyM_yCI
+
 Press Hard is our entry in the Resurrection category: "Bring your favorite dead technology back to life. Reimagine obsolete tech with today's innovations." Our dead technology is the carbon copy form. Two people fill one handover form on one phone, both sign, and press and hold a stamp. Each person keeps the same sealed copy, one small file. Today's innovations do the rest: a SHA-256 seal shown as four plain words, a check that marks the changed line in a changed copy, and an app that works offline with no account and no server. Kiro built it with spec driven development: two specs, four steering files, two agent hooks, a custom MCP server and 26 properties checked by property based testing.
 
 Category: Resurrection. Built with Kiro: two specs, four steering files, two hooks, a custom MCP server and 26 property tests.
-
-Live app: https://press-hard.midknight-ent-llc.workers.dev
-Video: https://youtu.be/Xl3lRyM_yCI
 
 ## Judging criteria at a glance
 
@@ -26,6 +27,8 @@ Video: https://youtu.be/Xl3lRyM_yCI
 3. Press and hold the stamp. The record is sealed.
 4. Tear off the copy. It is one HTML file. The seal is shown as four words.
 5. Later, anyone can check a copy at the verify page. A changed copy no longer matches its seal, and the changed line is shown.
+
+![A changed copy caught by the check, with the changed line marked](docs/img/hero-changed-copy.png)
 
 ## Run it
 
