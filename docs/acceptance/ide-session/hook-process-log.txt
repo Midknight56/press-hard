@@ -1,0 +1,8 @@
+Process poll of the lead (poll.ps1, every 250 ms, outside the repository): every new process whose command line holds npm and verify, typecheck, vitest or eslint.
+Only the lines whose parent is pid 55220, a Kiro.exe utility process (the IDE's extension host: its command line holds --utility-sub-type=node.mojom.NodeService and --user-data-dir=...\Roaming\Kiro), are kept. Other work on the machine ran at the same time and is left out.
+Clock is the machine clock on 2026-11-20 (24 hour).
+15:20:06.898 pid 58044 ppid 55220 C:\Windows\system32\cmd.exe /d /s /c "npm run verify"
+15:20:42.979 pid 56196 ppid 55220 C:\Windows\system32\cmd.exe /d /s /c "npm run verify"
+15:21:03.978 pid 46072 ppid 55220 C:\Windows\system32\cmd.exe /d /s /c "npm run typecheck"
+15:21:11.370 pid 40024 ppid 55220 C:\Windows\system32\cmd.exe /d /s /c "npm run verify"
+15:23:38.556 pid 58120 ppid 55220 C:\Windows\system32\cmd.exe /d /s /c "npm run verify"

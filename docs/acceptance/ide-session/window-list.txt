@@ -1,0 +1,2 @@
+Window list taken at 3:28:37 PM while the IDE ran (visible windows of Kiro processes; the main display is DISPLAY2 at x 0, the side display is DISPLAY1 at x -2048):
+tasks.md - press-hard - Kiro left=-1998 top=40 right=-94 bottom=1092

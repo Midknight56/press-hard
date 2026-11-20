@@ -10,7 +10,7 @@ A carbon copy form for the browser. Two people fill one handover form on one pho
 Small rental shops first. Also anyone who hands an item or a key to another person.
 
 ## The flow
-1. Pick a form: rental return, key handover, item sold as seen, or a blank form.
+1. Pick a form: rental return, key handover, item sold as seen, tool loan, or a blank form.
 2. Fill it. Add up to 6 photos. Both people sign.
 3. Press and hold the stamp. The record is sealed.
 4. Tear off the copy. It is one HTML file. The seal is shown as four words.
