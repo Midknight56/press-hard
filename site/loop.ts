@@ -64,6 +64,8 @@ export async function startLoop(options: LoopOptions): Promise<{ stop(): void }>
     const wrap = document.createElement('div');
     wrap.className = 'loop-static';
     const copy = createCopyScreen({ record, reducedMotion: true });
+    // At rest the demo copy shows the whole carbon copy, with no roll over the form.
+    copy.element.classList.add('settled');
     const tamper = createTamperScreen({ record, onBack: () => undefined });
     changeOneLine(tamper.element);
     wrap.append(copy.element, tamper.element);
@@ -90,7 +92,10 @@ export async function startLoop(options: LoopOptions): Promise<{ stop(): void }>
     later(900, () => fill.stampButton.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
     later(2300, () => {
       const sealed = record ?? sealedSample(now);
-      show(createCopyScreen({ record: sealed, reducedMotion: false }).element, 'The copy appears under it');
+      const copy = createCopyScreen({ record: sealed, reducedMotion: false }).element;
+      show(copy, 'The copy appears under it');
+      // The peel takes 700 ms. Then the top copy slides away with its roll and the carbon copy rests in view.
+      later(800, () => copy.classList.add('settled'));
       later(3200, () => {
         const tamper = createTamperScreen({ record: sealed, onBack: () => undefined });
         show(tamper.element, 'Try to change one line');

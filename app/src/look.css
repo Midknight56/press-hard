@@ -1136,6 +1136,18 @@
     color: var(--ph-paper);
   }
 
+  .field-hint,
+  .verify-need,
+  .verify-note {
+    color: var(--ph-paper);
+    font: 400 15px/1.35 var(--ph-font-ui);
+  }
+
+  .verify-need,
+  .verify-note {
+    font-weight: 600;
+  }
+
   .verdict {
     background: var(--ph-paper);
     border: 1.5px solid currentColor;

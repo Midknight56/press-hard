@@ -10,6 +10,7 @@ describe('index exports', () => {
       'buildCopyFile',
       'canonicalText',
       'diffRecords',
+      'findChangedLines',
       'parseCopyFile',
       'sealRecord',
       'sealWords',

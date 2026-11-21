@@ -73,12 +73,16 @@ export function createNav(options: NavOptions): {
   }
   const { audio } = options;
   if (audio !== undefined) {
-    // The label is short so that the bar fits one row at 360 px. Pressed means on; a dashed, struck out button means off.
+    // The label says the state in words: Sound on or Sound off. Pressed means on; a dashed, struck out button means off.
+    const show = () => {
+      sound.textContent = audio.enabled() ? 'Sound on' : 'Sound off';
+      sound.setAttribute('aria-pressed', String(audio.enabled()));
+    };
     const sound = button('nav-sound', 'Sound', () => {
       audio.setEnabled(!audio.enabled());
-      sound.setAttribute('aria-pressed', String(audio.enabled()));
+      show();
     });
-    sound.setAttribute('aria-pressed', String(audio.enabled()));
+    show();
     nav.append(sound);
   }
   const notice = document.createElement('p');

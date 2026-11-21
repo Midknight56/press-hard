@@ -23,6 +23,8 @@ interface Line {
   kind: TemplateField['kind'];
   options?: string[];
   unit?: string;
+  /** False for a line of a template that may stay empty. Undefined when no template is given. */
+  required?: boolean;
 }
 
 const MAX_TEXT = 500;
@@ -194,12 +196,15 @@ export function renderForm(record: HandoverRecord, options: RenderOptions): HTML
 
   const lines: Line[] =
     template !== undefined
-      ? template.fields.map((f) => ({ id: f.id, label: f.label, kind: f.kind, options: f.options, unit: f.unit }))
+      ? template.fields.map((f) => ({ id: f.id, label: f.label, kind: f.kind, options: f.options, unit: f.unit, required: f.required }))
       : record.fields.map((f) => ({ id: f.id, label: f.label, kind: f.kind, options: f.options, unit: f.unit }));
 
   for (const line of lines) {
     const field = record.fields.find((f) => f.id === line.id);
     const row = lineShell(line.id, line.label, line.kind);
+    // While filling, a line that may stay empty says so on its label, so that nobody has to guess.
+    // The word is drawn by CSS after the label (app.css), so the label text stays the label.
+    if (mode === 'edit' && line.required === false) row.setAttribute('data-optional', 'true');
     if (line.kind === 'photo') {
       const photo = record.photos.find((p) => p.digest === field?.photoDigest);
       const img = photo !== undefined ? photoImage(photo) : null;

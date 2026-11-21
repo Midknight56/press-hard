@@ -225,6 +225,19 @@ export function createFillScreen(options: FillOptions): FillScreen {
   }
 
   let locked = true;
+  /** The instruction for the line that stops the stamp. It names the line, as the testers asked. */
+  function missingText(missingId: string): string {
+    if (missingId === 'signature-giver') return 'Giver signs in the marked box';
+    if (missingId === 'signature-receiver') return 'Receiver signs in the marked box';
+    if (missingId === 'giver') return 'Fill in Giver name';
+    if (missingId === 'receiver') return 'Fill in Receiver name';
+    const line = lines.find((l) => l.id === missingId);
+    const label = line?.label ?? 'the marked line';
+    const value = values.get(missingId) ?? null;
+    if (line?.kind === 'number' && value !== null && value.trim() !== '') return `Write a number in ${label}`;
+    if (line?.kind === 'photo') return `Add a photo in ${label}`;
+    return `Fill in ${label}`;
+  }
   function refresh(): void {
     for (const marked of element.querySelectorAll('[data-missing]')) {
       marked.removeAttribute('data-missing');
@@ -241,11 +254,7 @@ export function createFillScreen(options: FillOptions): FillScreen {
     }
     stampButton.setAttribute('aria-disabled', String(locked));
     stampButton.setAttribute('data-locked', String(locked));
-    instruction.textContent = !locked
-      ? 'Press and hold the stamp'
-      : missingId?.startsWith('signature-')
-        ? 'Sign in the marked box'
-        : 'Fill the marked line';
+    instruction.textContent = !locked ? 'Press and hold the stamp' : missingText(missingId as string);
     const full = lines.length >= MAX_LINES;
     addText.setAttribute('aria-disabled', String(full));
     addPhotoLine.setAttribute('aria-disabled', String(full));

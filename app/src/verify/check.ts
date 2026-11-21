@@ -50,6 +50,17 @@ export function checkCopy(text: string, typedText = ''): Checked {
 
 const LINE_PATH = /^fields\.([a-z0-9-]+)\.(value|label)$/;
 
+/** A plain name for a part of a record that has no form line of its own. */
+export function lineName(name: string): string {
+  if (name === 'form.title') return 'Form title';
+  if (name === 'sealedAt') return 'Time of sealing';
+  if (name === 'signatures.giver') return 'Giver signature';
+  if (name === 'signatures.receiver') return 'Receiver signature';
+  if (name.startsWith('photos.')) return 'A photo';
+  if (name.startsWith('fields.')) return 'A line of the form';
+  return name;
+}
+
 /** Differences that belong on a form line, by field id, and every other difference in order. */
 export function placeDifferences(differences: Difference[]): {
   lines: Map<string, Difference[]>;

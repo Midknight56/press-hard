@@ -70,3 +70,51 @@
   display: grid;
   gap: 16px;
 }
+
+/* In the loop the bars of the copy screen are part of the picture: they stay in the loop box and are not pinned to the view. */
+.loop .seal-bar,
+.loop .copy-bar {
+  position: static;
+  box-shadow: none;
+}
+
+.loop .copy-bar:empty {
+  display: none;
+}
+
+.loop .screen.copy {
+  padding-bottom: 8px;
+}
+
+/* The demo copy is for looking, so it shows no swap control. */
+.loop .sheet-switch {
+  display: none;
+}
+
+/* After the peel the top copy slides away with its roll, so the whole carbon copy rests in view with nothing over it. */
+.loop .copy .top-sheet {
+  transition:
+    --fold-t 600ms ease-in,
+    --fold-b 600ms ease-in;
+}
+
+.loop .copy.settled .top-sheet {
+  --fold-t: -160px;
+  --fold-b: -160px;
+}
+
+.loop .copy .roll {
+  transition: visibility 0s linear 600ms;
+}
+
+.loop .copy.settled .roll,
+.loop .copy.settled .top-sheet .sheet-label {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loop .copy .top-sheet,
+  .loop .copy .roll {
+    transition: none;
+  }
+}

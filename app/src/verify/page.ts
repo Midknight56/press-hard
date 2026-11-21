@@ -1,6 +1,6 @@
-import { diffRecords, type Difference } from 'core';
+import { diffRecords, findChangedLines, type Difference } from 'core';
 import { renderForm } from '../form/index.js';
-import { checkCopy, placeDifferences, VERDICT_TEXT, type Checked } from './check.js';
+import { checkCopy, lineName, placeDifferences, VERDICT_TEXT, type Checked } from './check.js';
 
 function make<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
@@ -29,7 +29,7 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
   const instruction = make('p', undefined, 'Choose a copy file');
   instruction.setAttribute('data-role', 'instruction');
 
-  const fileLabel = make('label', 'field-label', 'Copy file, or two to compare');
+  const fileLabel = make('label', 'field-label', 'Copy file');
   const picker = make('span', 'file-picker');
   const button = make('span', 'file-button');
   const fileInput = make('input');
@@ -43,18 +43,24 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
   button.append('Choose a copy file', fileInput);
   picker.append(button, fileNames);
   fileLabel.append(picker);
+  const fileHint = make('p', 'field-hint', 'Choose two copy files to compare them line by line');
+  fileHint.id = 'verify-file-hint';
+  fileInput.setAttribute('aria-describedby', fileHint.id);
 
-  const typedLabel = make('label', 'field-label', 'Seal words or full seal');
+  const typedLabel = make('label', 'field-label', 'Seal words, optional');
   const typedInput = make('input');
   typedInput.type = 'text';
   typedInput.autocomplete = 'off';
   typedInput.spellcheck = false;
   typedInput.setAttribute('data-control', 'verify-typed');
   typedLabel.append(typedInput);
+  const typedHint = make('p', 'field-hint', 'The four words on the copy. They show it is the copy you were given.');
+  typedHint.id = 'verify-typed-hint';
+  typedInput.setAttribute('aria-describedby', typedHint.id);
 
   const result = make('div', 'verify-result');
   result.setAttribute('aria-live', 'polite');
-  element.append(title, instruction, fileLabel, typedLabel, result);
+  element.append(title, instruction, fileLabel, fileHint, typedLabel, typedHint, result);
 
   let texts: string[] = [];
   let pending: Promise<void> = Promise.resolve();
@@ -62,7 +68,14 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
   /** Draws the result. Returns the template id of the first copy when it was a copy. */
   function render(): string | null {
     result.replaceChildren();
-    if (texts.length === 0) return null;
+    if (texts.length === 0) {
+      if (typedInput.value.trim() !== '') {
+        const need = make('p', 'verify-need', 'Choose the copy file to check these words');
+        need.setAttribute('data-role', 'need-file');
+        result.append(need);
+      }
+      return null;
+    }
     const checks: Checked[] = texts.slice(0, 2).map((text, i) => checkCopy(text, i === 0 ? typedInput.value : ''));
     const bad = checks.find((c) => !c.ok);
     if (bad !== undefined && !bad.ok) {
@@ -74,7 +87,9 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
     const [first, second] = checks;
     if (first === undefined || !first.ok) return null;
 
-    const verdict = make('p', `verdict verdict-${first.verdict}`, VERDICT_TEXT[first.verdict]);
+    // With two files each verdict names its copy, so that two answers never read as one.
+    const verdictText = second === undefined ? VERDICT_TEXT[first.verdict] : `First copy: ${VERDICT_TEXT[first.verdict]}`;
+    const verdict = make('p', `verdict verdict-${first.verdict}`, verdictText);
     verdict.setAttribute('data-role', 'verdict');
     verdict.setAttribute('data-verdict', first.verdict);
     result.append(verdict);
@@ -90,6 +105,32 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
 
     const placed = placeDifferences(differences);
     const form = renderForm(first.record, { mode: 'top' });
+
+    // One changed file: the line marks of the file show which lines no longer match.
+    const marked: string[] = [];
+    let unmarked: string[] = [];
+    if (second === undefined && first.verdict === 'changed') {
+      const lines = findChangedLines(texts[0] as string, first.record) ?? [];
+      for (const name of lines) {
+        const id = /^parties\.(giver|receiver)$/.exec(name)?.[1] ?? /^fields\.(.+)$/.exec(name)?.[1];
+        const line = id === undefined ? null : form.querySelector(`[data-field="${id}"]`);
+        if (line === null) {
+          unmarked.push(lineName(name));
+          continue;
+        }
+        line.classList.add('changed');
+        const note = make('p', 'diff', 'This line was changed after sealing');
+        note.setAttribute('data-role', 'diff');
+        line.append(note);
+        marked.push(name);
+      }
+      unmarked = [...new Set(unmarked)];
+      if (lines.length === 0) {
+        const none = make('p', 'verify-note', 'This file cannot show the changed line. Choose the other copy too to compare them.');
+        none.setAttribute('data-role', 'no-line');
+        result.append(none);
+      }
+    }
     for (const [id, list] of placed.lines) {
       const line = form.querySelector(`[data-field="${id}"]`);
       if (line === null) {
@@ -105,6 +146,17 @@ export function createVerifyPage(options: VerifyPageOptions = {}): {
       }
     }
     result.append(form);
+
+    if (unmarked.length > 0) {
+      const box = make('section', 'diff-list');
+      box.setAttribute('data-box', 'panel');
+      box.setAttribute('data-role', 'changed-parts');
+      box.append(make('h2', undefined, marked.length > 0 ? 'Other changed parts' : 'Changed parts'));
+      const list = make('ul');
+      for (const name of unmarked) list.append(make('li', undefined, name));
+      box.append(list);
+      result.append(box);
+    }
 
     if (second !== undefined && differences.length === 0) {
       const same = make('p', 'verify-same', 'These two copies are the same');

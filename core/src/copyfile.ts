@@ -1,10 +1,12 @@
 import { CHECK_LIB } from './generated/check-script.js';
+import { changedLines, readLineMarks, writeLineMarks } from './lines.js';
 import { sealWords } from './seal.js';
 import type { Field, HandoverRecord, Photo, Signature } from './types.js';
 import { validateRecord } from './validate.js';
 
 const RECORD_OPEN = '<script id="record" type="application/json">';
 const SCRIPT_CLOSE = '</script>';
+const MARKS_OPEN = '<main data-lines="';
 
 const TEXT_MATCHES = 'Seal matches this copy';
 const TEXT_CHANGED = 'This copy was changed after sealing';
@@ -131,7 +133,7 @@ export function buildCopyFile(record: HandoverRecord, options: { title: string; 
     `<style>${CSS}</style>`,
     '</head>',
     `<body class="paper-${options.paper}">`,
-    '<main>',
+    `${MARKS_OPEN}${writeLineMarks(record)}">`,
     `<h1>${escapeHtml(record.form.title)}</h1>`,
     `<p class="meta">${options.paper === 'top' ? 'Top copy' : 'Carbon copy'}. Sealed at ${escapeHtml(record.sealedAt)}.</p>`,
     '<h2>People</h2>',
@@ -176,4 +178,20 @@ export function parseCopyFile(
   const problems = validateRecord(value);
   if (problems.length > 0) return { ok: false, error: 'bad_record', problems };
   return { ok: true, record: value as HandoverRecord };
+}
+
+/**
+ * The lines of a copy file that no longer match its line marks, in form order, then removed lines.
+ * Takes the text of the file and the record that parseCopyFile read from it. Gives an empty list
+ * when every line matches, and null when the file has no readable marks (a copy made before them).
+ */
+export function findChangedLines(text: string, record: HandoverRecord): string[] | null {
+  if (typeof text !== 'string') return null;
+  const open = text.indexOf(RECORD_OPEN);
+  const marksAt = open < 0 ? -1 : text.lastIndexOf(MARKS_OPEN, open);
+  if (marksAt < 0) return null;
+  const from = marksAt + MARKS_OPEN.length;
+  const marksEnd = text.indexOf('"', from);
+  const marks = marksEnd < 0 ? null : readLineMarks(text.slice(from, marksEnd));
+  return marks === null ? null : changedLines(record, marks);
 }
